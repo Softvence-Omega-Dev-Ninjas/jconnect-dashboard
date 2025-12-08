@@ -28,7 +28,6 @@ type ApiResponse = ApiItem[];
 
 export default function RevenueChart() {
   const [revenue, setRevenue] = useState<ApiResponse | null>(null);
-  // const [raw, setRaw] = useState<ApiResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -54,8 +53,8 @@ export default function RevenueChart() {
         );
         // expect res.data.data to be an array like your example
         const payload: ApiResponse = res.data?.data ?? res.data ?? [];
-        console.log("revenue payload:", payload);
         setRevenue(payload);
+        // console.log("revenue payload:", payload);
       } catch (err: any) {
         if (err.response?.status === 401) {
           Cookies.remove("token", { path: "/" });
