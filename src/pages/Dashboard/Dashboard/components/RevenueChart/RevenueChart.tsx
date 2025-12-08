@@ -157,8 +157,8 @@ export default function RevenueChart() {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Date Range</SelectLabel>
-                  <SelectItem value="7 days">Last 7 days</SelectItem>
-                  <SelectItem value="30 days">Last 30 days</SelectItem>
+                  <SelectItem value="1 year">Last one year</SelectItem>
+                  <SelectItem value="2 years">Last two years</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
