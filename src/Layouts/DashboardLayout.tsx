@@ -1,0 +1,18 @@
+import Navbar from "@/components/Shared/Navbar/Navbar";
+import { Sidebar } from "@/components/Shared/Sidebar/Sidebar";
+import { Outlet } from "react-router-dom";
+
+export default function DashboardLayout() {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar />
+
+      <div className="flex-1 lg:ml-64">
+        <Navbar />
+        <main className="pt-20 px-4 pb-4 md:px-6 md:pb-6 w-full overflow-y-auto">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
