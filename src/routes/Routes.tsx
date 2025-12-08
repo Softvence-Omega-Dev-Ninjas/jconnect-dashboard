@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import DashboardLayout from "@/Layouts/DashboardLayout";
-import Dashboard from "@/pages/Dashboard/Dashboard";
+import Dashboard from "@/pages/Dashboard/Dashboard/Dashboard";
 import Login from "@/pages/Login/Login";
 
 const routes = createBrowserRouter([

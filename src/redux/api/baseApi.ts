@@ -22,7 +22,7 @@ const redirectToLogin = () => {
 };
 
 const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
-  let result = await baseQuery(args, api, extraOptions);
+  const result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 401 || result?.error?.status === 403) {
     api.dispatch(logout());
@@ -34,6 +34,6 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["VehicleType", "DeliveryType"],
+  tagTypes: ["Auth", "Payments", "Users", "Disputes", "Reports"],
   endpoints: () => ({}),
 });
