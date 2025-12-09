@@ -133,7 +133,7 @@ export default function UserActivityChart() {
 
       <div style={{ width: "100%", height: 260 }}>
         <ResponsiveContainer>
-          <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }} barCategoryGap="10%">
+          <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }} barCategoryGap="5%">
             <defs>
               <linearGradient id="activeGrad" x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="#FFFFFF" />
@@ -148,7 +148,7 @@ export default function UserActivityChart() {
 
             <Tooltip content={<CustomTooltip cursor={false}/>} />
 
-            <Bar dataKey="active" stackId="a" activeBar={false} fill="url(#activeGrad)" gap radius={[6, 6, 6, 6]} />
+            <Bar dataKey="active" stackId="a" activeBar={false} fill="url(#activeGrad)" radius={[6, 6, 6, 6]} />
             <Bar dataKey="inactive" stackId="a" fill="#E6E6E6" activeBar={false} radius={[6, 6, 6, 6]} />
           </BarChart>
         </ResponsiveContainer>
