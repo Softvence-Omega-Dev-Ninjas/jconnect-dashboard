@@ -3,9 +3,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 type ActivityItem = {
-  date: string; // YYYY-MM-DD
-  activePercentage: number; // 0 - 100
-  inactivePercentage: number; // 0 - 100
+  date: string; 
+  activePercentage: number; 
+  inactivePercentage: number; 
 };
 
 type ApiResponse = {
@@ -22,6 +22,7 @@ const dayShort = (isoDate: string) => {
     return isoDate;
   }
 };
+
 
 export default function UserActivity() {
   const [items, setItems] = useState<ActivityItem[] | null>(null);
@@ -54,10 +55,7 @@ export default function UserActivity() {
 
         // your API returns data array in res.data.data
         const payload = res.data?.data ?? [];
-        console.log(payload);
-        // normalize: ensure we have 7 items (optional) — keep as returned order
         setItems(payload);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("fetchActivity error:", err);
         if (err?.response?.status === 401) {
@@ -72,6 +70,9 @@ export default function UserActivity() {
 
     fetchActivity();
   }, []);
+
+
+  
 
   // Loading / error states
   if (loading) {
@@ -143,12 +144,9 @@ export default function UserActivity() {
             const activePx = (active / 100) * maxPx;
 
             return (
-              <div
-                key={it.date}
-                className="flex flex-col items-center w-full"
-              >
+              <div key={it.date} className="flex flex-col items-center w-full">
                 <div
-                  className="relative group w-full flex justify-center items-center" 
+                  className="relative group w-full flex justify-center items-center"
                   style={{ height: `${maxPx}px` }}
                 >
                   {/* inactive (top part) */}
