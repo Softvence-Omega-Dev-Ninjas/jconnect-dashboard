@@ -29,7 +29,7 @@ export default function StatCard({ title, value, change, icon }: StatCardProps) 
             <span className="text-xs md:text-sm text-gray-400">vs last month</span>
           </div>
         </div>
-        <div className="p-2 md:p-3 rounded-md bg-[#F8E6E9] flex-shrink-0">
+        <div className="p-2 md:p-3 rounded-lg bg-[#F8E6E9] shrink-0">
           {icon}
         </div>
       </div>

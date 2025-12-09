@@ -68,7 +68,7 @@ export function DataTable<T>({
         </div>
       )}
       
-      <div className="overflow-x-auto bg-white shadow-sm rounded-lg">
+      <div className="overflow-x-auto bg-white shadow-sm rounded-lg p-2">
         <Table>
           <TableHeader>
             <TableRow className=" border-b-2 mb-5">
