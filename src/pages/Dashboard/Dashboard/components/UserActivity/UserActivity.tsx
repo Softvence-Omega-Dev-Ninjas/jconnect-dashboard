@@ -3,9 +3,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 type ActivityItem = {
-  date: string; 
-  activePercentage: number; 
-  inactivePercentage: number; 
+  date: string;
+  activePercentage: number;
+  inactivePercentage: number;
 };
 
 type ApiResponse = {
@@ -22,7 +22,6 @@ const dayShort = (isoDate: string) => {
     return isoDate;
   }
 };
-
 
 export default function UserActivity() {
   const [items, setItems] = useState<ActivityItem[] | null>(null);
@@ -70,9 +69,6 @@ export default function UserActivity() {
 
     fetchActivity();
   }, []);
-
-
-  
 
   // Loading / error states
   if (loading) {
@@ -155,7 +151,6 @@ export default function UserActivity() {
                     style={{
                       height: `${inactivePx}px`,
                       transform: "translateY(-100%)",
-                      // inactive sits above active visually: we'll render inactive on top as light block
                     }}
                     aria-hidden
                   />
@@ -176,7 +171,8 @@ export default function UserActivity() {
                       title="active"
                       style={{
                         height: `${activePx}px`,
-                        background: "linear-gradient(180deg,#FF3A4A,#B6001E)",
+                        background:
+                          "linear-gradient(180deg, #FFFFFF 0%, #FF3A4A 45%, #B6001E 100%)",
                         boxShadow: "inset 0 2px 6px rgba(0,0,0,0.15)",
                       }}
                     />
