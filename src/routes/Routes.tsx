@@ -4,6 +4,7 @@ import DashboardLayout from "@/Layouts/DashboardLayout";
 import Dashboard from "@/pages/Dashboard/Dashboard/Dashboard";
 import Login from "@/pages/Login/Login";
 import ProtectedRoute from "./ProtectedRoute";
+import Disputes from "@/pages/Dashboard/Disputes/Disputes";
 
 const routes = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const routes = createBrowserRouter([
         index: true,
         element: <Dashboard />,
       },
+      {
+        path: "disputes",
+        element: <Disputes />,
+      }
     ],
   },
   {

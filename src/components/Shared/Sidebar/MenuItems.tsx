@@ -4,7 +4,6 @@ import {
   CreditCard,
   BarChart3,
   Settings,
-  LogOut,
   HeartHandshake,
 } from "lucide-react";
 
@@ -32,7 +31,7 @@ export const menuItems: MenuItem[] = [
     icon: <CreditCard className="w-5 h-5" />,
   },
   {
-    id: " disputes",
+    id: "disputes",
     label: "Disputes",
     icon: <HeartHandshake className="w-5 h-5" />,
   },
@@ -45,10 +44,5 @@ export const menuItems: MenuItem[] = [
     id: "settings",
     label: "Settings",
     icon: <Settings className="w-5 h-5" />,
-  },
-  {
-    id: "login",
-    label: "Logout",
-    icon: <LogOut className="w-5 h-5" />,
-  },
+  }
 ];
