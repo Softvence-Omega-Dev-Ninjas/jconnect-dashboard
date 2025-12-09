@@ -22,7 +22,7 @@ export const menuItems: MenuItem[] = [
     icon: <LayoutDashboard className="w-5 h-5" />,
   },
   {
-    id: "user",
+    id: "users",
     label: "User",
     icon: <Users className="w-5 h-5" />,
   },
@@ -32,7 +32,7 @@ export const menuItems: MenuItem[] = [
     icon: <CreditCard className="w-5 h-5" />,
   },
   {
-    id: " disputes",
+    id: "disputes",
     label: "Disputes",
     icon: <HeartHandshake className="w-5 h-5" />,
   },
