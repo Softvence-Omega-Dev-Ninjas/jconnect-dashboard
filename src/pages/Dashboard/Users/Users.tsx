@@ -95,7 +95,7 @@ const inDateRange = (dateISO: string, range: string) => {
 };
 
 const downloadCSV = (rows: UserRow[]) => {
-  // CSV export implementation (same as before)
+  // CSV export implementation 
   const header = [
     "ID",
     "Username",
@@ -232,13 +232,13 @@ const Users = () => {
         </div>
       </div>
 
-      {/* --- Controls Section (Matching Screenshot UI) --- */}
-      <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-4 rounded-lg shadow-sm">
+      {/* --- Controls Section */}
+      <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-4">
         <div className="flex flex-row sm:items-center gap-4">
           {/* Status Filter */}
           <div className="flex items-center gap-3">
             <p className="font-semibold text-gray-700">Status:</p>
-            <div className="flex gap-2 bg-gray-100 p-1 rounded-md">
+            <div className="flex gap-2 bg-white p-1 rounded-md shadow">
               <button
                 onClick={() => setStatusFilter("all")}
                 className={`px-3 py-1 rounded-md text-sm font-medium ${
