@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Menu } from "lucide-react";
+import { X, Menu, LogOut } from "lucide-react";
 import { menuItems } from "./MenuItems";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -8,26 +8,27 @@ import { logout } from "@/redux/features/auth/authSlice";
 export function Sidebar() {
   const [activeItem, setActiveItem] = useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const currentPath = location.pathname.replace('/', '');
+    const currentPath = location.pathname.replace("/", "");
     setActiveItem(currentPath);
   }, [location.pathname]);
 
   const handleItemClick = (id: string) => {
+    console.log(id);
     setActiveItem(id);
-    
+
     if (id === "login") {
       dispatch(logout());
       navigate("/login");
     } else {
       navigate(`/${id}`);
     }
-    
+
     if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);
     }
@@ -59,7 +60,7 @@ export function Sidebar() {
       <aside
         className={`
           fixed top-0 left-0 h-screen bg-white text-gray-900 w-64 z-50 transition-transform duration-300
-          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0
         `}
       >
@@ -88,9 +89,10 @@ export function Sidebar() {
                   onClick={() => handleItemClick(item.id)}
                   className={`
                     w-full flex items-center gap-3 px-4 py-2.5 rounded-md transition-all text-base font-medium
-                    ${activeItem === item.id 
-                      ? 'bg-[#BD001F] text-white font-medium' 
-                      : 'text-black hover:bg-[#f18295] hover:text-white'
+                    ${
+                      activeItem === item.id
+                        ? "btn-primary text-white font-medium ml-1.5"
+                        : "text-black hover:bg-[#f18295] hover:text-white"
                     }
                   `}
                 >
@@ -102,14 +104,10 @@ export function Sidebar() {
             <li>
               <button
                 onClick={() => handleItemClick("login")}
-                className={`
-                  w-full flex items-center gap-3 px-4 py-2.5 rounded-md transition-all text-base font-medium
-                  ${activeItem === "login" 
-                    ? 'bg-[#BD001F] text-white font-medium' 
-                    : 'text-black hover:bg-[#f18295] hover:text-white'
-                  }
-                `}
+                className="w-full flex items-center gap-3 px-4 py-2.5 mt-6 rounded-md transition-all text-base text-[#FF0000] font-medium
+                   hover:bg-[#f18295] hover:text-white"
               >
+                <LogOut className="w-5 h-5" />
                 Logout
               </button>
             </li>

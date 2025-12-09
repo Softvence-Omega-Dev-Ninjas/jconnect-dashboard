@@ -50,6 +50,7 @@ export default function StatCardGrid() {
             value={stat.value}
             change={stat.change}
             icon={<IconComponent className="w-5 h-5 md:w-6 md:h-6 text-[#BD001F]" />}
+            subHead={true}
           />
         );
       })}

@@ -8,6 +8,8 @@ import Users from "@/pages/Dashboard/Users/Users";
 import Payments from "@/pages/Dashboard/Payments/Payments";
 import Reports from "@/pages/Dashboard/Reports/Reports";
 import Settings from "@/pages/Dashboard/Settings/Settings";
+import Disputes from "@/pages/Dashboard/Disputes/Disputes";
+import DisputeView from "@/pages/Dashboard/Disputes/DisputeView";
 
 const routes = createBrowserRouter([
   {
@@ -37,7 +39,14 @@ const routes = createBrowserRouter([
       {
         path: "/settings",
         element: <Settings />,
+      },{
+        path: "disputes",
+        element: <Disputes />,
       },
+      {
+        path: "disputes/:id",
+        element: <DisputeView />,
+      }
     ],
   },
   {
