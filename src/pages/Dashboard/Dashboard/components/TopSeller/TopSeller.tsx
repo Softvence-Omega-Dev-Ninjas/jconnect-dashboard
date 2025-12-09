@@ -1,7 +1,6 @@
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
 import { useState } from "react";
 
-
 interface Seller {
   username: string;
   dealsCompleted: number;
@@ -61,7 +60,6 @@ const sellers: Seller[] = [
   { username: "@viralmasters", dealsCompleted: 25, totalRevenue: "$40000", avgOrderValue: "$120" }
 ];
 export const TopSellers = () => {
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
