@@ -111,7 +111,7 @@ export default function UserActivity() {
   }
 
   return (
-    <div className="p-4 bg-white rounded shadow-sm">
+    <div className="p-4 bg-white rounded shadow-sm h-full">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold">Users Insights</h3>
