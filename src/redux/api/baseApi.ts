@@ -1,32 +1,32 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout } from "../features/auth/authSlice";
+import Cookies from "js-cookie";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://10.10.20.45:3000/api/v1",
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as any).auth.accessToken;
+  baseUrl: "http://103.174.189.183:5050",
+  prepareHeaders: (headers) => {
+    const token = Cookies.get('token');
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
-    headers.set("Content-Type", "application/json");
     return headers;
   },
-  credentials: "include",
 });
 
-const redirectToLogin = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('accessToken');
-    window.location.href = '/login';
-  }
-};
+import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
-const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
+const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions
+) => {
   const result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 401 || result?.error?.status === 403) {
     api.dispatch(logout());
-    redirectToLogin();
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
   }
   return result;
 };
