@@ -6,7 +6,6 @@ import Login from "@/pages/Login/Login";
 import ProtectedRoute from "./ProtectedRoute";
 import Users from "@/pages/Dashboard/Users/Users";
 import Payments from "@/pages/Dashboard/Payments/Payments";
-import Disputes from "@/pages/Dashboard/Disputes/Disputes";
 import Reports from "@/pages/Dashboard/Reports/Reports";
 import Settings from "@/pages/Dashboard/Settings/Settings";
 
@@ -30,10 +29,6 @@ const routes = createBrowserRouter([
       {
         path: "/payments",
         element: <Payments />,
-      },
-      {
-        path: "/disputes",
-        element: <Disputes />,
       },
       {
         path: "/reports",
