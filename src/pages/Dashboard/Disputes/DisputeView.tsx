@@ -10,7 +10,6 @@ import {
 import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import { Separator } from "@/components/ui/separator";
 
-
 const DisputeView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -31,10 +30,10 @@ const DisputeView = () => {
         <PageHeading title="Dispute " />
         <button
           onClick={handleCloseCase}
-          className="px-4 py-2 btn-primary text-sm font-medium rounded flex items-center gap-2"
+          className="px-4 py-2 btn-primary text-xl font-medium rounded flex items-center gap-2 hover:cursor-pointer"
         >
           <span>Close Case</span>
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5 border rounded-full" />
         </button>
       </div>
 
@@ -67,7 +66,7 @@ const DisputeView = () => {
                 <span className="text-gray-600">Issue Type</span>
                 <span className="font-medium">Promotion Not Posted</span>
               </div>
-              <Separator className="my-5"/>
+              <Separator className="my-5" />
               <div>
                 <h3 className="font-bold text-xl mb-2">Customer Statements</h3>
                 <p className=" font-medium leading-relaxed">
@@ -116,10 +115,12 @@ const DisputeView = () => {
                 </div>
               </div>
 
-              <Separator className="my-6"/>
+              <Separator className="my-6" />
 
               <div className="flex items-center justify-between">
-                <span className="font-bold text-lg">Total Order Cost: $50.00</span>
+                <span className="font-bold text-lg">
+                  Total Order Cost: $50.00
+                </span>
                 <button
                   onClick={handleProceedAdjustment}
                   className="px-6 py-2 btn-primary text-sm font-medium rounded"
@@ -132,11 +133,10 @@ const DisputeView = () => {
 
           {/* Evidence Attachments */}
           <div className="">
-            <h2 className="text-xl font-bold mb-4 text-center">
-              Evidence Attachments
-            </h2>
-
             <div className="p-2 md:p-6 rounded-2xl border">
+              <h2 className="text-xl md:text-3xl font-bold mb-7 text-center">
+                Evidence Attachments
+              </h2>
               <div className="grid grid-cols-3 gap-4">
                 {[1, 2, 3].map((item) => (
                   <div
