@@ -17,7 +17,7 @@ type ApiResponse = {
 const dayShort = (isoDate: string) => {
   try {
     const d = new Date(isoDate + "T00:00:00");
-    return d.toLocaleDateString(undefined, { weekday: "short" }); // Mon, Tue, ...
+    return d.toLocaleDateString(undefined, { weekday: "short" });
   } catch {
     return isoDate;
   }
@@ -57,6 +57,7 @@ export default function UserActivity() {
         console.log(payload);
         // normalize: ensure we have 7 items (optional) — keep as returned order
         setItems(payload);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("fetchActivity error:", err);
         if (err?.response?.status === 401) {
@@ -127,26 +128,27 @@ export default function UserActivity() {
         <div className="flex items-end gap-4 px-2 md:px-6 py-6">
           {/* Determine max bar height (pixels) */}
           {items.map((it) => {
-            const active = Math.max(
-              0,
-              Math.min(100, Number(it.activePercentage ?? 0))
-            );
             const inactive = Math.max(
               0,
               Math.min(100, Number(it.inactivePercentage ?? 0))
             );
+            const active = Math.max(
+              0,
+              Math.min(100, Number(it.activePercentage ?? 0))
+            );
+
             // bar height base (we map 100% => 160px)
             const maxPx = 160;
-            const activePx = (active / 100) * maxPx;
             const inactivePx = (inactive / 100) * maxPx;
+            const activePx = (active / 100) * maxPx;
 
             return (
               <div
                 key={it.date}
-                className="flex flex-col items-center w-10 md:w-12"
+                className="flex flex-col items-center w-full"
               >
                 <div
-                  className="relative group w-full"
+                  className="relative group w-full flex justify-center items-center" 
                   style={{ height: `${maxPx}px` }}
                 >
                   {/* inactive (top part) */}
@@ -160,22 +162,24 @@ export default function UserActivity() {
                     aria-hidden
                   />
                   {/* we'll instead stack active from bottom and inactive above it */}
-                  <div className="absolute bottom-0 left-0 w-full flex flex-col">
+                  <div className="absolute bottom-0 left-0 w-full flex flex-col gap-1 justify-center items-center">
+                    {/* Inactive (top) */}
+                    <div
+                      className="w-full rounded"
+                      title="inactive"
+                      style={{
+                        height: `${inactivePx}px`,
+                        background: "#E6E6E6",
+                      }}
+                    />
                     {/* Active (bottom) */}
                     <div
-                      className="w-full rounded-b-md"
+                      className="w-full rounded"
+                      title="active"
                       style={{
                         height: `${activePx}px`,
                         background: "linear-gradient(180deg,#FF3A4A,#B6001E)",
                         boxShadow: "inset 0 2px 6px rgba(0,0,0,0.15)",
-                      }}
-                    />
-                    {/* Inactive (top) */}
-                    <div
-                      className="w-full"
-                      style={{
-                        height: `${inactivePx}px`,
-                        background: "#E6E6E6",
                       }}
                     />
                   </div>
@@ -198,7 +202,7 @@ export default function UserActivity() {
           })}
         </div>
         {/* Legend */}
-        <div className="flex items-center justify-center gap-4 border-2">
+        <div className="flex items-center justify-center gap-4">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-linear-to-b from-[#FF3A4A] to-[#B6001E]" />
             <span className="text-sm text-gray-600">Active</span>
