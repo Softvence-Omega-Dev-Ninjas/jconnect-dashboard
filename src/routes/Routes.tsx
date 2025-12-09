@@ -5,6 +5,7 @@ import Dashboard from "@/pages/Dashboard/Dashboard/Dashboard";
 import Login from "@/pages/Login/Login";
 import ProtectedRoute from "./ProtectedRoute";
 import Disputes from "@/pages/Dashboard/Disputes/Disputes";
+import DisputeView from "@/pages/Dashboard/Disputes/DisputeView";
 
 const routes = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const routes = createBrowserRouter([
       {
         path: "disputes",
         element: <Disputes />,
+      },
+      {
+        path: "disputes/:id",
+        element: <DisputeView />,
       }
     ],
   },

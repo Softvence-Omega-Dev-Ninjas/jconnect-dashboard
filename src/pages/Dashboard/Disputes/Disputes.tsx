@@ -1,6 +1,7 @@
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
 import { useState } from "react";
 import { Download } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -21,7 +22,7 @@ export interface Dispute {
 
 const Disputes = () => {
   const [currentPage, setCurrentPage] = useState(1);
-//   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const disputesData: Dispute[] = [
     {
@@ -136,7 +137,9 @@ const Disputes = () => {
               className="px-3 py-1 text-sm hover:underline text-gray-700"
               onClick={(e) => {
                 e.stopPropagation();
-                console.log(`${action} clicked for ${item.caseId}`);
+                if (action === "View") {
+                  navigate(`/disputes/${item.caseId}`);
+                }
               }}
             >
               {action}
@@ -157,7 +160,7 @@ const Disputes = () => {
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">Priority:</span>
           <div className="bg-white p-3 rounded-2xl">
-            <button className="px-3 py-1.5 text-xs font-medium bg-[#BD001F] text-white rounded">
+            <button className="px-3 py-1.5 text-xs font-medium btn-primary rounded">
               All
             </button>
             <button className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
@@ -213,7 +216,6 @@ const Disputes = () => {
         </button>
       </div>
 
-      {/* Table */}
       <DataTable
         columns={columns}
         data={disputesData}
