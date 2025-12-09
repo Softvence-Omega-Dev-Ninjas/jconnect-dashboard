@@ -12,7 +12,7 @@ import {
 } from "recharts";
 
 type ActivityItem = {
-  date: string; // "2025-12-08"
+  date: string;
   activePercentage: number;
   inactivePercentage: number;
 };
@@ -20,7 +20,7 @@ type ActivityItem = {
 const dayShort = (isoDate: string) => {
   try {
     const d = new Date(isoDate + "T00:00:00");
-    return d.toLocaleDateString(undefined, { weekday: "short" }); // Mon, Tue ...
+    return d.toLocaleDateString(undefined, { weekday: "short" }); 
   } catch {
     return isoDate;
   }
@@ -129,22 +129,11 @@ export default function UserActivityChart() {
           <h3 className="text-lg font-semibold">Users Insights</h3>
           <p className="text-sm text-gray-500">Active vs Inactive Users (Weekly)</p>
         </div>
-
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full" style={{ background: "linear-gradient(180deg,#FF1F3A,#B6001E)" }} />
-            <span className="text-sm text-gray-600">Active</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-gray-300" />
-            <span className="text-sm text-gray-600">Inactive</span>
-          </div>
-        </div>
       </div>
 
       <div style={{ width: "100%", height: 260 }}>
         <ResponsiveContainer>
-          <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
+          <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }} barCategoryGap="10%">
             <defs>
               <linearGradient id="activeGrad" x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="#FFFFFF" />
@@ -157,13 +146,23 @@ export default function UserActivityChart() {
             <XAxis dataKey="day" tickLine={false} axisLine={false} />
             <YAxis tickFormatter={(v) => `${v}%`} domain={[0, 100]} tickLine={false} axisLine={false} />
 
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip cursor={false}/>} />
 
-            <Bar dataKey="active" stackId="a" fill="url(#activeGrad)" radius={[6, 6, 0, 0]} />
-            <Bar dataKey="inactive" stackId="a" fill="#E6E6E6" radius={[0, 0, 6, 6]} />
+            <Bar dataKey="active" stackId="a" activeBar={false} fill="url(#activeGrad)" gap radius={[6, 6, 6, 6]} />
+            <Bar dataKey="inactive" stackId="a" fill="#E6E6E6" activeBar={false} radius={[6, 6, 6, 6]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
+        <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full" style={{ background: "linear-gradient(180deg,#FF1F3A,#B6001E)" }} />
+            <span className="text-sm text-gray-600">Active</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-gray-300" />
+            <span className="text-sm text-gray-600">Inactive</span>
+          </div>
+        </div>
     </div>
   );
 }
