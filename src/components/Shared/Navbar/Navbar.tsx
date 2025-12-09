@@ -1,7 +1,19 @@
-import { Bell, Search } from "lucide-react";
+import { Bell, Search, LogOut } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { logout } from "@/redux/features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
   return (
     <nav className="fixed top-0 right-0 left-0 lg:left-64 bg-white border-b border-gray-200 z-30 h-16">
       <div className="flex items-center justify-between h-full px-4 md:px-6">
@@ -34,12 +46,17 @@ const Navbar = () => {
 
           {/* Admin User */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-gray-700 hidden md:block">Admin User</span>
+            <span className="text-sm font-medium text-gray-700 hidden md:block">{user?.full_name || "Admin User"}</span>
             <Avatar className="w-8 h-8">
-              <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" />
-              <AvatarFallback>AU</AvatarFallback>
+              <AvatarImage src={user?.profilePhoto || "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin"} />
+              <AvatarFallback>{user?.full_name?.charAt(0) || "A"}</AvatarFallback>
             </Avatar>
           </div>
+
+          {/* Logout Button */}
+          <button onClick={handleLogout} className="text-gray-600 hover:text-red-600" title="Logout">
+            <LogOut className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </nav>

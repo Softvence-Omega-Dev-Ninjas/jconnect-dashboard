@@ -1,56 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { useAppDispatch } from "@/redux/hook";
+import { setCredentials } from "@/redux/features/auth/authSlice";
+import Cookies from "js-cookie";
+import type { LoginRequest } from "@/redux/features/auth/authTypes";
 
-type FormValues = {
-  email: string;
-  password: string;
+type FormValues = LoginRequest & {
   remember?: boolean;
-};
-
-type LoginResponse = {
-  success: boolean;
-  message?: string;
-  data: {
-    token: string;
-    user: {
-      role: string;
-      [k: string]: any;
-    };
-    [k: string]: any;
-  };
 };
 
 const Login: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { email: "", password: "", remember: false },
   });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [login, { isLoading }] = useLoginMutation();
+
+  useEffect(() => {
+    const token = Cookies.get('token');
+    if (token) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
 
   const onSubmit = async (data: FormValues) => {
     try {
-      // replace URL with your real login endpoint
-      const res = await axios.post<LoginResponse>("http://103.174.189.183:5050/auth/login", {
+      const res = await login({
         email: data.email,
         password: data.password,
-      });
+      }).unwrap();
 
-      if (res.data?.success && res.data.data) {
-        const token = res.data.data.token;
-        const role = res.data.data.user?.role || "";
+      if (res?.success && res.data) {
+        const token = res.data.token;
+        const role = res.data.user?.role || "";
 
-        // use secure flag only on HTTPS
         const secureFlag = typeof window !== "undefined" && window.location.protocol === "https:";
 
-        // set token cookie 
+        // Set token cookie (same as original)
         Cookies.set("token", token, {
           expires: 7,
           path: "/",
@@ -58,7 +53,7 @@ const Login: React.FC = () => {
           secure: secureFlag,
         });
 
-        // set role cookie (7 days) 
+        // Set role cookie (same as original)
         Cookies.set("role", role, {
           expires: 7,
           path: "/",
@@ -66,22 +61,17 @@ const Login: React.FC = () => {
           secure: secureFlag,
         });
 
-        // navigate based on role
-        if (role === "SUPER_ADMIN") {
-          navigate("/");
-        } else if (role === "ADMIN") {
-          navigate("/");
-        } else {
-          navigate("/");
-        }
+        // Store user in Redux
+        dispatch(setCredentials({ user: res.data.user }));
+
+        // Navigate (same as original)
+        navigate("/");
       } else {
-        alert(res.data?.message || "Login failed");
+        alert(res?.message || "Login failed");
       }
-    } catch (err: any) {
-      const msg =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Login error. Check console for details.";
+    } catch (err) {
+      const error = err as { data?: { message?: string }; message?: string };
+      const msg = error?.data?.message || error?.message || "Login error. Check console for details.";
       console.error("Login error:", err);
       alert(msg);
     }
@@ -144,13 +134,13 @@ const Login: React.FC = () => {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isLoading}
             className="w-full py-3 rounded text-white font-bold
          bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)]
          shadow-[0_4px_12px_rgba(0,0,0,0.35)]
          hover:opacity-95 transition duration-200 cursor-pointer disabled:opacity-50"
           >
-            {isSubmitting ? "Signing in..." : "Log In"}
+            {isLoading ? "Signing in..." : "Log In"}
           </button>
         </form>
       </div>

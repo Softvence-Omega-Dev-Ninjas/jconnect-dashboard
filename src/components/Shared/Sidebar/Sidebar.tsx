@@ -99,6 +99,20 @@ export function Sidebar() {
                 </button>
               </li>
             ))}
+            <li>
+              <button
+                onClick={() => handleItemClick("login")}
+                className={`
+                  w-full flex items-center gap-3 px-4 py-2.5 rounded-md transition-all text-base font-medium
+                  ${activeItem === "login" 
+                    ? 'bg-[#BD001F] text-white font-medium' 
+                    : 'text-black hover:bg-[#f18295] hover:text-white'
+                  }
+                `}
+              >
+                Logout
+              </button>
+            </li>
           </ul>
         </nav>
       </aside>
