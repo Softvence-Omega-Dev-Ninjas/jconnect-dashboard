@@ -14,7 +14,7 @@ type Item = { name: string; value: number };
 const dummyData: Item[] = [
   { name: "arif", value: 700 },
   { name: "DJ Nova", value: 980 },
-  { name: "hamid", value: 1050 },
+  { name: "hamid", value: 1200 },
   { name: "kalam", value: 880 },
   { name: "jahid", value: 920 },
 ];
@@ -25,7 +25,7 @@ export default function TopPerformingUsersChart({
   data?: Item[];
 }) {
   const max = Math.max(...data.map((d) => d.value), 0);
-  const domainMax = Math.ceil((max * 1.15) / 100) * 100 || 100;
+  const domainMax = Math.ceil((max * 1) / 100) * 100 || 100;
 
   return (
     <div className="bg-white rounded shadow-sm p-5">

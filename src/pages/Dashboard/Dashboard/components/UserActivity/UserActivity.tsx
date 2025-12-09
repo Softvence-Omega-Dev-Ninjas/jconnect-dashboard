@@ -1,31 +1,48 @@
-import { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 
 type ActivityItem = {
-  date: string;
+  date: string; // "2025-12-08"
   activePercentage: number;
   inactivePercentage: number;
-};
-
-type ApiResponse = {
-  status: number;
-  message?: string;
-  data: ActivityItem[];
 };
 
 const dayShort = (isoDate: string) => {
   try {
     const d = new Date(isoDate + "T00:00:00");
-    return d.toLocaleDateString(undefined, { weekday: "short" });
+    return d.toLocaleDateString(undefined, { weekday: "short" }); // Mon, Tue ...
   } catch {
     return isoDate;
   }
 };
 
-export default function UserActivity() {
+/* Custom tooltip showing only active/inactive for the day */
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload || payload.length === 0) return null;
+  const activeObj = payload.find((p: any) => p.dataKey === "active");
+  const inactiveObj = payload.find((p: any) => p.dataKey === "inactive");
+  return (
+    <div className="bg-white border shadow px-3 py-2 rounded text-sm">
+      <div className="font-semibold text-gray-700">{label}</div>
+      <div className="text-gray-900">Active: {activeObj ? activeObj.value : "—"}%</div>
+      <div className="text-gray-600">Inactive: {inactiveObj ? inactiveObj.value : "—"}%</div>
+    </div>
+  );
+};
+
+export default function UserActivityChart() {
   const [items, setItems] = useState<ActivityItem[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -41,19 +58,15 @@ export default function UserActivity() {
       }
 
       try {
-        const res = await axios.get<ApiResponse>(
-          "http://103.174.189.183:5050/admin/dashboard-stats/user-activity-weekly",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            timeout: 15000,
-          }
-        );
+        const res = await axios.get("http://103.174.189.183:5050/admin/dashboard-stats/user-activity-weekly", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          timeout: 15000,
+        });
 
-        // your API returns data array in res.data.data
-        const payload = res.data?.data ?? [];
+        const payload: ActivityItem[] = res.data?.data ?? [];
         setItems(payload);
       } catch (err: any) {
         console.error("fetchActivity error:", err);
@@ -70,14 +83,11 @@ export default function UserActivity() {
     fetchActivity();
   }, []);
 
-  // Loading / error states
   if (loading) {
     return (
       <div className="p-4 bg-white rounded shadow-sm">
         <div className="text-lg font-semibold mb-2">Users Insights</div>
-        <div className="text-sm text-gray-500 mb-4">
-          Active vs Inactive Users (Weekly)
-        </div>
+        <div className="text-sm text-gray-500 mb-4">Active vs Inactive Users (Weekly)</div>
         <div className="flex items-center justify-center py-10">
           <div className="animate-pulse w-40 h-8 bg-gray-200 rounded" />
         </div>
@@ -89,116 +99,40 @@ export default function UserActivity() {
     return (
       <div className="p-4 bg-white rounded shadow-sm">
         <div className="text-lg font-semibold mb-2">Users Insights</div>
-        <div className="text-sm text-gray-500 mb-4">
-          Active vs Inactive Users (Weekly)
-        </div>
+        <div className="text-sm text-gray-500 mb-4">Active vs Inactive Users (Weekly)</div>
         <div className="text-red-500">{error}</div>
       </div>
     );
   }
 
-  // if no data
   if (!items || items.length === 0) {
     return (
       <div className="p-4 bg-white rounded shadow-sm">
         <div className="text-lg font-semibold mb-2">Users Insights</div>
-        <div className="text-sm text-gray-500 mb-4">
-          Active vs Inactive Users (Weekly)
-        </div>
+        <div className="text-sm text-gray-500 mb-4">Active vs Inactive Users (Weekly)</div>
         <div className="text-gray-500">No activity data available.</div>
       </div>
     );
   }
+
+  // map API to recharts data shape
+  const chartData = items.map((it) => ({
+    day: dayShort(it.date),
+    active: Number(it.activePercentage ?? 0),
+    inactive: Number(it.inactivePercentage ?? 0),
+  }));
 
   return (
     <div className="p-4 bg-white rounded shadow-sm h-full">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold">Users Insights</h3>
-          <p className="text-sm text-gray-500">
-            Active vs Inactive Users (Weekly)
-          </p>
+          <p className="text-sm text-gray-500">Active vs Inactive Users (Weekly)</p>
         </div>
-      </div>
 
-      <div className="w-full">
-        <div className="flex items-end gap-4 px-2 md:px-6 py-6">
-          {/* Determine max bar height (pixels) */}
-          {items.map((it) => {
-            const inactive = Math.max(
-              0,
-              Math.min(100, Number(it.inactivePercentage ?? 0))
-            );
-            const active = Math.max(
-              0,
-              Math.min(100, Number(it.activePercentage ?? 0))
-            );
-
-            // bar height base (we map 100% => 160px)
-            const maxPx = 160;
-            const inactivePx = (inactive / 100) * maxPx;
-            const activePx = (active / 100) * maxPx;
-
-            return (
-              <div key={it.date} className="flex flex-col items-center w-full">
-                <div
-                  className="relative group w-full flex justify-center items-center"
-                  style={{ height: `${maxPx}px` }}
-                >
-                  {/* inactive (top part) */}
-                  <div
-                    className="absolute bottom-0 left-0 w-full rounded-t-md"
-                    style={{
-                      height: `${inactivePx}px`,
-                      transform: "translateY(-100%)",
-                    }}
-                    aria-hidden
-                  />
-                  {/* we'll instead stack active from bottom and inactive above it */}
-                  <div className="absolute bottom-0 left-0 w-full flex flex-col gap-1 justify-center items-center">
-                    {/* Inactive (top) */}
-                    <div
-                      className="w-full rounded"
-                      title="inactive"
-                      style={{
-                        height: `${inactivePx}px`,
-                        background: "#E6E6E6",
-                      }}
-                    />
-                    {/* Active (bottom) */}
-                    <div
-                      className="w-full rounded"
-                      title="active"
-                      style={{
-                        height: `${activePx}px`,
-                        background:
-                          "linear-gradient(180deg, #FFFFFF 0%, #FF3A4A 45%, #B6001E 100%)",
-                        boxShadow: "inset 0 2px 6px rgba(0,0,0,0.15)",
-                      }}
-                    />
-                  </div>
-
-                  {/* Tooltip */}
-                  <div className="absolute left-1/2 -translate-x-1/2 -top-8 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none">
-                    <div className="bg-black text-white text-xs px-2 py-1 rounded shadow">
-                      <div>Active: {active}%</div>
-                      <div>Inactive: {inactive}%</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Day label */}
-                <div className="mt-3 text-xs text-gray-600">
-                  {dayShort(it.date)}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        {/* Legend */}
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-linear-to-b from-[#FF3A4A] to-[#B6001E]" />
+            <span className="w-3 h-3 rounded-full" style={{ background: "linear-gradient(180deg,#FF1F3A,#B6001E)" }} />
             <span className="text-sm text-gray-600">Active</span>
           </div>
           <div className="flex items-center gap-2">
@@ -206,6 +140,29 @@ export default function UserActivity() {
             <span className="text-sm text-gray-600">Inactive</span>
           </div>
         </div>
+      </div>
+
+      <div style={{ width: "100%", height: 260 }}>
+        <ResponsiveContainer>
+          <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
+            <defs>
+              <linearGradient id="activeGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#FFFFFF" />
+                <stop offset="40%" stopColor="#FF3A4A" />
+                <stop offset="100%" stopColor="#B6001E" />
+              </linearGradient>
+            </defs>
+
+            <CartesianGrid strokeDasharray="3 6" vertical={false} stroke="#F3F4F6" />
+            <XAxis dataKey="day" tickLine={false} axisLine={false} />
+            <YAxis tickFormatter={(v) => `${v}%`} domain={[0, 100]} tickLine={false} axisLine={false} />
+
+            <Tooltip content={<CustomTooltip />} />
+
+            <Bar dataKey="active" stackId="a" fill="url(#activeGrad)" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="inactive" stackId="a" fill="#E6E6E6" radius={[0, 0, 6, 6]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
