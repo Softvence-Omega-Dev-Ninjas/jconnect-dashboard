@@ -5,10 +5,21 @@ import {
 } from "../../../components/Shared/DataTable/DataTable";
 import { Download, MessagesSquare, Trash, View } from "lucide-react";
 import { saveAs } from "file-saver";
-import { useGetUsersQuery, User } from "../../../redux/features/users/usersApi";
+import {
+  useGetUsersQuery,
+  User,
+  useUpdateUserMutation,
+} from "../../../redux/features/users/usersApi";
 import ToggleSwitch from "./components/ToggleSwitchBtn/ToggleSwitch";
+import { toast } from "sonner";
+import { DeleteAlertDialog } from "@/components/Shared/DeleteAlert/DeleteAlert";
+import PageHeading from "@/components/Shared/PageHeading/PageHeading";
+import UsersSkeleton from "./components/skeleton/UsersSkeleton";
 
 const Users = () => {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState<string | null>(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
@@ -56,7 +67,29 @@ const Users = () => {
     setStatusFilter(filter);
     setCurrentPage(1);
   };
-
+  const handleOpenDeleteDialog = (item: User) => {
+    setDeleteDialogOpen(true);
+    setIdToDelete(item.id);
+  };
+  const handleDelete = () => {
+    console.log(idToDelete);
+  };
+  const [updateUser] = useUpdateUserMutation();
+  const handleToggleStatus = async (userId: string, currentStatus: boolean) => {
+    try {
+      const res = await updateUser({
+        id: userId,
+        data: { isActive: !currentStatus },
+      }).unwrap();
+      toast.success(
+        `User '${res.full_name}' has been ${
+          res.isActive ? "activated" : "deactivated"
+        }.`
+      );
+    } catch (error) {
+      console.error("Failed to toggle user status:", error);
+    }
+  };
   const columns: Column<User>[] = [
     { header: "Name", accessor: "full_name" },
     { header: "Email", accessor: "email" },
@@ -65,7 +98,10 @@ const Users = () => {
     {
       header: "Active",
       render: (item) => (
-        <ToggleSwitch checked={item.isActive} onChange={() => {}} />
+        <ToggleSwitch
+          checked={item.isActive}
+          onChange={() => handleToggleStatus(item.id, item.isActive)}
+        />
       ),
     },
     {
@@ -83,83 +119,94 @@ const Users = () => {
             <MessagesSquare className="w-5 h-5" />
           </button>
           <button className="p-1 rounded-md text-red-600 hover:bg-gray-100">
-            <Trash className="w-5 h-5" />
+            <Trash
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpenDeleteDialog(item);
+              }}
+              className="w-5 h-5"
+            />
           </button>
         </div>
       ),
     },
   ];
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isLoading) return <UsersSkeleton />;
   if (error) return <div className="p-6">Error loading users</div>;
 
   return (
-    <div className="p-6">
-      <div className="flex items-start justify-between mb-4">
-        <div className="space-y-2">
-          <h1 className="text-[32px] font-bold">User's management</h1>
-          <p className="text-sm text-gray-500">Manage platform users</p>
-        </div>
-      </div>
+    <>
+      <div className="p-6">
+        <PageHeading title="Users management" />
+        {/* </div> */}
 
-      <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-4">
-        <div className="flex flex-row sm:items-center gap-4">
-          <div className="flex items-center gap-3">
-            <p className="font-semibold text-gray-700">Status:</p>
-            <div className="flex gap-2 bg-white p-1 rounded-md shadow">
-              <button
-                onClick={() => handleStatusChange("all")}
-                className={`px-3 py-1 rounded-md text-sm font-medium ${
-                  statusFilter === "all"
-                    ? "bg-red-600 text-white"
-                    : "text-gray-700"
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => handleStatusChange("active")}
-                className={`px-3 py-1 rounded-md text-sm font-medium ${
-                  statusFilter === "active"
-                    ? "bg-green-500 text-white"
-                    : "text-gray-700"
-                }`}
-              >
-                Active
-              </button>
-              <button
-                onClick={() => handleStatusChange("inactive")}
-                className={`px-3 py-1 rounded-md text-sm font-medium ${
-                  statusFilter === "inactive"
-                    ? "bg-gray-500 text-white"
-                    : "text-gray-700"
-                }`}
-              >
-                Inactive
-              </button>
+        <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-4">
+          <div className="flex flex-row sm:items-center gap-4">
+            <div className="flex items-center gap-3">
+              <p className="font-semibold text-gray-700">Status:</p>
+              <div className="flex gap-2 bg-white p-1 rounded-md shadow">
+                <button
+                  onClick={() => handleStatusChange("all")}
+                  className={`px-3 py-1 rounded-md text-sm font-medium ${
+                    statusFilter === "all"
+                      ? "bg-red-600 text-white"
+                      : "text-gray-700"
+                  }`}
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => handleStatusChange("active")}
+                  className={`px-3 py-1 rounded-md text-sm font-medium ${
+                    statusFilter === "active"
+                      ? "bg-green-500 text-white"
+                      : "text-gray-700"
+                  }`}
+                >
+                  Active
+                </button>
+                <button
+                  onClick={() => handleStatusChange("inactive")}
+                  className={`px-3 py-1 rounded-md text-sm font-medium ${
+                    statusFilter === "inactive"
+                      ? "bg-gray-500 text-white"
+                      : "text-gray-700"
+                  }`}
+                >
+                  Inactive
+                </button>
+              </div>
             </div>
           </div>
+
+          <button
+            onClick={handleExport}
+            className="bg-red-600 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 flex items-center gap-2"
+          >
+            Export <Download className="w-4 h-4" />
+          </button>
         </div>
 
-        <button
-          onClick={handleExport}
-          className="bg-red-600 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 flex items-center gap-2"
-        >
-          Export <Download className="w-4 h-4" />
-        </button>
+        <DataTable
+          columns={columns}
+          data={users}
+          getRowKey={(item) => item.id}
+          showPagination={true}
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
-      <DataTable
-        columns={columns}
-        data={users}
-        getRowKey={(item) => item.id}
-        showPagination={true}
-        currentPage={currentPage}
-        totalItems={totalItems}
-        itemsPerPage={itemsPerPage}
-        onPageChange={setCurrentPage}
+      <DeleteAlertDialog
+        open={deleteDialogOpen}
+        setOpen={setDeleteDialogOpen}
+        itemName="profile"
+        onDelete={handleDelete}
       />
-    </div>
+    </>
   );
 };
 

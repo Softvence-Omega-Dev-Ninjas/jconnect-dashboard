@@ -20,9 +20,30 @@ export interface UserResponse {
   data: User[];
 }
 
+export interface UpdateUserPayload {
+  full_name?: string;
+  email?: string;
+  profilePhoto?: string;
+  phone?: string;
+  password?: string;
+  pinCode?: number;
+  isActive?: boolean;
+  isVerified?: boolean;
+  isDeleted?: boolean;
+  is_terms_agreed?: boolean;
+  role?: string;
+  validation_type?: string;
+  auth_provider?: string;
+  last_login_at?: string;
+  token_expires_at?: string;
+}
+
 export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getUsers: builder.query<UserResponse, { page?: number; limit?: number; isActive?: boolean }>({
+    getUsers: builder.query<
+      UserResponse,
+      { page?: number; limit?: number; isActive?: boolean }
+    >({
       query: ({ page = 1, limit = 10, isActive }) => {
         let url = `/users/getalluser?page=${page}&limit=${limit}`;
         if (isActive !== undefined) {
@@ -32,7 +53,31 @@ export const usersApi = baseApi.injectEndpoints({
       },
       providesTags: ["Users"],
     }),
+    updateUser: builder.mutation<User, { id: string; data: UpdateUserPayload }>(
+      {
+        query: ({ id, data }) => ({
+          url: `/users/${id}`,
+          method: "PUT",
+          body: data,
+        }),
+        invalidatesTags: ["Users"],
+      }
+    ),
+
+    deleteUser: builder.mutation<{ success: boolean; message: string }, string>(
+      {
+        query: (id) => ({
+          url: `/users/${id}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Users"],
+      }
+    ),
   }),
 });
 
-export const { useGetUsersQuery } = usersApi;
+export const {
+  useGetUsersQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} = usersApi;
