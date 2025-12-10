@@ -7,6 +7,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { setCredentials } from "@/redux/features/auth/authSlice";
 import Cookies from "js-cookie";
 import type { LoginRequest } from "@/redux/features/auth/authTypes";
+import { toast } from "sonner";
 
 type FormValues = LoginRequest & {
   remember?: boolean;
@@ -65,15 +66,17 @@ const Login: React.FC = () => {
         dispatch(setCredentials({ user: res.data.user }));
 
         // Navigate (same as original)
+        toast.success("Login successful!");
         navigate("/");
       } else {
-        alert(res?.message || "Login failed");
+        // alert(res?.message || "Login failed");
+        toast.error(res?.message || "Login failed");
       }
     } catch (err) {
       const error = err as { data?: { message?: string }; message?: string };
-      const msg = error?.data?.message || error?.message || "Login error. Check console for details.";
+      const msg = error?.data?.message || error?.message || "Login error. Please try again.";
       console.error("Login error:", err);
-      alert(msg);
+       toast.error(msg);
     }
   };
 
