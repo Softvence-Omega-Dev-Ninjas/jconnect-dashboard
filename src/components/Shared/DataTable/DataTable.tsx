@@ -72,7 +72,7 @@ export function DataTable<T>({
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-b-2">
+              <TableRow className="border-b-2 last:border-b-none">
                 {columns.map((column, index) => (
                   <TableHead
                     key={index}
