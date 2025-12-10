@@ -155,50 +155,50 @@ const Disputes = () => {
       <PageHeading title="Disputes" />
 
       {/* Filters Bar */}
-      <div className="flex flex-wrap items-center gap-4  p-4 rounded-lg">
+      <div className="flex flex-col lg:flex-row lg:flex-wrap items-start lg:items-center gap-3 md:gap-4 p-3 md:p-4 rounded-lg">
         {/* Priority Filter */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Priority:</span>
-          <div className="bg-white p-3 rounded-2xl">
-            <button className="px-3 py-1.5 text-xs font-medium btn-primary rounded">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
+          <span className="text-sm font-medium whitespace-nowrap">Priority:</span>
+          <div className="bg-white p-2 md:p-3 rounded-2xl border flex flex-wrap gap-1">
+            <button className="px-2 md:px-3 py-1.5 text-xs font-medium btn-primary rounded">
               All
             </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
+            <button className="px-2 md:px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
               High
             </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
+            <button className="px-2 md:px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
               Medium
             </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
+            <button className="px-2 md:px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
               Low
             </button>
           </div>
         </div>
 
         {/* Status Filter */}
-        <div className="flex items-center gap-2 ">
-          <span className="text-sm font-medium">Status:</span>
-          <div className="bg-white p-3 rounded-2xl">
-            <button className="px-3 py-1.5 text-xs font-medium bg-[#BD001F] text-white rounded">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
+          <span className="text-sm font-medium whitespace-nowrap">Status:</span>
+          <div className="bg-white p-2 md:p-3 rounded-2xl border flex flex-wrap gap-1">
+            <button className="px-2 md:px-3 py-1.5 text-xs font-medium btn-primary rounded">
               All
             </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
+            <button className="px-2 md:px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
               Pending
             </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
+            <button className="px-2 md:px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
               Under Review
             </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
+            <button className="px-2 md:px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
               Resolved
             </button>
           </div>
         </div>
 
         {/* Date Range */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Date Range:</span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
+          <span className="text-sm font-medium whitespace-nowrap">Date Range:</span>
           <Select defaultValue="this-month">
-            <SelectTrigger className="w-[140px] h-9 text-xs bg-white rounded-2xl">
+            <SelectTrigger className="w-full sm:w-[140px] text-xs bg-white">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -210,7 +210,7 @@ const Disputes = () => {
         </div>
 
         {/* Export Button */}
-        <button className="ml-auto px-4 py-2 bg-[#BD001F] text-white text-sm font-medium rounded hover:bg-[#8A0013] flex items-center gap-2">
+        <button className="w-full lg:w-auto lg:ml-auto px-4 py-2 btn-primary text-sm font-medium rounded flex items-center justify-center gap-2">
           <span>Export</span>
           <Download className="w-4 h-4" />
         </button>

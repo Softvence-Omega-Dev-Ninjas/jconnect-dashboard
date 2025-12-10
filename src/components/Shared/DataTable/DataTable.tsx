@@ -61,89 +61,93 @@ export function DataTable<T>({
   };
 
   return (
-    <div className="overflow-hidden">
+    <div className="w-full">
       {title && (
-        <div className="px-6 py-4">
-          <h2 className="text-2xl font-semibold text-gray-900">{title}</h2>
+        <div className="px-4 md:px-6 py-4">
+          <h2 className="text-xl md:text-2xl font-semibold text-gray-900">{title}</h2>
         </div>
       )}
       
-      <div className="overflow-x-auto bg-white shadow-sm rounded-lg p-2">
-        <Table>
-          <TableHeader>
-            <TableRow className=" border-b-2 mb-5">
-              {columns.map((column, index) => (
-                <TableHead
-                  key={index}
-                  className={`font-medium text-gray-600 text-base ${
-                    column.headerClassName || ""
-                  }`}
-                >
-                  {column.header}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="text-center py-8 text-gray-500"
-                >
-                  {emptyMessage}
-                </TableCell>
+      <div className="w-full bg-white shadow-sm rounded-lg">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-b-2">
+                {columns.map((column, index) => (
+                  <TableHead
+                    key={index}
+                    className={`font-medium text-gray-600 text-sm md:text-base px-2 md:px-4 ${
+                      column.headerClassName || ""
+                    }`}
+                  >
+                    {column.header}
+                  </TableHead>
+                ))}
               </TableRow>
-            ) : (
-              data.map((item) => (
-                <TableRow
-                  key={getRowKey(item)}
-                  className="hover:bg-gray-50  cursor-pointer text-start border-gray-200 transition-colors"
-                  onClick={() => onRowClick?.(item)}
-                >
-                  {columns.map((column, index) => (
-                    <TableCell
-                      key={index}
-                      className={`py-4 text-sm text-gray-900 ${
-                        column.cellClassName || ""
-                      }`}
-                    >
-                      {column.render
-                        ? column.render(item)
-                        : column.accessor
-                        ? String(item[column.accessor])
-                        : null}
-                    </TableCell>
-                  ))}
+            </TableHeader>
+            <TableBody>
+              {data.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="text-center py-8 text-gray-500"
+                  >
+                    {emptyMessage}
+                  </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                data.map((item) => (
+                  <TableRow
+                    key={getRowKey(item)}
+                    className="hover:bg-gray-50 cursor-pointer border-gray-200 transition-colors"
+                    onClick={() => onRowClick?.(item)}
+                  >
+                    {columns.map((column, index) => (
+                      <TableCell
+                        key={index}
+                        className={`py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-900 ${
+                          column.cellClassName || ""
+                        }`}
+                      >
+                        {column.render
+                          ? column.render(item)
+                          : column.accessor
+                          ? String(item[column.accessor])
+                          : null}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {showPagination && totalItems > 0 && (
-        <div className="px-6 py-4 border-t bg-gray-50 flex items-center justify-between">
-          <div className="text-sm text-gray-600">
-            Showing {startItem}-{endItem} of {totalItems}
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={handlePrevious}
-              disabled={currentPage === 1}
-              className="p-2 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              aria-label="Previous page"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={currentPage === totalPages}
-              className="p-2 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              aria-label="Next page"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
+        <div className="w-full bg-white rounded-b-lg">
+          <div className="px-3 md:px-6 py-3 md:py-4 border-t bg-gray-50 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-xs md:text-sm text-gray-600">
+              Showing {startItem}-{endItem} of {totalItems}
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+                className="p-2 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                aria-label="Next page"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       )}

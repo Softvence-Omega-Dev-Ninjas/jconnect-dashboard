@@ -91,7 +91,7 @@ export function Sidebar() {
                     w-full flex items-center gap-3 px-4 py-2.5 rounded-md transition-all text-base font-medium
                     ${
                       activeItem === item.id
-                        ? "bg-[#BD001F] text-white font-medium"
+                        ? "btn-primary text-white font-medium ml-1.5"
                         : "text-black hover:bg-[#f18295] hover:text-white"
                     }
                   `}
@@ -104,7 +104,7 @@ export function Sidebar() {
             <li>
               <button
                 onClick={() => handleItemClick("login")}
-                className="w-full flex items-center gap-3 px-4 py-2.5 mt-6 rounded-md transition-all text-base text-black font-medium
+                className="w-full flex items-center gap-3 px-4 py-2.5 mt-6 rounded-md transition-all text-base text-[#FF0000] font-medium
                    hover:bg-[#f18295] hover:text-white"
               >
                 <LogOut className="w-5 h-5" />
