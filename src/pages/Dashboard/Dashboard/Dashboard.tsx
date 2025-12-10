@@ -1,6 +1,7 @@
 import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import RevenueChart from "./components/RevenueChart/RevenueChart";
 import StatCardGrid from "./components/StatCards/StatCardGrid";
+import TopPerformUser from "./components/TopPerformUser/TopPerformUser";
 import { TopSellers } from "./components/TopSeller/TopSeller";
 import UserActivity from "./components/UserActivity/UserActivity";
 
@@ -24,7 +25,8 @@ export default function Dashboard() {
           <UserActivity />
         </div>
         <div className="">
-          <h1>Top Perform user</h1>
+          {/* Top Perform User */}
+        <TopPerformUser />
         </div>
       </div>
 
