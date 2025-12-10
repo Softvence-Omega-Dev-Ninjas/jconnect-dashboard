@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import AddAdminModal from "./components/AddAdminModal";
 
 const AdminRoleManagement = () => {
   const [roles, setRoles] = useState({
@@ -31,10 +32,7 @@ const AdminRoleManagement = () => {
     <>
       <div className="flex items-center justify-between">
         <PageHeading title="Admin Role Management" />
-
-        <Button className="btn-primary">
-          + Add Admin
-        </Button>
+        <AddAdminModal />
       </div>
       <div className="space-y-7 bg-white rounded-lg shadow-md p-6 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
