@@ -64,6 +64,7 @@ const Users = () => {
   };
 
   const handleStatusChange = (filter: "all" | "active" | "inactive") => {
+    console.log(filter, "filter..........");
     setStatusFilter(filter);
     setCurrentPage(1);
   };
@@ -182,7 +183,7 @@ const Users = () => {
 
           <button
             onClick={handleExport}
-            className="bg-red-600 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 flex items-center gap-2"
+            className="w-full lg:w-auto lg:ml-auto px-4 py-2 btn-primary text-sm font-medium rounded flex items-center justify-center gap-2"
           >
             Export <Download className="w-4 h-4" />
           </button>
