@@ -68,15 +68,15 @@ export function DataTable<T>({
         </div>
       )}
       
-      <div className="w-full bg-white shadow-sm rounded-lg">
+      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-b-2 last:border-b-none">
+              <TableRow>
                 {columns.map((column, index) => (
                   <TableHead
                     key={index}
-                    className={`font-medium text-gray-600 text-sm md:text-base px-2 md:px-4 ${
+                    className={`font-medium text-gray-600 text-sm md:text-base px-2 md:px-4 whitespace-nowrap ${
                       column.headerClassName || ""
                     }`}
                   >
@@ -105,7 +105,7 @@ export function DataTable<T>({
                     {columns.map((column, index) => (
                       <TableCell
                         key={index}
-                        className={`py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-900 ${
+                        className={`py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-900 whitespace-nowrap ${
                           column.cellClassName || ""
                         }`}
                       >
