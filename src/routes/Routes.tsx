@@ -9,7 +9,7 @@ import Payments from "@/pages/Dashboard/Payments/Payments";
 import Reports from "@/pages/Dashboard/Reports/Reports";
 import Settings from "@/pages/Dashboard/Settings/Settings";
 import Disputes from "@/pages/Dashboard/Disputes/Disputes";
-import DisputeView from "@/pages/Dashboard/Disputes/DisputeView";
+import DisputeView from "@/pages/Dashboard/Disputes/DisputeView/DisputeView";
 
 const routes = createBrowserRouter([
   {
