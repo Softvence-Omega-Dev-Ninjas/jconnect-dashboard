@@ -1,7 +1,6 @@
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import { saveAs } from "file-saver";
 import PaymentFilterBar from "./PementFilterBar";
 
@@ -174,6 +173,7 @@ const dummyTransactionData: Payment[] = [
 const TransactionHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("All");
   const navigate = useNavigate();
   const itemsPerPage = 9;
 
@@ -194,9 +194,17 @@ const TransactionHistory = () => {
     }),
   }));
 
-  const filteredData = transformedData.filter((item) =>
-    statusFilter === "all" ? true : item.status.toLowerCase() === statusFilter.toLowerCase()
-  );
+  const filteredData = transformedData.filter((item) => {
+    const statusMatch =
+      statusFilter === "all"
+        ? true
+        : item.status.toLowerCase() === statusFilter.toLowerCase();
+    const typeMatch =
+      typeFilter === "All"
+        ? true
+        : item.paymentType.toLowerCase() === typeFilter.toLowerCase();
+    return statusMatch && typeMatch;
+  });
 
   const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
@@ -262,12 +270,16 @@ const TransactionHistory = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <PageHeading title="Transaction History" />
+    <div className="space-y-3 mt-15">
+      <div className="">
+        <h1 className="text-3xl font-bold">Transaction History</h1>
+      </div>
 
       <PaymentFilterBar
         statusFilter={statusFilter}
         onStatusChange={setStatusFilter}
+        typeFilter={typeFilter}
+        onTypeChange={setTypeFilter}
         onExport={handleExport}
       />
 
