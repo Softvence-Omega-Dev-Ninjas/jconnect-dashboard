@@ -1,32 +1,36 @@
 import { Users } from "lucide-react";
 import RevenueChart from "../Dashboard/components/RevenueChart/RevenueChart"
 import StatCard from "../Dashboard/components/StatCards/StatCard";
+import TransactionHistory from "./components/TransactionHistory";
 
 const Payments = () => {
+
+
   const stateCardsData = [
     {
-      id: "Total Revenue",
-      title: "Total Users",
+      id: "total-revenue",
+      title: "Total Revenue",
       value:  "0",
       change: 0,
       icon: Users,
     },
     {
-      id: "Stripe Payouts",
-      title: "Total Users",
+      id: "stripe-payouts",
+      title: "Stripe Payouts",
       value:  "0",
       change: 0,
       icon: Users,
     },
     {
-      id: "Refunds",
-      title: "Total Users",
+      id: "refunds",
+      title: "Refunds",
       value:  "0",
       change: 0,
       icon: Users,
     },
    
   ];
+
   return (
      <div className="space-y-4 md:space-y-6">
       {/* Header */}
@@ -48,6 +52,7 @@ const Payments = () => {
             })}
           </div>
       <RevenueChart />
+      <TransactionHistory />
     </div>
   )
 }

@@ -59,6 +59,7 @@ const sellers: Seller[] = [
   { username: "@engagementpro", dealsCompleted: 23, totalRevenue: "$36800", avgOrderValue: "$115" },
   { username: "@viralmasters", dealsCompleted: 25, totalRevenue: "$40000", avgOrderValue: "$120" }
 ];
+
 export const TopSellers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
