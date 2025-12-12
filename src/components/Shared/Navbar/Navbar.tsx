@@ -15,7 +15,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 right-0 left-0 lg:left-64 bg-white border-b border-gray-200 z-30 h-16">
+    <nav className="fixed top-0 right-0 left-0 lg:left-64 bg-white border-b border-gray-200 z-30 h-16 ">
       <div className="flex items-center justify-between h-full px-4 md:px-6">
         {/* Search Bar */}
         <div className="flex-1 max-w-md hidden sm:block">

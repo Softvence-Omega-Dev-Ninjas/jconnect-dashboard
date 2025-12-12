@@ -45,7 +45,7 @@ export default function RevenueChart() {
 
   return (
     <Card className="p-4 md:p-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 md:mb-6">
+      <div className="flex flex-col lg:flex-row items-start sm:items-center justify-between gap-4 mb-4 md:mb-6">
         <h3 className="text-lg md:text-2xl font-semibold">Total Revenue</h3>
         <div className="flex items-center gap-3 md:gap-4 flex-wrap">
           <div className="flex items-center gap-2">
