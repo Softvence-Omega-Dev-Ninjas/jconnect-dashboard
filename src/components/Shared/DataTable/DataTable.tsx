@@ -76,7 +76,7 @@ export function DataTable<T>({
                 {columns.map((column, index) => (
                   <TableHead
                     key={index}
-                    className={`font-medium text-gray-600 text-sm md:text-base px-2 md:px-4 whitespace-nowrap ${
+                    className={`font-medium text-gray-600 text-sm md:text-base px-2 md:px-4 whitespace-nowrap text-center ${
                       column.headerClassName || ""
                     }`}
                   >
@@ -99,7 +99,7 @@ export function DataTable<T>({
                 data.map((item) => (
                   <TableRow
                     key={getRowKey(item)}
-                    className="hover:bg-gray-50 cursor-pointer border-gray-200 transition-colors"
+                    className="hover:bg-gray-50 cursor-pointer border-gray-200 transition-colors text-center"
                     onClick={() => onRowClick?.(item)}
                   >
                     {columns.map((column, index) => (
