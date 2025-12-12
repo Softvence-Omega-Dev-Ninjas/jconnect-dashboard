@@ -195,7 +195,7 @@ const TransactionHistory = () => {
   }));
 
   const filteredData = transformedData.filter((item) =>
-    statusFilter === "all" ? true : item.status === statusFilter.toUpperCase()
+    statusFilter === "all" ? true : item.status.toLowerCase() === statusFilter.toLowerCase()
   );
 
   const paginatedData = filteredData.slice(
@@ -226,7 +226,7 @@ const TransactionHistory = () => {
     );
     const csv = [header.join(","), ...body].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, `disputes_${new Date().toISOString().slice(0, 10)}.csv`);
+    saveAs(blob, `payments_${new Date().toISOString().slice(0, 10)}.csv`);
   };
 
   const columns: Column<Payment>[] = [

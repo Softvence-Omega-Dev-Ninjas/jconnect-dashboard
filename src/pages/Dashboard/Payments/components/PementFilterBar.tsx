@@ -48,25 +48,25 @@ const PaymentFilterBar = ({ statusFilter, onStatusChange, onExport }: FilterBarP
             All
           </button>
           <button
-            onClick={() => onStatusChange("Active")}
+            onClick={() => onStatusChange("Refunded")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "Active" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
+              statusFilter === "Refunded" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             Active
           </button>
           <button
-            onClick={() => onStatusChange("Pending")}
+            onClick={() => onStatusChange("Hold")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "Pending" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
+              statusFilter === "Hold" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             Pending
           </button>
           <button
-            onClick={() => onStatusChange("Resolved")}
+            onClick={() => onStatusChange("Completed")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "Resolved" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
+              statusFilter === "Completed" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             Completed
