@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot } from "recharts";
 import { useMemo } from "react";
 import { useGetRevenueByMonthQuery } from "@/redux/features/dashboard/dashboardApi";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 
 export default function RevenueChart() {
   const { data: revenue, error, isLoading } = useGetRevenueByMonthQuery();
@@ -37,7 +38,9 @@ export default function RevenueChart() {
   }, [revenue]);
 
   if (isLoading) return <div className="text-center">Loading...</div>;
-  if (error) return <div className="text-red-500 text-center">Error loading revenue data</div>;
+  if (error) {
+    return <NoDataFound dataTitle="Revenue Data" />;
+  }
 
   const years = chartData ? ((chartData as any).__years as string[]) : ["2024", "2025"];
   const yearA = years[1] ?? "2025";

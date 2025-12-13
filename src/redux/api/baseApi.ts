@@ -22,12 +22,12 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 ) => {
   const result = await baseQuery(args, api, extraOptions);
 
-  if (result?.error?.status === 401 || result?.error?.status === 403) {
-    api.dispatch(logout());
-    if (typeof window !== 'undefined') {
-      window.location.href = '/login';
-    }
-  }
+  // if (result?.error?.status === 401 || result?.error?.status === 403) {
+  //   api.dispatch(logout());
+  //   if (typeof window !== 'undefined') {
+  //     // window.location.href = '/login';
+  //   }
+  // }
   return result;
 };
 
