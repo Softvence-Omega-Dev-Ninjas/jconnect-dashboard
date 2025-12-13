@@ -73,7 +73,7 @@ export function Sidebar() {
             </div>
             <button
               onClick={toggleSidebar}
-              className="lg:hidden text-white hover:bg-gray-700 p-1 rounded"
+              className="lg:hidden text-black hover:bg-gray-700 p-1 rounded"
             >
               <X className="w-5 h-5" />
             </button>

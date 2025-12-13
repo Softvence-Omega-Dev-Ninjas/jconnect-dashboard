@@ -1,103 +1,77 @@
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
+import { useGetTopSellersQuery } from "@/redux/features/dashboard/dashboardApi";
 import { useState } from "react";
 
-interface Seller {
+interface SellerData {
   username: string;
-  dealsCompleted: number;
-  totalRevenue: string;
-  avgOrderValue: string;
+  dealsCompleted30d: number;
+  totalRevenue30d: number;
+  avgOrderValue: number;
 }
 
-const sellers: Seller[] = [
-  { username: "@djnovax", dealsCompleted: 20, totalRevenue: "$32000", avgOrderValue: "$100" },
-  { username: "@sarahsmith", dealsCompleted: 18, totalRevenue: "$28500", avgOrderValue: "$95" },
-  { username: "@techguru99", dealsCompleted: 22, totalRevenue: "$35200", avgOrderValue: "$110" },
-  { username: "@creativemind", dealsCompleted: 15, totalRevenue: "$24000", avgOrderValue: "$88" },
-  { username: "@marketer_pro", dealsCompleted: 25, totalRevenue: "$40000", avgOrderValue: "$120" },
-  { username: "@designwhiz", dealsCompleted: 19, totalRevenue: "$30400", avgOrderValue: "$102" },
-  { username: "@codemaster", dealsCompleted: 21, totalRevenue: "$33600", avgOrderValue: "$105" },
-  { username: "@salesking", dealsCompleted: 28, totalRevenue: "$44800", avgOrderValue: "$125" },
-  { username: "@digitalexpert", dealsCompleted: 17, totalRevenue: "$27200", avgOrderValue: "$92" },
-  { username: "@businesspro", dealsCompleted: 23, totalRevenue: "$36800", avgOrderValue: "$115" },
-  { username: "@marketqueen", dealsCompleted: 16, totalRevenue: "$25600", avgOrderValue: "$90" },
-  { username: "@webdeveloper", dealsCompleted: 20, totalRevenue: "$32000", avgOrderValue: "$100" },
-  { username: "@contentcreator", dealsCompleted: 14, totalRevenue: "$22400", avgOrderValue: "$85" },
-  { username: "@strategyexpert", dealsCompleted: 24, totalRevenue: "$38400", avgOrderValue: "$118" },
-  { username: "@entrepreneur", dealsCompleted: 19, totalRevenue: "$30400", avgOrderValue: "$102" },
-  { username: "@innovator_x", dealsCompleted: 21, totalRevenue: "$33600", avgOrderValue: "$105" },
-  { username: "@growthhacker", dealsCompleted: 26, totalRevenue: "$41600", avgOrderValue: "$122" },
-  { username: "@brandbuilder", dealsCompleted: 18, totalRevenue: "$28800", avgOrderValue: "$96" },
-  { username: "@consultant_pro", dealsCompleted: 22, totalRevenue: "$35200", avgOrderValue: "$110" },
-  { username: "@startupguru", dealsCompleted: 20, totalRevenue: "$32000", avgOrderValue: "$100" },
-  { username: "@performancemax", dealsCompleted: 27, totalRevenue: "$43200", avgOrderValue: "$124" },
-  { username: "@socialmedia_ace", dealsCompleted: 15, totalRevenue: "$24000", avgOrderValue: "$88" },
-  { username: "@analytics_pro", dealsCompleted: 19, totalRevenue: "$30400", avgOrderValue: "$102" },
-  { username: "@conversion_king", dealsCompleted: 23, totalRevenue: "$36800", avgOrderValue: "$115" },
-  { username: "@revenuemaster", dealsCompleted: 25, totalRevenue: "$40000", avgOrderValue: "$120" },
-  { username: "@optimizationpro", dealsCompleted: 17, totalRevenue: "$27200", avgOrderValue: "$92" },
-  { username: "@funnelbuilder", dealsCompleted: 24, totalRevenue: "$38400", avgOrderValue: "$118" },
-  { username: "@automationpro", dealsCompleted: 18, totalRevenue: "$28800", avgOrderValue: "$96" },
-  { username: "@scalemasters", dealsCompleted: 26, totalRevenue: "$41600", avgOrderValue: "$122" },
-  { username: "@productlaunch", dealsCompleted: 16, totalRevenue: "$25600", avgOrderValue: "$90" },
-  { username: "@campaignexpert", dealsCompleted: 22, totalRevenue: "$35200", avgOrderValue: "$110" },
-  { username: "@trafficsource", dealsCompleted: 20, totalRevenue: "$32000", avgOrderValue: "$100" },
-  { username: "@conversionlab", dealsCompleted: 19, totalRevenue: "$30400", avgOrderValue: "$102" },
-  { username: "@pixelperfect", dealsCompleted: 15, totalRevenue: "$24000", avgOrderValue: "$88" },
-  { username: "@adstrategy", dealsCompleted: 23, totalRevenue: "$36800", avgOrderValue: "$115" },
-  { username: "@emailmarketer", dealsCompleted: 17, totalRevenue: "$27200", avgOrderValue: "$92" },
-  { username: "@influencer_hub", dealsCompleted: 21, totalRevenue: "$33600", avgOrderValue: "$105" },
-  { username: "@affiliatepro", dealsCompleted: 25, totalRevenue: "$40000", avgOrderValue: "$120" },
-  { username: "@ecommguru", dealsCompleted: 24, totalRevenue: "$38400", avgOrderValue: "$118" },
-  { username: "@dropshipking", dealsCompleted: 18, totalRevenue: "$28800", avgOrderValue: "$96" },
-  { username: "@brandstrategy", dealsCompleted: 20, totalRevenue: "$32000", avgOrderValue: "$100" },
-  { username: "@contentking", dealsCompleted: 22, totalRevenue: "$35200", avgOrderValue: "$110" },
-  { username: "@seoexpert", dealsCompleted: 19, totalRevenue: "$30400", avgOrderValue: "$102" },
-  { username: "@ppcspecialist", dealsCompleted: 26, totalRevenue: "$41600", avgOrderValue: "$122" },
-  { username: "@videomarketer", dealsCompleted: 16, totalRevenue: "$25600", avgOrderValue: "$90" },
-  { username: "@podcastpro", dealsCompleted: 21, totalRevenue: "$33600", avgOrderValue: "$105" },
-  { username: "@communitybuilder", dealsCompleted: 17, totalRevenue: "$27200", avgOrderValue: "$92" },
-  { username: "@engagementpro", dealsCompleted: 23, totalRevenue: "$36800", avgOrderValue: "$115" },
-  { username: "@viralmasters", dealsCompleted: 25, totalRevenue: "$40000", avgOrderValue: "$120" }
-];
 export const TopSellers = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  const itemsPerPage = 10;
+  const { data, isLoading, error } = useGetTopSellersQuery({
+    page: currentPage,
+    limit: itemsPerPage,
+  });
 
-  const columns: Column<Seller>[] = [
+  const sellers: SellerData[] = data?.data?.data || [];
+  const pagination = data?.data?.pagination;
+
+  const columns: Column<SellerData>[] = [
     {
       header: "Username",
       accessor: "username",
+      render: (item) => (
+        <span className="font-medium text-gray-800">{item.username}</span>
+      ),
     },
     {
       header: "Deals Completed (30d)",
-      accessor: "dealsCompleted",
+      accessor: "dealsCompleted30d",
     },
     {
       header: "Total Revenue (30d)",
-      accessor: "totalRevenue",
+      accessor: "totalRevenue30d",
+
+      render: (item) => `$${item.totalRevenue30d.toFixed(2)}`,
     },
     {
       header: "Avg Order Value",
       accessor: "avgOrderValue",
-    },
-    {
-      header: "Actions",
-      render: () => <span onClick={()=>{console.log('btn click');}} className="text-gray-500">View Profile</span>,
-    },
+
+      render: (item) => `$${item.avgOrderValue.toFixed(2)}`,
+    }
   ];
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = sellers.slice(startIndex, startIndex + itemsPerPage);
+  if (isLoading)
+    return (
+      <div className="p-4 text-center text-gray-500">
+        Loading Top Sellers...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="p-4 text-center text-red-500">
+        Error loading top sellers data.
+      </div>
+    );
+  if (sellers.length === 0)
+    return (
+      <div className="p-4 text-center text-gray-500">No top sellers found.</div>
+    );
 
   return (
     <DataTable
       title="Top Sellers"
       columns={columns}
-      data={paginatedData}
+      data={sellers}
       getRowKey={(item) => item.username}
       showPagination={true}
       currentPage={currentPage}
-      totalItems={sellers.length}
+      totalItems={pagination?.total || 0}
       itemsPerPage={itemsPerPage}
       onPageChange={setCurrentPage}
     />

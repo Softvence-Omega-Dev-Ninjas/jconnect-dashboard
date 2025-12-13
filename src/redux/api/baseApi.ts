@@ -3,7 +3,7 @@ import { logout } from "../features/auth/authSlice";
 import Cookies from "js-cookie";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://103.174.189.183:5050",
+  baseUrl: "https://jconnect-server.saikat.com.bd",
   prepareHeaders: (headers) => {
     const token = Cookies.get('token');
     if (token) {
@@ -22,12 +22,12 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 ) => {
   const result = await baseQuery(args, api, extraOptions);
 
-  if (result?.error?.status === 401 || result?.error?.status === 403) {
-    api.dispatch(logout());
-    if (typeof window !== 'undefined') {
-      window.location.href = '/login';
-    }
-  }
+  // if (result?.error?.status === 401 || result?.error?.status === 403) {
+  //   api.dispatch(logout());
+  //   if (typeof window !== 'undefined') {
+  //     // window.location.href = '/login';
+  //   }
+  // }
   return result;
 };
 

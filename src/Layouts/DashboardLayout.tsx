@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 export default function DashboardLayout() {
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 overflow-hidden">
       <Sidebar />
 
       <div className="flex-1 lg:ml-64">
