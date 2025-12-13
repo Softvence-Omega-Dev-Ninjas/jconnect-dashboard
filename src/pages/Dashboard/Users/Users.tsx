@@ -16,6 +16,7 @@ import { DeleteAlertDialog } from "@/components/Shared/DeleteAlert/DeleteAlert";
 import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import UsersSkeleton from "./components/skeleton/UsersSkeleton";
 import { useNavigate } from "react-router-dom";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 
 const Users = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -152,13 +153,12 @@ const Users = () => {
   ];
 
   if (isLoading) return <UsersSkeleton />;
-  if (error) return <div className="p-6">Error loading users</div>;
+  if (error) return <NoDataFound dataTitle="Users Data" />;
 
   return (
     <>
       <div className="p-6">
         <PageHeading title="Users management" />
-        {/* </div> */}
 
         <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-4">
           <div className="flex flex-row sm:items-center gap-4">

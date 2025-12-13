@@ -79,7 +79,7 @@ const SingleUserDetail = () => {
           {getStatusBadge(user.isActive)}
           <Badge
             variant="outline"
-            className="ml-2 text-sm border-red-600 text-red-600"
+            className="ml-2 text-xs border-red-600 text-red-600"
           >
             {user.role}
           </Badge>
