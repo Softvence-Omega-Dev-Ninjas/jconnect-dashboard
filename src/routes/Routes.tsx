@@ -10,6 +10,7 @@ import Reports from "@/pages/Dashboard/Reports/Reports";
 import Settings from "@/pages/Dashboard/Settings/Settings";
 import Disputes from "@/pages/Dashboard/Disputes/Disputes";
 import DisputeView from "@/pages/Dashboard/Disputes/DisputeView/DisputeView";
+import SingleUserDetail from "@/pages/Dashboard/Users/components/UserDetails/UserDetailsPage";
 
 const routes = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const routes = createBrowserRouter([
         element: <Users />,
       },
       {
+        path: "/users/:id",
+        element: <SingleUserDetail />,
+      },
+      {
         path: "/payments",
         element: <Payments />,
       },
@@ -39,14 +44,15 @@ const routes = createBrowserRouter([
       {
         path: "/settings",
         element: <Settings />,
-      },{
+      },
+      {
         path: "disputes",
         element: <Disputes />,
       },
       {
         path: "disputes/:id",
         element: <DisputeView />,
-      }
+      },
     ],
   },
   {

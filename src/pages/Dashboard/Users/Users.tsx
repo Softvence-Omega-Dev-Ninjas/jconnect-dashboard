@@ -15,10 +15,13 @@ import { toast } from "sonner";
 import { DeleteAlertDialog } from "@/components/Shared/DeleteAlert/DeleteAlert";
 import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import UsersSkeleton from "./components/skeleton/UsersSkeleton";
+import { useNavigate } from "react-router-dom";
 
 const Users = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<
@@ -76,6 +79,12 @@ const Users = () => {
     setDeleteDialogOpen(true);
     setIdToDelete(item.id);
   };
+
+  const handleViewDetails = (userId: string) => {
+    navigate(`/users/${userId}`);
+    console.log(userId);
+  };
+
   const handleDelete = () => {
     // implement delete logic here using idToDelete
     console.log(idToDelete);
@@ -119,7 +128,10 @@ const Users = () => {
       header: "Action",
       render: (item) => (
         <div className="flex items-center gap-2">
-          <button className="p-1 rounded-md text-green-600 hover:bg-gray-100">
+          <button onClick={(e)=>{
+            e.preventDefault()
+            handleViewDetails(item.id)
+          }} className="p-1 rounded-md text-green-600 hover:bg-gray-100">
             <View className="w-5 h-5" />
           </button>
           <button className="p-1 rounded-md text-blue-600 hover:bg-gray-100">
