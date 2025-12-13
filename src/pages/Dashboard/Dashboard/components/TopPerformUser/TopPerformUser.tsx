@@ -50,7 +50,7 @@ export default function TopPerformingUsersChart() {
         <p className="text-xs sm:text-sm text-gray-500">By revenue generated</p>
       </div>
 
-      <div className="w-full h-[280px] sm:h-[320px]">
+      <div className="w-full h-[280px] sm:h-80">
         <ResponsiveContainer>
           <BarChart
             data={chartData}
