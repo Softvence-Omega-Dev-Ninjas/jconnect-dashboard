@@ -1,4 +1,3 @@
-import { Image as ImageIcon } from "lucide-react";
 
 interface EvidenceAttachmentsProps {
   proofs: string[];

@@ -29,38 +29,38 @@ export const TopSellers = () => {
       ),
     },
     {
-      header: "Deals Completed (30d)",
+      header: "Deals (30d)",
       accessor: "dealsCompleted30d",
     },
     {
-      header: "Total Revenue (30d)",
+      header: "Revenue (30d)",
       accessor: "totalRevenue30d",
-
+      hideOnMobile: true,
       render: (item) => `$${item.totalRevenue30d.toFixed(2)}`,
     },
     {
-      header: "Avg Order Value",
+      header: "Avg Order",
       accessor: "avgOrderValue",
-
+      hideOnMobile: true,
       render: (item) => `$${item.avgOrderValue.toFixed(2)}`,
     }
   ];
 
   if (isLoading)
     return (
-      <div className="p-4 text-center text-gray-500">
+      <div className="p-3 sm:p-4 text-center text-gray-500">
         Loading Top Sellers...
       </div>
     );
   if (error)
     return (
-      <div className="p-4 text-center text-red-500">
+      <div className="p-3 sm:p-4 text-center text-red-500">
         Error loading top sellers data.
       </div>
     );
   if (sellers.length === 0)
     return (
-      <div className="p-4 text-center text-gray-500">No top sellers found.</div>
+      <div className="p-3 sm:p-4 text-center text-gray-500">No top sellers found.</div>
     );
 
   return (

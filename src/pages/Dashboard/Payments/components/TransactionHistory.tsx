@@ -239,25 +239,25 @@ const TransactionHistory = () => {
 
   const columns: Column<Payment>[] = [
     { header: "Order ID", accessor: "orderId" },
-    { header: "Seller Username", accessor: "sellerUsername" },
+    { header: "Seller", accessor: "sellerUsername", hideOnMobile: true },
     { header: "Amount", accessor: "amount" },
-    { header: "Net Seller", accessor: "netSeller" },
-    { header: "Payment Type", accessor: "paymentType" },
+    { header: "Net", accessor: "netSeller", hideOnMobile: true },
+    { header: "Type", accessor: "paymentType", hideOnMobile: true },
     {
       header: "Status",
       accessor: "status",
       render: (item) => (
-        <span className="px-3 py-1 rounded-full text-xs font-medium">
+        <span className="px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-gray-100">
           {item.status}
         </span>
       ),
     },
-    { header: " Date", accessor: "date" },
+    { header: "Date", accessor: "date", hideOnMobile: true },
     {
       header: "Action",
       render: (item) => (
         <button
-          className="px-3 py-1 text-sm hover:underline text-gray-700"
+          className="px-2 sm:px-3 py-1 text-xs sm:text-sm hover:underline text-gray-700"
           onClick={(e) => {
             e.stopPropagation();
             navigate(`/payments/${item.id}`);
@@ -272,7 +272,7 @@ const TransactionHistory = () => {
   return (
     <div className="space-y-3 mt-15">
       <div className="">
-        <h1 className="text-3xl font-bold">Transaction History</h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">Transaction History</h1>
       </div>
 
       <PaymentFilterBar
