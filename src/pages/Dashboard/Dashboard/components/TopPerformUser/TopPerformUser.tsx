@@ -24,38 +24,38 @@ export default function TopPerformingUsersChart() {
 
   if (isLoading)
     return (
-      <div className="text-center p-8 text-gray-500">
+      <div className="text-center p-4 sm:p-8 text-gray-500">
         Loading Top Users Data...
       </div>
     );
   if (error)
     return (
-      <div className="text-red-500 text-center p-8">
+      <div className="text-red-500 text-center p-4 sm:p-8">
         Error loading top performing users data
       </div>
     );
   if (chartData.length === 0)
     return (
-      <div className="text-center p-8 text-gray-500">
+      <div className="text-center p-4 sm:p-8 text-gray-500">
         No top performing users data available.
       </div>
     );
 
   return (
-    <div className="bg-white rounded shadow-sm p-5">
+    <div className="bg-white rounded shadow-sm p-3 sm:p-5">
       <div className="mb-3">
-        <h3 className="text-lg font-semibold text-gray-800">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800">
           Top Performing Users
         </h3>
-        <p className="text-sm text-gray-500">By revenue generated</p>
+        <p className="text-xs sm:text-sm text-gray-500">By revenue generated</p>
       </div>
 
-      <div style={{ width: "100%", height: 320 }}>
+      <div className="w-full h-[280px] sm:h-[320px]">
         <ResponsiveContainer>
           <BarChart
             data={chartData}
             layout="vertical"
-            margin={{ top: 20, right: 30, left: 10, bottom: 20 }}
+            margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
           >
             <defs>
               <linearGradient
@@ -82,14 +82,13 @@ export default function TopPerformingUsersChart() {
               domain={[0, domainMax]}
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "#666" }}
-              // formatter={value => `$${value}`}
+              tick={{ fill: "#666", fontSize: 10 }}
             />
             <YAxis
               type="category"
               dataKey="name"
-              width={120}
-              tick={{ fill: "#333", fontWeight: 600 }}
+              width={80}
+              tick={{ fill: "#333", fontWeight: 600, fontSize: 10 }}
               tickLine={false}
               axisLine={false}
             />

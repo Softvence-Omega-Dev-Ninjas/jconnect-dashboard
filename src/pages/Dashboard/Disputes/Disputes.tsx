@@ -69,23 +69,23 @@ const Disputes = () => {
 
   const columns: Column<Dispute>[] = [
     { header: "Case ID", accessor: "caseId" },
-    { header: "Order ID", accessor: "orderId" },
+    { header: "Order ID", accessor: "orderId", hideOnMobile: true },
     { header: "Disputed by", accessor: "disputedBy" },
     {
       header: "Status",
       accessor: "status",
       render: (item) => (
-        <span className="px-3 py-1 rounded-full text-xs font-medium">
+        <span className="px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-gray-100">
           {item.status}
         </span>
       ),
     },
-    { header: "Submitted Date", accessor: "submittedDate" },
+    { header: "Date", accessor: "submittedDate", hideOnMobile: true },
     {
       header: "Action",
       render: (item) => (
         <button
-          className="px-3 py-1 text-sm hover:underline text-gray-700"
+          className="px-2 sm:px-3 py-1 text-xs sm:text-sm hover:underline text-gray-700"
           onClick={(e) => {
             e.stopPropagation();
             navigate(`/disputes/${item.id}`);
@@ -97,8 +97,8 @@ const Disputes = () => {
     },
   ];
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
-  if (error) return <div className="p-6">Error loading disputes</div>;
+  if (isLoading) return <div className="p-4 md:p-6">Loading...</div>;
+  if (error) return <div className="p-4 md:p-6">Error loading disputes</div>;
 
   return (
     <div className="space-y-6">

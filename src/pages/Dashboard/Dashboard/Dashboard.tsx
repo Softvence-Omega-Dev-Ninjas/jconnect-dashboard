@@ -19,15 +19,9 @@ export default function Dashboard() {
       {/* Revenue Chart */}
       <RevenueChart />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="">
-          {/* User Activity */}
-          <UserActivity />
-        </div>
-        <div className="">
-          {/* Top Perform User */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        <UserActivity />
         <TopPerformUser />
-        </div>
       </div>
 
       {/* Top Sellers */}
