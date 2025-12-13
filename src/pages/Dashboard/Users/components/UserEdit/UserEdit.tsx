@@ -8,7 +8,6 @@ import {
 } from "@/redux/features/users/usersApi";
 
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
-import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -130,12 +129,14 @@ const EditUser = () => {
   const isSuperAdmin = user.role === "SUPER_ADMIN";
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <PageHeading title={`Edit User: ${user.full_name}`} />
+    <div className="p-2 md:p-6 max-w-4xl mx-auto">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl">Profile Update: <span className="font-bold">{` ${user.full_name}`}</span></h1>
+      </div>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-xl space-y-6 border-t-4 border-blue-600"
+        className="bg-white p-8 rounded-lg shadow-xl space-y-6 border-t-4 border-[#BD001F] w-full"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -178,31 +179,33 @@ const EditUser = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="isActive">Account Status (Active)</Label>
-            <Switch
-              id="isActive"
-              checked={formData.isActive}
-              onCheckedChange={(checked) =>
-                setFormData((prev) => ({ ...prev, isActive: checked }))
-              }
-              disabled={isSuperAdmin}
-            />
+        <div className="grid grid-cols-1 md:grid-cols-12  gap-6 pt-4 border-t">
+          <div className="flex flex-col md:flex-row items-center col-span-8 gap-6">
+            <div className="flex  items-center gap-3">
+              <Label htmlFor="isActive">Account Status (Active)</Label>
+              <Switch
+                id="isActive"
+                checked={formData.isActive}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, isActive: checked }))
+                }
+                disabled={isSuperAdmin}
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Label htmlFor="isVerified">Email Verified</Label>
+              <Switch
+                id="isVerified"
+                checked={formData.isVerified}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, isVerified: checked }))
+                }
+              />
+            </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <Label htmlFor="isVerified">Email Verified</Label>
-            <Switch
-              id="isVerified"
-              checked={formData.isVerified}
-              onCheckedChange={(checked) =>
-                setFormData((prev) => ({ ...prev, isVerified: checked }))
-              }
-            />
-          </div>
-
-          <div>
+          <div className="flex items-center justify-center gap-3  col-span-4 w-[200px] ">
             <Label htmlFor="role">User Role</Label>
             <Select
               value={formData.role}
@@ -240,7 +243,10 @@ const EditUser = () => {
           <Button
             type="submit"
             disabled={isUpdating}
-            className="w-full bg-blue-600 hover:bg-blue-700"
+           className="w-full py-3 rounded text-white font-bold
+         bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)]
+         shadow-[0_4px_12px_rgba(0,0,0,0.35)]
+         hover:opacity-95 transition duration-200 cursor-pointer disabled:opacity-50"
           >
             {isUpdating ? "Saving Changes..." : "Save Changes"}
           </Button>
