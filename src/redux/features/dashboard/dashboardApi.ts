@@ -57,6 +57,18 @@ interface TopSellersQueryParams {
   limit: number;
 }
 
+//User weekly activity response type
+export interface ActivityItem {
+ date: string;
+ activePercentage: number;
+ inactivePercentage: number;
+}
+interface UserActivityWeeklyResponse {
+    status: number;
+    message: string;
+    data: ActivityItem[];
+}
+
 export const dashboardApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getOverviewStats: builder.query<OverviewStats, void>({
@@ -79,6 +91,10 @@ export const dashboardApi = baseApi.injectEndpoints({
         `/admin/dashboard-stats/top-sellers?page=${page}&limit=${limit}`,
       transformResponse: (response: TopSellersResponse) => response,
     }),
+    getWeeklyUserActivity: builder.query<ActivityItem[], void>({
+   query: () => "/admin/dashboard-stats/user-activity-weekly",
+   transformResponse: (response: UserActivityWeeklyResponse) => response.data,
+  }),
   }),
 });
 
@@ -87,4 +103,5 @@ export const {
   useGetRevenueByMonthQuery,
   useGetTopPerformingUsersQuery,
   useGetTopSellersQuery,
+  useGetWeeklyUserActivityQuery,
 } = dashboardApi;
