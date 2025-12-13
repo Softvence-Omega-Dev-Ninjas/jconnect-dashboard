@@ -6,6 +6,7 @@ import {
 import { Download, MessagesSquare, Trash, View } from "lucide-react";
 import { saveAs } from "file-saver";
 import {
+  useDeleteUserMutation,
   useGetUsersQuery,
   User,
   useUpdateUserMutation,
@@ -35,6 +36,8 @@ const Users = () => {
     limit: itemsPerPage,
     isActive: statusFilter === "all" ? undefined : statusFilter === "active",
   });
+
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   const users = data?.data || [];
   const totalItems = data?.total || 0;
@@ -86,10 +89,20 @@ const Users = () => {
     console.log(userId);
   };
 
-  const handleDelete = () => {
-    // implement delete logic here using idToDelete
-    console.log(idToDelete);
+  const handleDelete = async () => {
+    if (!idToDelete) return;
+    try {
+      await deleteUser(idToDelete).unwrap();
+      toast.success("User deleted successfully.");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete user. Please try again.");
+    } finally {
+      setDeleteDialogOpen(false);
+      setIdToDelete(null);
+    }
   };
+
   const [updateUser] = useUpdateUserMutation();
   const handleToggleStatus = async (userId: string, currentStatus: boolean) => {
     try {
@@ -129,10 +142,13 @@ const Users = () => {
       header: "Action",
       render: (item) => (
         <div className="flex items-center gap-2">
-          <button onClick={(e)=>{
-            e.preventDefault()
-            handleViewDetails(item.id)
-          }} className="p-1 rounded-md text-green-600 hover:bg-gray-100">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              handleViewDetails(item.id);
+            }}
+            className="p-1 rounded-md text-green-600 hover:bg-gray-100"
+          >
             <View className="w-5 h-5" />
           </button>
           <button className="p-1 rounded-md text-blue-600 hover:bg-gray-100">
