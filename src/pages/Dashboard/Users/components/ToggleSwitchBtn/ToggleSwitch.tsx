@@ -3,14 +3,16 @@ import React from "react";
 interface ToggleProps {
   checked: boolean;
   onChange: () => void;
+  disabled?: boolean;
 }
 
-const ToggleSwitch: React.FC<ToggleProps> = ({ checked, onChange }) => {
+const ToggleSwitch: React.FC<ToggleProps> = ({ checked, onChange, disabled }) => {
   return (
     <button
       onClick={onChange}
+      disabled={disabled}
       className={`relative w-12 h-6 flex items-center rounded-full transition-colors duration-300 ${
-        checked ? "bg-green-500" : "bg-gray-300"
+        checked ? (disabled ? "bg-gray-300" : "bg-green-500") : "bg-gray-300"
       }`}
     >
       <span
