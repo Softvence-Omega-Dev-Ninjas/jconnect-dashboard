@@ -38,20 +38,20 @@ export default function TopPerformingUsersChart() {
     );
 
   return (
-    <div className="bg-white rounded shadow-sm p-5">
+    <div className="bg-white rounded shadow-sm p-3 sm:p-5">
       <div className="mb-3">
-        <h3 className="text-lg font-semibold text-gray-800">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800">
           Top Performing Users
         </h3>
-        <p className="text-sm text-gray-500">By revenue generated</p>
+        <p className="text-xs sm:text-sm text-gray-500">By revenue generated</p>
       </div>
 
-      <div style={{ width: "100%", height: 320 }}>
+      <div className="w-full h-[280px] sm:h-80">
         <ResponsiveContainer>
           <BarChart
             data={chartData}
             layout="vertical"
-            margin={{ top: 20, right: 30, left: 10, bottom: 20 }}
+            margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
           >
             <defs>
               <linearGradient
@@ -78,14 +78,13 @@ export default function TopPerformingUsersChart() {
               domain={[0, domainMax]}
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "#666" }}
-              // formatter={value => `$${value}`}
+              tick={{ fill: "#666", fontSize: 10 }}
             />
             <YAxis
               type="category"
               dataKey="name"
-              width={120}
-              tick={{ fill: "#333", fontWeight: 600 }}
+              width={80}
+              tick={{ fill: "#333", fontWeight: 600, fontSize: 10 }}
               tickLine={false}
               axisLine={false}
             />

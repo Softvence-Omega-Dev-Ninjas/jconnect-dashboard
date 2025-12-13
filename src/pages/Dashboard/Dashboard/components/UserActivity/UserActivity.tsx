@@ -77,11 +77,11 @@ export default function UserActivityChart() {
         <p className="text-sm text-gray-500">Active vs Inactive Users (Monthly)</p>
       </div>
 
-      <div style={{ width: "100%", height: 260 }}>
+      <div className="w-full h-[220px] sm:h-[260px]">
         <ResponsiveContainer>
           <BarChart
             data={chartData}
-            margin={{ top: 10, right: 20, left: 0, bottom: 20 }}
+            margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
             barCategoryGap="5%"
           >
             <defs>
@@ -97,12 +97,13 @@ export default function UserActivityChart() {
               vertical={false}
               stroke="#F3F4F6"
             />
-            <XAxis dataKey="day" tickLine={false} axisLine={false} />
+            <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
             <YAxis
               tickFormatter={(v) => `${v}%`}
               domain={[0, 100]}
               tickLine={false}
               axisLine={false}
+              tick={{ fontSize: 10 }}
             />
             {/* <XAxis dataKey="day" tickLine={false} axisLine={false} />
 
@@ -133,17 +134,17 @@ export default function UserActivityChart() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="flex items-center justify-center gap-4 mt-4">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-center gap-3 sm:gap-4 mt-3 sm:mt-4">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <span
-            className="w-3 h-3 rounded-full"
+            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
             style={{ background: "linear-gradient(180deg,#FF1F3A,#B6001E)" }}
           />
-          <span className="text-sm text-gray-600">Active</span>
+          <span className="text-xs sm:text-sm text-gray-600">Active</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-gray-300" />
-          <span className="text-sm text-gray-600">Inactive</span>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gray-300" />
+          <span className="text-xs sm:text-sm text-gray-600">Inactive</span>
         </div>
       </div>
     </div>

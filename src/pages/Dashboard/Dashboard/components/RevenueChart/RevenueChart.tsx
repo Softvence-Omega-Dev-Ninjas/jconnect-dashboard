@@ -76,12 +76,12 @@ export default function RevenueChart() {
         </div>
       </div>
 
-      <div className="w-full h-[300px] md:h-[350px]">
+      <div className="w-full h-[250px] sm:h-[300px] md:h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData ?? []} margin={{ top: 20, right: 40, left: 0, bottom: 0 }}>
+          <LineChart data={chartData ?? []} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis dataKey="label" stroke="#9ca3af" tick={{ fontSize: 12 }} />
-            <YAxis stroke="#9ca3af" tick={{ fontSize: 12 }} />
+            <XAxis dataKey="label" stroke="#9ca3af" tick={{ fontSize: 10 }} />
+            <YAxis stroke="#9ca3af" tick={{ fontSize: 10 }} />
             <Tooltip formatter={(value: any) => [`$${Number(value).toLocaleString()}`, "Revenue"]} />
             <Line type="monotone" dataKey={yearA} stroke="#2D9CDB" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} />
             <Line type="monotone" dataKey={yearB} stroke="#FF5B5B" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} />

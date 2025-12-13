@@ -125,8 +125,8 @@ const Users = () => {
   };
   const columns: Column<User>[] = [
     { header: "Name", accessor: "full_name" },
-    { header: "Email", accessor: "email" },
-    { header: "Phone", render: (item) => item.phone || "..." },
+    { header: "Email", accessor: "email", hideOnMobile: true },
+    { header: "Phone", render: (item) => item.phone || "...", hideOnMobile: true },
     { header: "Role", accessor: "role" },
     {
       header: "Active",
@@ -141,6 +141,7 @@ const Users = () => {
     {
       header: "Joined",
       render: (item) => new Date(item.created_at).toLocaleDateString(),
+      hideOnMobile: true,
     },
     {
       header: "Action",
@@ -167,7 +168,7 @@ const Users = () => {
                 e.stopPropagation();
                 handleOpenDeleteDialog(item);
               }}
-              className="w-5 h-5"
+              className="w-4 h-4 sm:w-5 sm:h-5"
             />
           </button>
         </div>
@@ -178,55 +179,52 @@ const Users = () => {
   if (isLoading) return <UsersSkeleton />;
   if(isDeleting) return toast.loading("Deleting user...");
   if (error) return <NoDataFound dataTitle="Users Data" />;
-  if(users.length === 0) return <NoDataFound dataTitle="No Users Data Available" />;
 
   return (
     <>
-      <div className="p-6">
+      <div className="space-y-4">
         <PageHeading title="Users management" />
 
-        <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-4">
-          <div className="flex flex-row sm:items-center gap-4">
-            <div className="flex items-center gap-3">
-              <p className="font-semibold text-gray-700">Status:</p>
-              <div className="flex gap-2 bg-white p-1 rounded-md shadow">
-                <button
-                  onClick={() => handleStatusChange("all")}
-                  className={`px-3 py-1 rounded-md text-sm font-medium ${
-                    statusFilter === "all"
-                      ? "bg-red-600 text-white"
-                      : "text-gray-700"
-                  }`}
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => handleStatusChange("active")}
-                  className={`px-3 py-1 rounded-md text-sm font-medium ${
-                    statusFilter === "active"
-                      ? "bg-green-500 text-white"
-                      : "text-gray-700"
-                  }`}
-                >
-                  Active
-                </button>
-                <button
-                  onClick={() => handleStatusChange("inactive")}
-                  className={`px-3 py-1 rounded-md text-sm font-medium ${
-                    statusFilter === "inactive"
-                      ? "bg-gray-500 text-white"
-                      : "text-gray-700"
-                  }`}
-                >
-                  Inactive
-                </button>
-              </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <p className="font-semibold text-gray-700 text-sm">Status:</p>
+            <div className="flex gap-1 sm:gap-2 bg-white p-1 rounded-md shadow">
+              <button
+                onClick={() => handleStatusChange("all")}
+                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm font-medium ${
+                  statusFilter === "all"
+                    ? "bg-red-600 text-white"
+                    : "text-gray-700"
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => handleStatusChange("active")}
+                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm font-medium ${
+                  statusFilter === "active"
+                    ? "bg-green-500 text-white"
+                    : "text-gray-700"
+                }`}
+              >
+                Active
+              </button>
+              <button
+                onClick={() => handleStatusChange("inactive")}
+                className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm font-medium ${
+                  statusFilter === "inactive"
+                    ? "bg-gray-500 text-white"
+                    : "text-gray-700"
+                }`}
+              >
+                Inactive
+              </button>
             </div>
           </div>
 
           <button
             onClick={handleExport}
-            className="w-full lg:w-auto lg:ml-auto px-4 py-2 btn-primary text-sm font-medium rounded flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-3 sm:px-4 py-2 btn-primary text-xs sm:text-sm font-medium rounded flex items-center justify-center gap-2"
           >
             Export <Download className="w-4 h-4" />
           </button>
