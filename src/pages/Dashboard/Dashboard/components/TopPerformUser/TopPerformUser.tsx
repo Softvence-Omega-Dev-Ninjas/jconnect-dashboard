@@ -1,3 +1,5 @@
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import { useGetTopPerformingUsersQuery } from "@/redux/features/dashboard/dashboardApi";
 import {
   ResponsiveContainer,
@@ -24,21 +26,15 @@ export default function TopPerformingUsersChart() {
 
   if (isLoading)
     return (
-      <div className="text-center p-4 sm:p-8 text-gray-500">
-        Loading Top Users Data...
-      </div>
+      <LoadingSpinner message="Loading Top Performing Users..." />
     );
   if (error)
     return (
-      <div className="text-red-500 text-center p-4 sm:p-8">
-        Error loading top performing users data
-      </div>
+      <NoDataFound dataTitle="Top Performing Users Data" />
     );
   if (chartData.length === 0)
     return (
-      <div className="text-center p-4 sm:p-8 text-gray-500">
-        No top performing users data available.
-      </div>
+      <NoDataFound dataTitle="No Top Performing Users Data Available" />
     );
 
   return (
@@ -50,7 +46,7 @@ export default function TopPerformingUsersChart() {
         <p className="text-xs sm:text-sm text-gray-500">By revenue generated</p>
       </div>
 
-      <div className="w-full h-[280px] sm:h-[320px]">
+      <div className="w-full h-[280px] sm:h-80">
         <ResponsiveContainer>
           <BarChart
             data={chartData}

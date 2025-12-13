@@ -11,6 +11,8 @@ import {
   useGetWeeklyUserActivityQuery,
   ActivityItem,
 } from "@/redux/features/dashboard/dashboardApi";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 
 const dayShort = (isoDate: string) => {
   try {
@@ -44,47 +46,19 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export default function UserActivityChart() {
   const { data: items, isLoading, error } = useGetWeeklyUserActivityQuery();
 
-  const commonClasses = "p-3 sm:p-4 bg-white rounded shadow-sm h-full";
-  const titleSection = (
-    <div>
-      <h3 className="text-base sm:text-lg font-semibold">Users Insights</h3>
-      <p className="text-xs sm:text-sm text-gray-500">Active vs Inactive Users (Weekly)</p>
-    </div>
-  );
-
   if (isLoading) {
     return (
-      <div className={commonClasses}>
-        {titleSection}
-        <div className="flex items-center justify-center py-10">
-          <div className="animate-pulse w-40 h-8 bg-gray-200 rounded" />
-        </div>
-      </div>
+      <LoadingSpinner message="Loading user activity data..." />
     );
   }
 
   if (error) {
-    let errorMessage = "Failed to fetch activity data.";
-    if ("status" in error && error.status === 401) {
-      errorMessage = "Unauthorized — please login again.";
-    } else if ("error" in error) {
-      errorMessage = error.error;
-    }
-
-    return (
-      <div className={commonClasses}>
-        {titleSection}
-        <div className="text-red-500 mt-4">{errorMessage}</div>
-      </div>
-    );
+    return <NoDataFound dataTitle="User Activity Data" />;
   }
 
   if (!items || items.length === 0) {
     return (
-      <div className={commonClasses}>
-        {titleSection}
-        <div className="text-gray-500 mt-4">No activity data available.</div>
-      </div>
+      <NoDataFound dataTitle="No User Activity Data Available" />
     );
   }
 
@@ -95,9 +69,12 @@ export default function UserActivityChart() {
   }));
 
   return (
-    <div className={commonClasses}>
-      <div className="flex items-start justify-between mb-4">
-        {titleSection}
+     <div className="bg-white rounded shadow-sm p-5 h-full">
+      <div className="mb-3">
+        <h3 className="text-lg font-semibold text-gray-800">
+          Users Insights
+        </h3>
+        <p className="text-sm text-gray-500">Active vs Inactive Users (Monthly)</p>
       </div>
 
       <div className="w-full h-[220px] sm:h-[260px]">

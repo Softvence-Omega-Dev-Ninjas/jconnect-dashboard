@@ -3,9 +3,10 @@ import {
   Column,
   DataTable,
 } from "../../../components/Shared/DataTable/DataTable";
-import { Download, MessagesSquare, Trash, View } from "lucide-react";
+import { Download, Pencil, Trash, View } from "lucide-react";
 import { saveAs } from "file-saver";
 import {
+  useDeleteUserMutation,
   useGetUsersQuery,
   User,
   useUpdateUserMutation,
@@ -15,10 +16,14 @@ import { toast } from "sonner";
 import { DeleteAlertDialog } from "@/components/Shared/DeleteAlert/DeleteAlert";
 import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import UsersSkeleton from "./components/skeleton/UsersSkeleton";
+import { useNavigate } from "react-router-dom";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 
 const Users = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<
@@ -31,6 +36,8 @@ const Users = () => {
     limit: itemsPerPage,
     isActive: statusFilter === "all" ? undefined : statusFilter === "active",
   });
+
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   const users = data?.data || [];
   const totalItems = data?.total || 0;
@@ -76,10 +83,30 @@ const Users = () => {
     setDeleteDialogOpen(true);
     setIdToDelete(item.id);
   };
-  const handleDelete = () => {
-    // implement delete logic here using idToDelete
-    console.log(idToDelete);
+
+  const handleViewDetails = (userId: string) => {
+    navigate(`/users/${userId}`);
   };
+
+  const handleEditUser = (userId: string) => {
+    navigate(`/users/edit/${userId}`);
+    console.log(userId)
+  };
+
+  const handleDelete = async () => {
+    if (!idToDelete) return;
+    try {
+      await deleteUser(idToDelete).unwrap();
+      toast.success("User deleted successfully.");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete user. Please try again.");
+    } finally {
+      setDeleteDialogOpen(false);
+      setIdToDelete(null);
+    }
+  };
+
   const [updateUser] = useUpdateUserMutation();
   const handleToggleStatus = async (userId: string, currentStatus: boolean) => {
     try {
@@ -119,12 +146,21 @@ const Users = () => {
     {
       header: "Action",
       render: (item) => (
-        <div className="flex items-center gap-1 sm:gap-2">
-          <button className="p-1 rounded-md text-green-600 hover:bg-gray-100">
-            <View className="w-4 h-4 sm:w-5 sm:h-5" />
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              handleViewDetails(item.id);
+            }}
+            className="p-1 rounded-md text-green-600 hover:bg-gray-100"
+          >
+            <View className="w-5 h-5" />
           </button>
-          <button className="p-1 rounded-md text-blue-600 hover:bg-gray-100">
-            <MessagesSquare className="w-4 h-4 sm:w-5 sm:h-5" />
+          <button onClick={(e)=>{
+            e.preventDefault();
+            handleEditUser(item.id)
+          }} className="p-1 rounded-md text-blue-600 hover:bg-gray-100">
+            <Pencil className="w-5 h-5" />
           </button>
           <button className="p-1 rounded-md text-red-600 hover:bg-gray-100">
             <Trash
@@ -141,7 +177,8 @@ const Users = () => {
   ];
 
   if (isLoading) return <UsersSkeleton />;
-  if (error) return <div className="p-6">Error loading users</div>;
+  if(isDeleting) return toast.loading("Deleting user...");
+  if (error) return <NoDataFound dataTitle="Users Data" />;
 
   return (
     <>
