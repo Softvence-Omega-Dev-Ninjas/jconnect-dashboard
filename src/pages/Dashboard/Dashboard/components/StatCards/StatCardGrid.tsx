@@ -2,6 +2,7 @@ import { Users, DollarSign, RefreshCw, HeartHandshake } from "lucide-react";
 import StatCard from "./StatCard";
 import { useGetOverviewStatsQuery } from "@/redux/features/dashboard/dashboardApi";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 
 export default function StatCardGrid() {
   const { data, error, isLoading } = useGetOverviewStatsQuery();
@@ -37,7 +38,7 @@ export default function StatCardGrid() {
     },
   ];
 
-  if (isLoading) return <div className="text-center">Loading...</div>;
+  if (isLoading) return <LoadingSpinner message="Loading overview stats..." />;
   if (error){
     return <NoDataFound dataTitle="Users Overview Date" />;
   }

@@ -3,7 +3,7 @@ import {
   Column,
   DataTable,
 } from "../../../components/Shared/DataTable/DataTable";
-import { Download, MessagesSquare, Trash, View } from "lucide-react";
+import { Download, Pencil, Trash, View } from "lucide-react";
 import { saveAs } from "file-saver";
 import {
   useDeleteUserMutation,
@@ -86,7 +86,11 @@ const Users = () => {
 
   const handleViewDetails = (userId: string) => {
     navigate(`/users/${userId}`);
-    console.log(userId);
+  };
+
+  const handleEditUser = (userId: string) => {
+    navigate(`/users/edit/${userId}`);
+    console.log(userId)
   };
 
   const handleDelete = async () => {
@@ -141,7 +145,7 @@ const Users = () => {
     {
       header: "Action",
       render: (item) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -151,8 +155,11 @@ const Users = () => {
           >
             <View className="w-5 h-5" />
           </button>
-          <button className="p-1 rounded-md text-blue-600 hover:bg-gray-100">
-            <MessagesSquare className="w-5 h-5" />
+          <button onClick={(e)=>{
+            e.preventDefault();
+            handleEditUser(item.id)
+          }} className="p-1 rounded-md text-blue-600 hover:bg-gray-100">
+            <Pencil className="w-5 h-5" />
           </button>
           <button className="p-1 rounded-md text-red-600 hover:bg-gray-100">
             <Trash
@@ -169,7 +176,9 @@ const Users = () => {
   ];
 
   if (isLoading) return <UsersSkeleton />;
+  if(isDeleting) return toast.loading("Deleting user...");
   if (error) return <NoDataFound dataTitle="Users Data" />;
+  if(users.length === 0) return <NoDataFound dataTitle="No Users Data Available" />;
 
   return (
     <>
