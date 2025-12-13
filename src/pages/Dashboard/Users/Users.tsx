@@ -69,10 +69,15 @@ const Users = () => {
     setCurrentPage(1);
   };
   const handleOpenDeleteDialog = (item: User) => {
+    if (item.role === "SUPER_ADMIN") {
+      toast.error("You can't delete Super Admin");
+      return;
+    }
     setDeleteDialogOpen(true);
     setIdToDelete(item.id);
   };
   const handleDelete = () => {
+    // implement delete logic here using idToDelete
     console.log(idToDelete);
   };
   const [updateUser] = useUpdateUserMutation();
@@ -102,6 +107,7 @@ const Users = () => {
         <ToggleSwitch
           checked={item.isActive}
           onChange={() => handleToggleStatus(item.id, item.isActive)}
+          disabled={item.role === "SUPER_ADMIN" ? true : false}
         />
       ),
     },
