@@ -85,7 +85,6 @@ export const usersApi = baseApi.injectEndpoints({
     getUserById: builder.query<FullUserDetail, string>({
         query: (id) => `/users/${id}`,
         transformResponse: (response: FullUserDetail) => {
-          console.log("API Response:", response);
           return response;
         },
         // providesTags: (id) => [{ type: 'Users', id }],

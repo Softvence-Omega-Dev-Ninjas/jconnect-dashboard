@@ -4,13 +4,14 @@ import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Loader2,
   User as UserIcon,
   Mail,
   Phone,
   Calendar,
   Shield,
 } from "lucide-react";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 
 const SingleUserDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,31 +25,15 @@ const SingleUserDetail = () => {
     skip: !userId,
   });
 
-  console.log(user)
-
   if (isLoading) {
     return (
-      <div className="p-6 text-center">
-        <Loader2 className="w-6 h-6 animate-spin mx-auto text-red-600" />
-        <p className="mt-2 text-gray-600">Loading user details...</p>
-      </div>
+      <LoadingSpinner message="Loading user details..." />
     );
   }
 
-  if (error) {
-    console.error("User details fetch error:", error);
+  if (error instanceof Error || !user) {
     return (
-      <div className="p-6 text-red-500">
-        Error loading user details. Please try again.
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="p-6 text-gray-500">
-        User with ID "{userId}" not found.
-      </div>
+      <NoDataFound dataTitle="No user details. Please try again later." />
     );
   }
 
