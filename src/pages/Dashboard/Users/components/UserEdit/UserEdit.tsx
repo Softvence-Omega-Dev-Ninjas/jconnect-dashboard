@@ -56,7 +56,7 @@ const EditUser = () => {
     isActive: false,
     isVerified: false,
     role: "USER",
-    profilePhoto: null,
+    profilePhoto: "",
   });
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const EditUser = () => {
     return (
       <NoDataFound
         dataTitle="User"
-        message="Error loading user data for editing."
+        noDataText="Error loading user data for editing."
       />
     );
 
@@ -123,7 +123,7 @@ const EditUser = () => {
     return (
       <NoDataFound
         dataTitle="User"
-        message={`User with ID "${userId}" not found.`}
+        noDataText={`User with ID "${userId}" not found.`}
       />
     );
 
