@@ -15,6 +15,21 @@ const baseQuery = fetchBaseQuery({
 
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
+// const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+//   args,
+//   api,
+//   extraOptions
+// ) => {
+//   const result = await baseQuery(args, api, extraOptions);
+
+//   if (result?.error?.status === 401 || result?.error?.status === 403) {
+//     api.dispatch(logout());
+//     if (typeof window !== 'undefined') {
+//       window.location.href = '/login';
+//     }
+//   }
+//   return result;
+// };
 const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
@@ -22,12 +37,18 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 ) => {
   const result = await baseQuery(args, api, extraOptions);
 
-  if (result?.error?.status === 401 || result?.error?.status === 403) {
-    api.dispatch(logout());
-    if (typeof window !== 'undefined') {
-      window.location.href = '/login';
-    }
-  }
+  // Check if this is a login request - don't logout on login errors
+  const url = typeof args === 'string' ? args : args.url;
+  const isLoginRequest = url.includes('/auth/login');
+
+  // Only logout if it's NOT a login request and we get 401/403
+  // if (!isLoginRequest && (result?.error?.status === 401 || result?.error?.status === 403)) {
+  //   api.dispatch(logout());
+  //   if (typeof window !== 'undefined') {
+  //     window.location.href = '/login';
+  //   }
+  // }
+  
   return result;
 };
 
