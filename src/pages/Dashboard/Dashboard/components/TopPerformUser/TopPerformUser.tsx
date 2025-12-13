@@ -90,7 +90,7 @@ export default function TopPerformingUsersChart() {
             />
 
             <Tooltip
-              formatter={(value: any) => [
+              formatter={(value: number) => [
                 `$${value.toFixed(2)}`,
                 "Total Revenue",
               ]}
