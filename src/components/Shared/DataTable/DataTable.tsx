@@ -8,6 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export interface Column<T> {
   header: string;
@@ -29,6 +38,7 @@ interface DataTableProps<T> {
   currentPage?: number;
   totalItems?: number;
   itemsPerPage?: number;
+  setItemsPerPage?: (itemsPerPage: number) => void;
   onPageChange?: (page: number) => void;
 }
 
@@ -95,7 +105,11 @@ export function DataTable<T>({
               data.map((item) => (
                 <TableRow
                   key={getRowKey(item)}
-                  className={onRowClick ? "cursor-pointer hover:bg-gray-50" : "hover:bg-gray-50"}
+                  className={
+                    onRowClick
+                      ? "cursor-pointer hover:bg-gray-50"
+                      : "hover:bg-gray-50"
+                  }
                   onClick={() => onRowClick?.(item)}
                 >
                   {columns.map((column, index) => (
@@ -121,8 +135,25 @@ export function DataTable<T>({
 
       {showPagination && totalItems > 0 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2">
-          <div className="text-xs sm:text-sm text-muted-foreground">
+          <div className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
             Showing {startItem}-{endItem} of {totalItems}
+            <div>
+              <Select>
+                <SelectTrigger className="w-[60px]">
+                  <SelectValue placeholder="Show per page" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Items per page</SelectLabel>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="30">30</SelectItem>
+                    <SelectItem value="40">40</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="flex gap-2">
             <button
