@@ -1,3 +1,4 @@
+import { useGetTopPerformingUsersQuery } from "@/redux/features/dashboard/dashboardApi";
 import {
   ResponsiveContainer,
   BarChart,
@@ -9,23 +10,36 @@ import {
   Cell,
 } from "recharts";
 
-type Item = { name: string; value: number };
+export default function TopPerformingUsersChart() {
+  const { data, error, isLoading } = useGetTopPerformingUsersQuery();
 
-const dummyData: Item[] = [
-  { name: "arif", value: 700 },
-  { name: "DJ Nova", value: 980 },
-  { name: "hamid", value: 1200 },
-  { name: "kalam", value: 880 },
-  { name: "jahid", value: 920 },
-];
+  const chartData = data || [];
 
-export default function TopPerformingUsersChart({
-  data = dummyData,
-}: {
-  data?: Item[];
-}) {
-  const max = Math.max(...data.map((d) => d.value), 0);
+  const max =
+    chartData.length > 0
+      ? Math.max(...chartData.map((d) => d.totalAmount), 0)
+      : 0;
+
   const domainMax = Math.ceil((max * 1) / 100) * 100 || 100;
+
+  if (isLoading)
+    return (
+      <div className="text-center p-8 text-gray-500">
+        Loading Top Users Data...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="text-red-500 text-center p-8">
+        Error loading top performing users data
+      </div>
+    );
+  if (chartData.length === 0)
+    return (
+      <div className="text-center p-8 text-gray-500">
+        No top performing users data available.
+      </div>
+    );
 
   return (
     <div className="bg-white rounded shadow-sm p-5">
@@ -39,12 +53,11 @@ export default function TopPerformingUsersChart({
       <div style={{ width: "100%", height: 320 }}>
         <ResponsiveContainer>
           <BarChart
-            data={data}
+            data={chartData}
             layout="vertical"
             margin={{ top: 20, right: 30, left: 10, bottom: 20 }}
           >
             <defs>
-              {/* Single gradient for ALL bars */}
               <linearGradient
                 id="singleRedGradient"
                 x1="0"
@@ -70,6 +83,7 @@ export default function TopPerformingUsersChart({
               tickLine={false}
               axisLine={false}
               tick={{ fill: "#666" }}
+              // formatter={value => `$${value}`}
             />
             <YAxis
               type="category"
@@ -81,12 +95,15 @@ export default function TopPerformingUsersChart({
             />
 
             <Tooltip
-              formatter={(value: any) => `${value}`}
+              formatter={(value: any) => [
+                `$${value.toFixed(2)}`,
+                "Total Revenue",
+              ]}
               cursor={{ fill: "rgba(0,0,0,0.04)" }}
             />
 
-            <Bar dataKey="value" barSize={24} radius={[8, 8, 8, 8]}>
-              {data.map((_, index) => (
+            <Bar dataKey="totalAmount" barSize={24} radius={[8, 8, 8, 8]}>
+              {chartData.map((_, index) => (
                 <Cell key={index} fill="url(#singleRedGradient)" />
               ))}
             </Bar>
