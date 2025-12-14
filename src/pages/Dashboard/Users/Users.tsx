@@ -3,7 +3,7 @@ import {
   Column,
   DataTable,
 } from "../../../components/Shared/DataTable/DataTable";
-import { Download, Pencil, Trash, View } from "lucide-react";
+import { Download, Pencil, RefreshCcw, Trash, View } from "lucide-react";
 import { saveAs } from "file-saver";
 import {
   useDeleteUserMutation,
@@ -39,7 +39,7 @@ const Users = () => {
     isActive: statusFilter === "all" ? undefined : statusFilter === "active",
   });
 
-  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
 
   const users = data?.data || [];
   const totalItems = data?.total || 0;
@@ -165,13 +165,13 @@ const Users = () => {
             <Pencil className="w-5 h-5" />
           </button>
           <button className="p-1 rounded-md text-red-600 hover:bg-gray-100">
-            <Trash
+           {item.isActive ? <Trash
               onClick={(e) => {
                 e.stopPropagation();
                 handleOpenDeleteDialog(item);
               }}
               className="w-4 h-4 sm:w-5 sm:h-5"
-            />
+            /> : <RefreshCcw className="w-4 h-4 sm:w-5 sm:h-5 text-[#0088FF]"/>}
           </button>
         </div>
       ),
@@ -179,7 +179,6 @@ const Users = () => {
   ];
 
   if (isLoading) return <UsersSkeleton />;
-  if(isDeleting) return toast.loading("Deleting user...");
   if (error) return <NoDataFound dataTitle="Users Data" />;
 
   return (
