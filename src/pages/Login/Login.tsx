@@ -27,7 +27,7 @@ const Login: React.FC = () => {
   const [login, { isLoading }] = useLoginMutation();
 
   useEffect(() => {
-    const token = Cookies.get('token');
+    const token = Cookies.get("token");
     if (token) {
       navigate("/", { replace: true });
     }
@@ -44,9 +44,11 @@ const Login: React.FC = () => {
         const token = res.data.token;
         const role = res.data.user?.role || "";
 
-        const secureFlag = typeof window !== "undefined" && window.location.protocol === "https:";
+        const secureFlag =
+          typeof window !== "undefined" &&
+          window.location.protocol === "https:";
 
-        // Set token cookie (same as original)
+        // Set token cookie
         Cookies.set("token", token, {
           expires: 7,
           path: "/",
@@ -54,7 +56,7 @@ const Login: React.FC = () => {
           secure: secureFlag,
         });
 
-        // Set role cookie (same as original)
+        // Set role cookie
         Cookies.set("role", role, {
           expires: 7,
           path: "/",
@@ -65,18 +67,20 @@ const Login: React.FC = () => {
         // Store user in Redux
         dispatch(setCredentials({ user: res.data.user }));
 
-        // Navigate (same as original)
+        // Navigate
         toast.success("Login successful!");
         navigate("/");
       } else {
-        // alert(res?.message || "Login failed");
         toast.error(res?.message || "Login failed");
       }
     } catch (err) {
       const error = err as { data?: { message?: string }; message?: string };
-      const msg = error?.data?.message || error?.message || "Login error. Please try again.";
+      const msg =
+        error?.data?.message ||
+        error?.message ||
+        "Login error. Please try again.";
       console.error("Login error:", err);
-       toast.error(msg);
+      toast.error(msg);
     }
   };
 
@@ -84,13 +88,20 @@ const Login: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg py-10 px-4 md:py-24 md:px-12 w-full max-w-lg border border-gray-200">
         <div className="text-center mb-6">
-          <h1 className="text-4xl font-bold text-[#1E1E1E] mb-2">Login to Account</h1>
-          <p className="text-sm text-[#2B2B2B]">Please enter your email and password to continue</p>
+          <h1 className="text-4xl font-bold text-[#1E1E1E] mb-2">
+            Login to Account
+          </h1>
+          <p className="text-sm text-[#2B2B2B]">
+            Please enter your email and password to continue
+          </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="mb-6">
-            <label htmlFor="email" className="block text-[1.20rem] font-bold text-[#2B2B2B] mb-2">
+            <label
+              htmlFor="email"
+              className="block text-[1.20rem] font-bold text-[#2B2B2B] mb-2"
+            >
               Email
             </label>
             <input
@@ -100,15 +111,24 @@ const Login: React.FC = () => {
               className="w-full px-4 py-3 bg-gray-100 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200 text-gray-700"
               {...register("email", { required: "Email is required" })}
             />
-            {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div className="mb-4">
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="password" className="block text-[1.20rem] font-bold text-[#2B2B2B]">
+              <label
+                htmlFor="password"
+                className="block text-[1.20rem] font-bold text-[#2B2B2B]"
+              >
                 Password
               </label>
-              <a className="text-base font-bold text-[#666161] hover:underline cursor-pointer">Forget Password?</a>
+              <a className="text-base font-bold text-[#666161] hover:underline cursor-pointer">
+                Forget Password?
+              </a>
             </div>
             <div className="relative">
               <input
@@ -127,11 +147,20 @@ const Login: React.FC = () => {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-            {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center gap-2 text-[#6B6B6B] text-sm mb-6">
-            <input id="remember" type="checkbox" className="w-4 h-4 " {...register("remember")} />
+            <input
+              id="remember"
+              type="checkbox"
+              className="w-4 h-4 "
+              {...register("remember")}
+            />
             <label htmlFor="remember">Remember Password</label>
           </div>
 
