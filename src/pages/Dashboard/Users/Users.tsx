@@ -161,7 +161,7 @@ const Users = () => {
           <button onClick={(e)=>{
             e.preventDefault();
             handleEditUser(item.id)
-          }} className="p-1 rounded-md text-blue-600 hover:bg-gray-100">
+          }} className="p-1 rounded-md text-[#727171] hover:bg-gray-100">
             <Pencil className="w-5 h-5" />
           </button>
           <button className="p-1 rounded-md text-red-600 hover:bg-gray-100">

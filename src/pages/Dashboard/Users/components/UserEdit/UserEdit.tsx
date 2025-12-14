@@ -28,7 +28,7 @@ interface EditFormState {
   pinCode: number | null;
   isActive: boolean;
   isVerified: boolean;
-  role: "SUPER_ADMIN" | "ADMIN" | "USER";
+  role: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER";
   profilePhoto: string | null;
 }
 
@@ -67,7 +67,7 @@ const EditUser = () => {
         pinCode: user.pinCode || null,
         isActive: user.isActive,
         isVerified: user.isVerified,
-        role: user.role as "SUPER_ADMIN" | "ADMIN" | "USER",
+        role: user.role as "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER",
         profilePhoto: user.profilePhoto || null,
       });
     }
@@ -99,11 +99,10 @@ const EditUser = () => {
       }).unwrap();
 
       toast.success("User updated successfully!");
-
       navigate(`/users/${userId}`);
     } catch (updateError) {
       console.error("User update failed:", updateError);
-      toast.error("Failed to update user.");
+      toast.error(`Failed to update ${formData.role}` );
     }
   };
 
@@ -209,7 +208,7 @@ const EditUser = () => {
             <Label htmlFor="role">User Role</Label>
             <Select
               value={formData.role}
-              onValueChange={(value: "SUPER_ADMIN" | "ADMIN" | "USER") =>
+              onValueChange={(value: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER") =>
                 setFormData((prev) => ({ ...prev, role: value }))
               }
               disabled={isSuperAdmin}
@@ -218,8 +217,12 @@ const EditUser = () => {
                 <SelectValue placeholder="Select Role" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
+                <SelectItem value="FINANCE_ADMIN">Finance Admin</SelectItem>
+                <SelectItem value="ANALYST">Analyst</SelectItem>
+                <SelectItem value="SUPPORT_ADMIN">Support Admin</SelectItem>
                 <SelectItem value="USER">User</SelectItem>
-                <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="ARTIST">Artist</SelectItem>
 
                 {user.role === "SUPER_ADMIN" && (
                   <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>

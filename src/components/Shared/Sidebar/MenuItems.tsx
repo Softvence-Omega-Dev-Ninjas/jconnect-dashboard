@@ -12,6 +12,7 @@ interface MenuItem {
   label: string;
   icon: React.ReactNode;
   children?: MenuItem[];
+  allowedRoles?: string[];
 }
 
 export const menuItems: MenuItem[] = [
@@ -19,30 +20,36 @@ export const menuItems: MenuItem[] = [
     id: "",
     label: "Dashboard",
     icon: <LayoutDashboard className="w-5 h-5" />,
+    allowedRoles: ["SUPER_ADMIN", "FINANCE_ADMIN", "ANALYST", "SUPPORT_ADMIN"],
   },
   {
     id: "users",
     label: "User",
     icon: <Users className="w-5 h-5" />,
+    allowedRoles: ["SUPER_ADMIN", "SUPPORT_ADMIN"],
   },
   {
     id: "payments",
     label: "Payments",
     icon: <CreditCard className="w-5 h-5" />,
+    allowedRoles: ["SUPER_ADMIN", "FINANCE_ADMIN"],
   },
   {
     id: "disputes",
     label: "Disputes",
     icon: <HeartHandshake className="w-5 h-5" />,
+    allowedRoles: ["SUPER_ADMIN", "ANALYST"],
   },
   {
     id: "reports",
     label: "Reports & Analytics",
     icon: <BarChart3 className="w-5 h-5" />,
+    allowedRoles: ["SUPER_ADMIN", "FINANCE_ADMIN"],
   },
   {
     id: "settings",
     label: "Settings",
     icon: <Settings className="w-5 h-5" />,
+    allowedRoles: ["SUPER_ADMIN"],
   }
 ];

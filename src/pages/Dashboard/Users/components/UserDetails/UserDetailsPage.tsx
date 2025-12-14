@@ -63,7 +63,7 @@ const SingleUserDetail = () => {
     <div className="p-6 space-y-6">
       <PageHeading title={`User Details: ${user.full_name}`} />
 
-      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md border-t-4 border-red-600">
+      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md border-t-4 border-red-600 overflow-scroll sm:overflow-visible">
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
             <UserIcon className="w-8 h-8 text-red-600" />
@@ -87,8 +87,8 @@ const SingleUserDetail = () => {
       </div>
 
       {/* --- Primary Contact and Status Info --- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="shadow-lg">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+        <Card className="shadow-lg overflow-scroll sm:overflow-visible">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Contact Information
@@ -104,7 +104,7 @@ const SingleUserDetail = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg">
+        <Card className="shadow-lg overflow-scroll sm:overflow-visible">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Verification Status
@@ -125,7 +125,7 @@ const SingleUserDetail = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg">
+        <Card className="shadow-lg overflow-scroll sm:overflow-visible">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Account Dates</CardTitle>
             <Calendar className="h-4 w-4 text-gray-500" />
@@ -142,7 +142,7 @@ const SingleUserDetail = () => {
       </div>
 
       {/* --- Additional Details (Optional) --- */}
-      <Card className="shadow-lg">
+      <Card className="shadow-lg overflow-scroll sm:overflow-visible">
         <CardHeader>
           <CardTitle className="text-lg">
             Financial & Technical Information

@@ -87,7 +87,7 @@ export const usersApi = baseApi.injectEndpoints({
         transformResponse: (response: FullUserDetail) => {
           return response;
         },
-        // providesTags: ["User"],
+        providesTags: ["User"],
     }),
     updateUser: builder.mutation<User, { id: string; data: UpdateUserPayload }>(
       {
@@ -96,7 +96,7 @@ export const usersApi = baseApi.injectEndpoints({
           method: "PATCH",
           body: data,
         }),
-        invalidatesTags: ["Users"]
+        invalidatesTags: ["User"]
       }
     ),
 
