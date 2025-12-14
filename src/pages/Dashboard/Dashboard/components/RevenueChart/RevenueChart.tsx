@@ -83,8 +83,8 @@ export default function RevenueChart() {
             <XAxis dataKey="label" stroke="#9ca3af" tick={{ fontSize: 10 }} />
             <YAxis stroke="#9ca3af" tick={{ fontSize: 10 }} />
             <Tooltip formatter={(value: any) => [`$${Number(value).toLocaleString()}`, "Revenue"]} />
-            <Line type="monotone" dataKey={yearA} stroke="#2D9CDB" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} />
-            <Line type="monotone" dataKey={yearB} stroke="#FF5B5B" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} />
+            <Line type="monotone" dataKey={yearA} stroke="#2B7FFF" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} />
+            <Line type="monotone" dataKey={yearB} stroke="#BD001F" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} />
             {chartData && (() => {
               const arr = chartData as any[];
               let maxIdx = -1;
