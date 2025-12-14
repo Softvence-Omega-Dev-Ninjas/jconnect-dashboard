@@ -54,6 +54,7 @@ export function DataTable<T>({
   totalItems = 0,
   itemsPerPage = 10,
   onPageChange,
+  setItemsPerPage,
 }: DataTableProps<T>) {
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
@@ -138,18 +139,23 @@ export function DataTable<T>({
           <div className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
             Showing {startItem}-{endItem} of {totalItems}
             <div>
-              <Select>
-                <SelectTrigger className="w-[60px]">
+              <Select
+                onValueChange={(value) => {
+                  if (setItemsPerPage) setItemsPerPage(Number(value));
+                }}
+              >
+                <SelectTrigger className="w-[100px]">
                   <SelectValue placeholder="Show per page" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Items per page</SelectLabel>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                    <SelectItem value="30">30</SelectItem>
-                    <SelectItem value="40">40</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="4">4 Items</SelectItem>
+                    <SelectItem value="10">10 Items</SelectItem>
+                    <SelectItem value="20">20 Items</SelectItem>
+                    <SelectItem value="30">30 Items</SelectItem>
+                    <SelectItem value="40">40 Items</SelectItem>
+                    <SelectItem value="50">50 Items</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
