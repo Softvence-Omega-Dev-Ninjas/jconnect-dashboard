@@ -12,11 +12,16 @@ import Disputes from "@/pages/Dashboard/Disputes/Disputes";
 import DisputeView from "@/pages/Dashboard/Disputes/DisputeView/DisputeView";
 import SingleUserDetail from "@/pages/Dashboard/Users/components/UserDetails/UserDetailsPage";
 import EditUser from "@/pages/Dashboard/Users/components/UserEdit/UserEdit";
+import ForgotPassword from "@/pages/Login/ForgetPassword/ForgetPassword";
 
 const routes = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
   },
   {
     path: "/",
