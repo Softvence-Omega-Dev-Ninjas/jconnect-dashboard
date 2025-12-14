@@ -30,14 +30,7 @@ const routes = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute
-            allowedRoles={[
-              "SUPER_ADMIN",
-              "FINANCE_ADMIN",
-              "ANALYST",
-              "SUPPORT_ADMIN",
-            ]}
-          >
+          <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
         ),
@@ -45,7 +38,7 @@ const routes = createBrowserRouter([
       {
         path: "/users",
         element: (
-          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "SUPPORT_ADMIN"]}>
+          <ProtectedRoute>
             <Users />
           </ProtectedRoute>
         ),
@@ -53,7 +46,7 @@ const routes = createBrowserRouter([
       {
         path: "/users/:id",
         element: (
-          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "SUPPORT_ADMIN"]}>
+          <ProtectedRoute>
             <SingleUserDetail />
           </ProtectedRoute>
         ),
@@ -61,7 +54,7 @@ const routes = createBrowserRouter([
       {
         path: "/users/edit/:id",
         element: (
-          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "SUPPORT_ADMIN"]}>
+          <ProtectedRoute>
             <EditUser />
           </ProtectedRoute>
         ),
@@ -69,7 +62,7 @@ const routes = createBrowserRouter([
       {
         path: "/payments",
         element: (
-          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "FINANCE_ADMIN"]}>
+          <ProtectedRoute>
             <Payments />
           </ProtectedRoute>
         ),
@@ -77,7 +70,7 @@ const routes = createBrowserRouter([
       {
         path: "/reports",
         element: (
-          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "FINANCE_ADMIN"]}>
+          <ProtectedRoute>
             <Reports />
           </ProtectedRoute>
         ),
@@ -85,7 +78,7 @@ const routes = createBrowserRouter([
       {
         path: "/settings",
         element: (
-          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
+          <ProtectedRoute>
             <Settings />
           </ProtectedRoute>
         ),
@@ -93,7 +86,7 @@ const routes = createBrowserRouter([
       {
         path: "disputes",
         element: (
-          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
+          <ProtectedRoute>
             <Disputes />
           </ProtectedRoute>
         ),
@@ -101,7 +94,7 @@ const routes = createBrowserRouter([
       {
         path: "disputes/:id",
         element: (
-          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
+          <ProtectedRoute>
             <DisputeView />
           </ProtectedRoute>
         ),

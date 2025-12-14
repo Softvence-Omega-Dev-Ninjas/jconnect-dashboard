@@ -3,23 +3,26 @@ import { X, Menu, LogOut } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/features/auth/authSlice";
-import Cookies from "js-cookie";
+
 import { menuItems } from "./MenuItems";
+import { useAppSelector } from "@/redux/hook";
 
 export function Sidebar() {
   const [activeItem, setActiveItem] = useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const userRole = Cookies.get("role");
+  // const userRole = Cookies.get("role");
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
 
 
+const { role } = useAppSelector(state => state.auth);
 const filteredMenuItems = useMemo(() => {
-    if (!userRole) return [];
-    return menuItems.filter(item => item.allowedRoles?.includes(userRole));
-}, [userRole]);
+  if (!role) return [];
+  return menuItems.filter(item => item.allowedRoles?.includes(role));
+}, [role]);
+
 
   useEffect(() => {
     const currentPath = location.pathname.replace("/", "");
@@ -27,7 +30,6 @@ const filteredMenuItems = useMemo(() => {
   }, [location.pathname]);
 
   const handleItemClick = (id: string) => {
-    console.log(id);
     setActiveItem(id);
 
     if (id === "login") {
