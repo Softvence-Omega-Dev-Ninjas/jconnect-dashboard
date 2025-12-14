@@ -1,17 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { X, Menu, LogOut } from "lucide-react";
-import { menuItems } from "./MenuItems";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/features/auth/authSlice";
+import Cookies from "js-cookie";
+import { menuItems } from "./MenuItems";
 
 export function Sidebar() {
   const [activeItem, setActiveItem] = useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const userRole = Cookies.get("role");
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+
+
+const filteredMenuItems = useMemo(() => {
+    if (!userRole) return [];
+    return menuItems.filter(item => item.allowedRoles?.includes(userRole));
+}, [userRole]);
 
   useEffect(() => {
     const currentPath = location.pathname.replace("/", "");
@@ -83,7 +91,7 @@ export function Sidebar() {
         {/* Menu Items */}
         <nav className="px-3 py-4">
           <ul className="space-y-1">
-            {menuItems.map((item) => (
+            {filteredMenuItems.map((item) => (
               <li key={item.id}>
                 <button
                   onClick={() => handleItemClick(item.id)}

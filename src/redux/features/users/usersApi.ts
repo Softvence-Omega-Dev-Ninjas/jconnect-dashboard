@@ -62,9 +62,9 @@ interface FullUserDetail extends User {
     stripeAccountId: string | null;
     sellerIDStripe: string | null;
     customerIdStripe: string | null;
-    services: any[]; 
-    ReviewsReceived: any[];
-    profile: any | null; 
+    services: []; 
+    ReviewsReceived: [];
+    profile: string | null; 
 }
 
 export const usersApi = baseApi.injectEndpoints({
@@ -87,7 +87,7 @@ export const usersApi = baseApi.injectEndpoints({
         transformResponse: (response: FullUserDetail) => {
           return response;
         },
-        providesTags: ( id) => [{ type: 'Users', id }],
+        providesTags: ["User"],
     }),
     updateUser: builder.mutation<User, { id: string; data: UpdateUserPayload }>(
       {
@@ -96,7 +96,7 @@ export const usersApi = baseApi.injectEndpoints({
           method: "PATCH",
           body: data,
         }),
-       invalidatesTags: (id)  => [{ type: 'Users', id }],
+        invalidatesTags: ["User"]
       }
     ),
 

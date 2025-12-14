@@ -15,54 +15,54 @@ import EditUser from "@/pages/Dashboard/Users/components/UserEdit/UserEdit";
 
 const routes = createBrowserRouter([
   {
+    path: "/login",
+    element: <Login />,
+  },
+  {
     path: "/",
-    element: (
-      <ProtectedRoute>
-        <DashboardLayout />
-      </ProtectedRoute>
-    ),
+    element: <DashboardLayout />,
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "FINANCE_ADMIN", "ANALYST", "SUPPORT_ADMIN"]}>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/users",
-        element: <Users />,
+        element: <ProtectedRoute allowedRoles={["SUPER_ADMIN", "SUPPORT_ADMIN"]}><Users /></ProtectedRoute>,
       },
       {
         path: "/users/:id",
-        element: <SingleUserDetail />,
+        element: <ProtectedRoute allowedRoles={["SUPER_ADMIN", "SUPPORT_ADMIN"]}><SingleUserDetail /></ProtectedRoute>,
       },
       {
-        path: "/users/edit/:id", 
-        element: <EditUser />,
+        path: "/users/edit/:id",
+        element: <ProtectedRoute allowedRoles={["SUPER_ADMIN", "SUPPORT_ADMIN"]}><EditUser /></ProtectedRoute>,
       },
       {
         path: "/payments",
-        element: <Payments />,
+        element: <ProtectedRoute allowedRoles={["SUPER_ADMIN", "FINANCE_ADMIN"]}><Payments /></ProtectedRoute>,
       },
       {
         path: "/reports",
-        element: <Reports />,
+        element: <ProtectedRoute allowedRoles={["SUPER_ADMIN", "FINANCE_ADMIN"]}><Reports /></ProtectedRoute>,
       },
       {
         path: "/settings",
-        element: <Settings />,
+        element: <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}><Settings /></ProtectedRoute>,
       },
       {
         path: "disputes",
-        element: <Disputes />,
+        element: <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}><Disputes /></ProtectedRoute>,
       },
       {
         path: "disputes/:id",
-        element: <DisputeView />,
+        element: <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}><DisputeView /></ProtectedRoute>,
       },
     ],
-  },
-  {
-    path: "/login",
-    element: <Login />,
   },
 ]);
 
