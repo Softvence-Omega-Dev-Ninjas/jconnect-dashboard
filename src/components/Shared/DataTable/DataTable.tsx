@@ -138,11 +138,12 @@ export function DataTable<T>({
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2">
           <div className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
             Showing {startItem}-{endItem} of {totalItems}
-            <div>
+            <div className="text-xs">
               <Select
                 onValueChange={(value) => {
                   if (setItemsPerPage) setItemsPerPage(Number(value));
                 }}
+                
               >
                 <SelectTrigger className="w-[100px]">
                   <SelectValue placeholder="Show per page" />
