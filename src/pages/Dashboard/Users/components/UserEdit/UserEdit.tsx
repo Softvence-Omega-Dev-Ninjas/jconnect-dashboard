@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
+import { ref } from "process";
 
 interface EditFormState {
   full_name: string;
@@ -99,7 +100,6 @@ const EditUser = () => {
       }).unwrap();
 
       toast.success("User updated successfully!");
-
       navigate(`/users/${userId}`);
     } catch (updateError) {
       console.error("User update failed:", updateError);
