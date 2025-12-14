@@ -65,7 +65,12 @@ const Login: React.FC = () => {
         });
 
         // Store user in Redux
-        dispatch(setCredentials({ user: res.data.user }));
+        dispatch(
+          setCredentials({
+            user: res.data.user,
+            token: res.data.token,
+          })
+        );
 
         // Navigate
         toast.success("Login successful!");

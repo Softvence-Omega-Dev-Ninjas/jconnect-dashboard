@@ -96,7 +96,7 @@ export const usersApi = baseApi.injectEndpoints({
           method: "PATCH",
           body: data,
         }),
-        invalidatesTags: ["User"]
+        invalidatesTags: ["Users", "User"],
       }
     ),
 

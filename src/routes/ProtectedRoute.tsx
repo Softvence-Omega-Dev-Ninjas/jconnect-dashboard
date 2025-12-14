@@ -1,48 +1,34 @@
 // import { Navigate } from "react-router-dom";
 // import Cookies from "js-cookie";
 
-// const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-//   const token = Cookies.get('token');
+import { ROUTE_PERMISSIONS } from "@/config/rbac";
+import { useAppSelector } from "@/redux/hook";
+import { ReactNode } from "react";
+import { Navigate, useLocation, matchPath } from "react-router-dom";
+
+const ProtectedRoute = ({ children }: { children: ReactNode }) => {
+  const { role, token } = useAppSelector(state => state.auth);
+  const location = useLocation();
   
-//   if (!token) {
-//     return <Navigate to="/login" replace />;
-//   }
+  if (!token) return <Navigate to="/login" replace />;
   
-//   return <>{children}</>;
-// };
-
-// export default ProtectedRoute;
-
-import React from "react";
-import { Navigate } from "react-router-dom";
-import Cookies from "js-cookie";
-
-type UserRole = 'SUPER_ADMIN' | 'FINANCE_ADMIN' | 'ANALYST' | 'SUPPORT_ADMIN';
-
-interface ProtectedRouteProps {
-  allowedRoles: UserRole[]; 
-  children: React.ReactNode;
-}
-
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
-  const token = Cookies.get('token');
-  const userRole = Cookies.get('role'); 
-
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  // Check exact match first
+  let allowedRoles = ROUTE_PERMISSIONS[location.pathname];
+  
+  // If no exact match, try pattern matching for dynamic routes
+  if (!allowedRoles) {
+    for (const [pattern, roles] of Object.entries(ROUTE_PERMISSIONS)) {
+      if (matchPath(pattern, location.pathname)) {
+        allowedRoles = roles;
+        break;
+      }
+    }
   }
   
-  if (!userRole) {
-      return <Navigate to="/login" replace />;
+  if (allowedRoles && !allowedRoles.includes(role!)) {
+    return <Navigate to="/" replace />;
   }
-
-  const isAuthorized = allowedRoles.includes(userRole as UserRole);
-
-  if (!isAuthorized) {
-    return <Navigate to="/login" replace />;
-  }
-
+  
   return <>{children}</>;
 };
-
 export default ProtectedRoute;
