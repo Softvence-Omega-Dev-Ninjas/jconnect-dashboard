@@ -23,13 +23,15 @@ const Users = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
 
+
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
   >("all");
-  const itemsPerPage = 3;
+  // const itemsPerPage = 3;
 
   const { data, isLoading, error } = useGetUsersQuery({
     page: currentPage,
@@ -238,6 +240,7 @@ const Users = () => {
           currentPage={currentPage}
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
           onPageChange={setCurrentPage}
         />
       </div>
