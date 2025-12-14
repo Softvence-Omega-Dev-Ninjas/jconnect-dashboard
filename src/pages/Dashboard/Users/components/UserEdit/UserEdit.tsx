@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
-import { ref } from "process";
 
 interface EditFormState {
   full_name: string;
@@ -29,7 +28,7 @@ interface EditFormState {
   pinCode: number | null;
   isActive: boolean;
   isVerified: boolean;
-  role: "SUPER_ADMIN" | "ADMIN" | "USER";
+  role: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER";
   profilePhoto: string | null;
 }
 
@@ -68,7 +67,7 @@ const EditUser = () => {
         pinCode: user.pinCode || null,
         isActive: user.isActive,
         isVerified: user.isVerified,
-        role: user.role as "SUPER_ADMIN" | "ADMIN" | "USER",
+        role: user.role as "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER",
         profilePhoto: user.profilePhoto || null,
       });
     }
@@ -103,7 +102,7 @@ const EditUser = () => {
       navigate(`/users/${userId}`);
     } catch (updateError) {
       console.error("User update failed:", updateError);
-      toast.error("Failed to update user.");
+      toast.error(`Failed to update ${formData.role}` );
     }
   };
 
@@ -209,7 +208,7 @@ const EditUser = () => {
             <Label htmlFor="role">User Role</Label>
             <Select
               value={formData.role}
-              onValueChange={(value: "SUPER_ADMIN" | "ADMIN" | "USER") =>
+              onValueChange={(value: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER") =>
                 setFormData((prev) => ({ ...prev, role: value }))
               }
               disabled={isSuperAdmin}
@@ -218,8 +217,9 @@ const EditUser = () => {
                 <SelectValue placeholder="Select Role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="USER">User</SelectItem>
                 <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="ARTIST">Artist</SelectItem>
+                <SelectItem value="USER">User</SelectItem>
 
                 {user.role === "SUPER_ADMIN" && (
                   <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
