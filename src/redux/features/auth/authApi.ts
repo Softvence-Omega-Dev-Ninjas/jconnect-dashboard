@@ -7,7 +7,7 @@ export type SendCodePayload = {
   phone?: string;
 };
 interface SendCodeResponseData {
-    resetToken: string;
+  resetToken: string;
 }
 
 export const authApi = baseApi.injectEndpoints({
@@ -20,12 +20,22 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-    sendPasswordResetCode: builder.mutation<
+    sendPasswordResetCodeEmail: builder.mutation<
       { message: string; success: boolean; data: SendCodeResponseData },
       SendCodePayload
     >({
       query: (data) => ({
         url: "/auth/forget-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    sendPasswordResetCodePhone: builder.mutation<
+      { message: string; success: boolean; data: SendCodeResponseData },
+      { phone: string }
+    >({
+      query: (data) => ({
+        url: "/auth/phone/forgot-password",
         method: "POST",
         body: data,
       }),
@@ -41,5 +51,6 @@ export const authApi = baseApi.injectEndpoints({
 export const {
   useLoginMutation,
   useGetMeQuery,
-  useSendPasswordResetCodeMutation,
+  useSendPasswordResetCodeEmailMutation,
+  useSendPasswordResetCodePhoneMutation,
 } = authApi;
