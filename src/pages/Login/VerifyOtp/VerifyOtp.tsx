@@ -3,8 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Lock, RotateCw } from "lucide-react";
 // import { useVerifyOtpMutation, useResendOtpMutation } from '@/redux/features/auth/authApi';
 
-const OTP_LENGTH = 4;
-const RESEND_TIMEOUT_SECONDS = 60;
+const OTP_LENGTH = 6;
+const RESEND_TIMEOUT_SECONDS = 10;
 
 interface LocationState {
   method: "email" | "phone";
