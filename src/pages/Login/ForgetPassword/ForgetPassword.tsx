@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Lock } from "lucide-react";
-// import { useSendPasswordResetCodeMutation } from '@/redux/features/auth/authApi';
+import { ArrowLeft, Lock } from "lucide-react";
+import {
+  SendCodePayload,
+  useSendPasswordResetCodeMutation,
+} from "@/redux/features/auth/authApi";
+import ApiErrorMessage from "@/components/Shared/ApiErrorMessage/ApiErrorMessage";
 
 type FormInputs = {
   email: string;
@@ -32,7 +36,8 @@ const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"email" | "phone">("email");
 
-  // const [sendCode, { isLoading, error }] = useSendPasswordResetCodeMutation();
+  const [sendPasswordResetCode, { isLoading, error }] = useSendPasswordResetCodeMutation();
+  console.log(sendPasswordResetCode);
 
   const {
     handleSubmit,
@@ -48,17 +53,20 @@ const ForgotPassword: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const payload =
+    const payload = (
       mode === "email"
         ? { method: "email", value: data.email }
-        : { method: "phone", value: data.phone };
+        : { method: "phone", value: data.phone }
+    ) as SendCodePayload;
 
     try {
-      // await sendCode(payload).unwrap();
+      const result = await sendPasswordResetCode(payload).unwrap();
+
+      const { resetToken } = result.data;
 
       alert("Password reset code sent successfully!");
       navigate("/verify-otp", {
-        state: { method: mode, value: payload.value },
+        state: { method: mode, value: payload.value, resetToken },
       });
     } catch (err) {
       console.error("Failed to send reset code:", err);
@@ -76,18 +84,21 @@ const ForgotPassword: React.FC = () => {
     }
   };
 
-  // const apiErrorMessage =
-  // 	error && "data" in error
-  // 		? (error.data as any).message
-  // 		: "Failed to send reset code. Please try again.";
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg px-4 md:py-10 md:px-8 w-full max-w-lg border border-gray-200">
         <header className="flex flex-col items-center py-4 space-y-6 mb-8">
-          <h1 className="text-3xl font-bold text-black mx-auto transform -translate-x-3">
-            Forgot Password
-          </h1>
+          <div className="flex items-center w-full">
+            <button
+              className="text-black text-left"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft />
+            </button>
+            <h1 className="text-3xl font-bold text-black mx-auto transform -translate-x-3">
+              Forgot Password
+            </h1>
+          </div>
           <div className="bg-white p-6 rounded-lg text-center space-y-4 border border-gray-100">
             <div className="w-16 h-16 mx-auto bg-red-600 rounded-full flex items-center justify-center">
               <Lock className="w-8 h-8 text-white" />
@@ -140,14 +151,14 @@ const ForgotPassword: React.FC = () => {
                   <Controller
                     name="email"
                     control={control}
-                    rules={{
-                      required: "Email is required",
-                      pattern: {
-                        value:
-                          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                        message: "Invalid email address",
-                      },
-                    }}
+                    // rules={{
+                    //   required: "Email is required",
+                    //   // pattern: {
+                    //   //   value:
+                    //   //     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                    //   //   message: "Invalid email address",
+                    //   // },
+                    // }}
                     render={({ field }) => (
                       <div className="space-y-2">
                         <label
@@ -206,27 +217,24 @@ const ForgotPassword: React.FC = () => {
                   />
                 )}
 
-                
-                {/* {error && (
-								<p className="text-red-500 mt-4 text-sm text-center">
-									{apiErrorMessage}
-								</p>
-							)} */}
+                <ApiErrorMessage
+                  error={error}
+                  fallbackMessage="Failed to send reset code. Please try again."
+                  className="text-red-500 mt-4 text-sm text-center"
+                />
               </div>
             </div>
 
-           
             <div className="w-full pb-8 pt-8">
               <button
                 type="submit"
-                // disabled={isLoading}
+                disabled={isLoading}
                 className="w-full py-3 rounded text-white font-bold
          bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)]
          shadow-[0_4px_12px_rgba(0,0,0,0.35)]
          hover:opacity-95 transition duration-200 cursor-pointer disabled:opacity-50"
               >
-                {/* {isLoading ? "Sending..." : "Continue"} */}
-                Continue
+                {isLoading ? "Sending..." : "Continue"}
               </button>
             </div>
           </form>
@@ -237,5 +245,3 @@ const ForgotPassword: React.FC = () => {
 };
 
 export default ForgotPassword;
-
-
