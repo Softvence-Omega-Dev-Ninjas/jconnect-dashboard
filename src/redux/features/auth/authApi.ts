@@ -10,6 +10,16 @@ export const authApi = baseApi.injectEndpoints({
         body: credentials,
       }),
     }),
+    sendPasswordResetCode: builder.mutation<
+      { message: string; success: boolean }, 
+      { method: "email" | "phone"; value: string } 
+    >({
+      query: (data) => ({
+        url: "/auth/forget-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
     getMe: builder.query<UserMeResponse, void>({
       query: () => "/users/me",
       providesTags: ["Auth"],
@@ -17,4 +27,4 @@ export const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useGetMeQuery } = authApi;
+export const { useLoginMutation, useGetMeQuery, useSendPasswordResetCodeMutation } = authApi;

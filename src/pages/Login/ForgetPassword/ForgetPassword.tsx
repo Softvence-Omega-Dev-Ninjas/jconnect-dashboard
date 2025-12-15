@@ -83,7 +83,7 @@ const ForgotPassword: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg py-10 px-4 md:py-24 md:px-12 w-full max-w-lg border border-gray-200">
+      <div className="bg-white rounded-2xl shadow-lg px-4 md:py-10 md:px-8 w-full max-w-lg border border-gray-200">
         <header className="flex flex-col items-center py-4 space-y-6 mb-8">
           <h1 className="text-3xl font-bold text-black mx-auto transform -translate-x-3">
             Forgot Password
@@ -107,7 +107,7 @@ const ForgotPassword: React.FC = () => {
                     type="button"
                     onClick={() => handleModeChange("email")}
                     className={`
-                px-4 py-3 text-sm font-semibold transition-all rounded-tl-lg rounded-bl-lg duration-300 w-24
+                px-4 py-4 text-sm font-semibold transition-all rounded-tl-lg rounded-bl-lg duration-300 w-24
                 ${
                   mode === "email"
                     ? "bg-red-600 text-white shadow-md"
@@ -122,7 +122,7 @@ const ForgotPassword: React.FC = () => {
                     type="button"
                     onClick={() => handleModeChange("phone")}
                     className={`
-                px-4 py-3 text-sm font-semibold transition-all rounded-tr-lg rounded-br-lg duration-300 w-24
+                px-4 py-4 text-sm font-semibold transition-all rounded-tr-lg rounded-br-lg duration-300 w-24
                 ${
                   mode === "phone"
                     ? "bg-red-600 text-white shadow-md"
@@ -206,7 +206,7 @@ const ForgotPassword: React.FC = () => {
                   />
                 )}
 
-                {/* API এরর মেসেজ */}
+                
                 {/* {error && (
 								<p className="text-red-500 mt-4 text-sm text-center">
 									{apiErrorMessage}
@@ -215,7 +215,7 @@ const ForgotPassword: React.FC = () => {
               </div>
             </div>
 
-            {/* কন্টিনিউ বাটন */}
+           
             <div className="w-full pb-8 pt-8">
               <button
                 type="submit"
