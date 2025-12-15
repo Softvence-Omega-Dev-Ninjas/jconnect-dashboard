@@ -13,6 +13,7 @@ import DisputeView from "@/pages/Dashboard/Disputes/DisputeView/DisputeView";
 import SingleUserDetail from "@/pages/Dashboard/Users/components/UserDetails/UserDetailsPage";
 import EditUser from "@/pages/Dashboard/Users/components/UserEdit/UserEdit";
 import ForgotPassword from "@/pages/Login/ForgetPassword/ForgetPassword";
+import VerifyOtp from "@/pages/Login/VerifyOtp/VerifyOtp";
 
 const routes = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const routes = createBrowserRouter([
   {
     path: "/forgot-password",
     element: <ForgotPassword />,
+  },
+  {
+    path: "/verify-otp",
+    element: <VerifyOtp />,
   },
   {
     path: "/",

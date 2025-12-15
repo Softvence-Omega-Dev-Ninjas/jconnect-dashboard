@@ -152,6 +152,7 @@ const EditUser = () => {
             <Input
               id="email"
               type="email"
+              disabled={formData.role === "USER" ? false : true}
               value={formData.email}
               onChange={handleChange}
               required
@@ -159,7 +160,7 @@ const EditUser = () => {
           </div>
           <div>
             <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" value={formData.phone} onChange={handleChange} />
+            <Input id="phone" disabled={formData.role === "USER" ? false : true} value={formData.phone} onChange={handleChange} />
           </div>
           <div>
             <Label htmlFor="pinCode">Pin Code</Label>
@@ -204,14 +205,14 @@ const EditUser = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-3  col-span-4 w-[200px] ">
+          <div className="flex items-center justify-center gap-3  col-span-4 ">
             <Label htmlFor="role">User Role</Label>
             <Select
               value={formData.role}
               onValueChange={(value: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER") =>
                 setFormData((prev) => ({ ...prev, role: value }))
               }
-              disabled={isSuperAdmin}
+              // disabled={isSuperAdmin}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select Role" />
