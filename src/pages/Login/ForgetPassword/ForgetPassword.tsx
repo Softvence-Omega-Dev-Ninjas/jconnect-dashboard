@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { ArrowLeft, Lock } from "lucide-react";
 import {
-  SendCodePayload,
+  ForgetPasswordPayload,
   useSendPasswordResetCodeMutation,
 } from "@/redux/features/auth/authApi";
 import ApiErrorMessage from "@/components/Shared/ApiErrorMessage/ApiErrorMessage";
@@ -54,10 +54,13 @@ const ForgotPassword: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const payload = (
-      mode === "email"
-        ? { method: "email", value: data.email }
-        : { method: "phone", value: data.phone }
-    ) as SendCodePayload;
+        mode === "email"
+            ? { email: data.email } 
+            : { phone: data.phone }
+    ) as ForgetPasswordPayload;
+
+    console.log(payload)
+    const valueToPass = mode === "email" ? data.email : data.phone;
 
     try {
       const result = await sendPasswordResetCode(payload).unwrap();
@@ -66,7 +69,7 @@ const ForgotPassword: React.FC = () => {
 
       alert("Password reset code sent successfully!");
       navigate("/verify-otp", {
-        state: { method: mode, value: payload.value, resetToken },
+        state: { method: mode, value: valueToPass, resetToken },
       });
     } catch (err) {
       console.error("Failed to send reset code:", err);
@@ -110,7 +113,7 @@ const ForgotPassword: React.FC = () => {
         </header>
 
         <main className="grow flex flex-col justify-between">
-          <form onSubmit={handleSubmit(onSubmit)} className="">
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6">
               <div className="flex justify-center mt-4">
                 <div className="flex bg-gray-100 rounded-lg shadow-md">
@@ -151,14 +154,14 @@ const ForgotPassword: React.FC = () => {
                   <Controller
                     name="email"
                     control={control}
-                    // rules={{
-                    //   required: "Email is required",
-                    //   // pattern: {
-                    //   //   value:
-                    //   //     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                    //   //   message: "Invalid email address",
-                    //   // },
-                    // }}
+                    rules={{
+                      required: "Email is required",
+                      // pattern: {
+                      //   value:
+                      //     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                      //   message: "Invalid email address",
+                      // },
+                    }}
                     render={({ field }) => (
                       <div className="space-y-2">
                         <label

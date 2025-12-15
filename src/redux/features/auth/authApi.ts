@@ -1,12 +1,16 @@
 import { baseApi } from "../../api/baseApi";
 import { LoginRequest, LoginResponse, UserMeResponse } from "./authTypes";
 
-export type SendCodePayload = {
-  method: "email" | "phone";
-  value: string;
-};
+export type SendCodePayload = 
+  | { method: "email"; value: string }
+  | { method: "phone"; value: string };
+
+export type ForgetPasswordPayload = 
+  | { email: string } 
+  | { phone: string }; 
+
 interface SendCodeResponseData {
-    resetToken: string;
+  resetToken: string;
 }
 
 export const authApi = baseApi.injectEndpoints({
@@ -20,7 +24,7 @@ export const authApi = baseApi.injectEndpoints({
     }),
     sendPasswordResetCode: builder.mutation<
       { message: string; success: boolean; data: SendCodeResponseData },
-      SendCodePayload
+      ForgetPasswordPayload
     >({
       query: (data) => ({
         url: "/auth/forget-password",
