@@ -2,8 +2,9 @@ import { baseApi } from "../../api/baseApi";
 import { LoginRequest, LoginResponse, UserMeResponse } from "./authTypes";
 
 export type SendCodePayload = {
-  method: "email" | "phone";
-  value: string;
+  // method: "email" | "phone";
+  email?: string;
+  phone?: string;
 };
 interface SendCodeResponseData {
     resetToken: string;
@@ -18,6 +19,7 @@ export const authApi = baseApi.injectEndpoints({
         body: credentials,
       }),
     }),
+
     sendPasswordResetCode: builder.mutation<
       { message: string; success: boolean; data: SendCodeResponseData },
       SendCodePayload
@@ -28,6 +30,7 @@ export const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+
     getMe: builder.query<UserMeResponse, void>({
       query: () => "/users/me",
       providesTags: ["Auth"],
