@@ -1,227 +1,97 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { ArrowLeft, Lock } from "lucide-react";
-import {
-  ForgetPasswordPayload,
-  useSendPasswordResetCodeMutation,
-} from "@/redux/features/auth/authApi";
+import { useForm, SubmitHandler } from "react-hook-form";
 import ApiErrorMessage from "@/components/Shared/ApiErrorMessage/ApiErrorMessage";
-
-type FormInputs = {
-  email: string;
-  phone: string;
-};
-
-const PhoneInput: React.FC<{
-  value: string;
-  onChange: (v: string) => void;
-}> = ({ value, onChange }) => (
-  <div className="flex border border-gray-300 rounded-md overflow-hidden bg-white">
-    <div className="flex items-center p-3 bg-gray-50 text-gray-700 border-r border-gray-300">
-      <span className="mr-2">🇺🇸</span>
-      <span>+1</span>
-    </div>
-    <input
-      type="tel"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Enter your phone number"
-      className="grow p-3 bg-transparent text-black focus:outline-none"
-    />
-  </div>
-);
+import PageHeader from "./components/PageHeader";
+import ModeToggle from "./components/ModeToggle";
+import EmailField from "./components/EmailField";
+import PhoneField from "./components/PhoneField";
+import { ContactMethod, FormInputs } from "./types";
+import {
+  useSendPasswordResetCodeEmailMutation,
+  useSendPasswordResetCodePhoneMutation,
+} from "@/redux/features/auth/authApi";
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"email" | "phone">("email");
+  const [mode, setMode] = useState<ContactMethod>("email");
 
-  const [sendPasswordResetCode, { isLoading, error }] = useSendPasswordResetCodeMutation();
-  console.log(sendPasswordResetCode);
+  const [sendEmailCode, { isLoading: isEmailLoading, error: emailError }] =
+    useSendPasswordResetCodeEmailMutation();
+
+  const [sendPhoneCode, { isLoading: isPhoneLoading, error: phoneError }] =
+    useSendPasswordResetCodePhoneMutation();
+
+  const isLoading = isEmailLoading || isPhoneLoading;
+  const currentError = mode === "email" ? emailError : phoneError;
 
   const {
     handleSubmit,
     control,
     setValue,
-    trigger,
     formState: { errors },
   } = useForm<FormInputs>({
-    defaultValues: {
-      email: "",
-      phone: "",
-    },
+    defaultValues: { email: "", phone: "" },
   });
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const payload = (
-        mode === "email"
-            ? { email: data.email } 
-            : { phone: data.phone }
-    ) as ForgetPasswordPayload;
+    if (mode === "email") {
+      try {
+        const result = await sendEmailCode({
+          email: data.email,
+        }).unwrap();
 
-    console.log(payload)
-    const valueToPass = mode === "email" ? data.email : data.phone;
+        navigate("/verify-otp", {
+          state: {
+            method: mode,
+            value: data.email,
+            resetToken: result.data.resetToken,
+          },
+        });
+      } catch (err) {
+        console.error("Failed to send reset code (Email):", err);
+      }
+    } else if (mode === "phone") {
+      try {
+        const result = await sendPhoneCode({ phone: data.phone }).unwrap();
 
-    try {
-      const result = await sendPasswordResetCode(payload).unwrap();
-
-      const { resetToken } = result.data;
-
-      alert("Password reset code sent successfully!");
-      navigate("/verify-otp", {
-        state: { method: mode, value: valueToPass, resetToken },
-      });
-    } catch (err) {
-      console.error("Failed to send reset code:", err);
+        navigate("/verify-otp", {
+          state: {
+            method: mode,
+            value: data.phone,
+            resetToken: result.data.resetToken,
+          },
+        });
+      } catch (err) {
+        console.error("Failed to send reset code (Phone):", err);
+      }
     }
   };
 
-  const handleModeChange = (newMode: "email" | "phone") => {
+  const handleModeChange = (newMode: ContactMethod) => {
     setMode(newMode);
-    if (newMode === "email") {
-      setValue("phone", "");
-      trigger("phone");
-    } else {
-      setValue("email", "");
-      trigger("email");
-    }
+    setValue(newMode === "email" ? "phone" : "email", "");
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg px-4 md:py-10 md:px-8 w-full max-w-lg border border-gray-200">
-        <header className="flex flex-col items-center py-4 space-y-6 mb-8">
-          <div className="flex items-center w-full">
-            <button
-              className="text-black text-left"
-              onClick={() => navigate(-1)}
-            >
-              <ArrowLeft />
-            </button>
-            <h1 className="text-3xl font-bold text-black mx-auto transform -translate-x-3">
-              Forgot Password
-            </h1>
-          </div>
-          <div className="bg-white p-6 rounded-lg text-center space-y-4 border border-gray-100">
-            <div className="w-16 h-16 mx-auto bg-red-600 rounded-full flex items-center justify-center">
-              <Lock className="w-8 h-8 text-white" />
-            </div>
-            <p className="text-lg text-black">
-              Select which contact details should we use to reset your password
-            </p>
-          </div>
-        </header>
+        <PageHeader onBack={() => navigate(-1)} />
 
-        <main className="grow flex flex-col justify-between">
+        <main>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6">
-              <div className="flex justify-center mt-4">
-                <div className="flex bg-gray-100 rounded-lg shadow-md">
-                  <button
-                    type="button"
-                    onClick={() => handleModeChange("email")}
-                    className={`
-                px-4 py-4 text-sm font-semibold transition-all rounded-tl-lg rounded-bl-lg duration-300 w-24
-                ${
-                  mode === "email"
-                    ? "bg-red-600 text-white shadow-md"
-                    : "text-gray-700 bg-transparent hover:bg-red-50"
-                }
-            `}
-                  >
-                    Email
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleModeChange("phone")}
-                    className={`
-                px-4 py-4 text-sm font-semibold transition-all rounded-tr-lg rounded-br-lg duration-300 w-24
-                ${
-                  mode === "phone"
-                    ? "bg-red-600 text-white shadow-md"
-                    : "text-gray-700 bg-transparent hover:bg-red-50"
-                }
-            `}
-                  >
-                    Phone
-                  </button>
-                </div>
-              </div>
+              <ModeToggle mode={mode} onModeChange={handleModeChange} />
 
               <div className="mt-8">
-                {mode === "email" && (
-                  <Controller
-                    name="email"
-                    control={control}
-                    rules={{
-                      required: "Email is required",
-                      // pattern: {
-                      //   value:
-                      //     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                      //   message: "Invalid email address",
-                      // },
-                    }}
-                    render={({ field }) => (
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="email"
-                          className="text-gray-700 block text-sm font-medium"
-                        >
-                          Email Address
-                        </label>
-                        <input
-                          {...field}
-                          id="email"
-                          type="email"
-                          placeholder="Enter your address"
-                          className="w-full p-3 bg-white border border-gray-300 text-black rounded-md focus:outline-none focus:border-red-600"
-                        />
-                        {errors.email && (
-                          <p className="text-red-500 mt-2 text-sm">
-                            {errors.email.message}
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  />
-                )}
-
-                {mode === "phone" && (
-                  <Controller
-                    name="phone"
-                    control={control}
-                    rules={{
-                      required: "Phone number is required",
-                      minLength: {
-                        value: 8,
-                        message: "Phone number is too short",
-                      },
-                    }}
-                    render={({ field }) => (
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="phone"
-                          className="text-gray-700 block text-sm font-medium"
-                        >
-                          Phone Number
-                        </label>
-                        <PhoneInput
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                        {errors.phone && (
-                          <p className="text-red-500 mt-2 text-sm">
-                            {errors.phone.message}
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  />
+                {mode === "email" ? (
+                  <EmailField control={control} errors={errors} />
+                ) : (
+                  <PhoneField control={control} errors={errors} />
                 )}
 
                 <ApiErrorMessage
-                  error={error}
+                  error={currentError}
                   fallbackMessage="Failed to send reset code. Please try again."
                   className="text-red-500 mt-4 text-sm text-center"
                 />
@@ -235,7 +105,7 @@ const ForgotPassword: React.FC = () => {
                 className="w-full py-3 rounded text-white font-bold
          bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)]
          shadow-[0_4px_12px_rgba(0,0,0,0.35)]
-         hover:opacity-95 transition duration-200 cursor-pointer disabled:opacity-50"
+         hover:opacity-95 transition duration-200 disabled:opacity-50"
               >
                 {isLoading ? "Sending..." : "Continue"}
               </button>
