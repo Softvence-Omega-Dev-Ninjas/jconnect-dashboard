@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { connectNotificationSocket, disconnectNotificationSocket } from "../socket/notificationSocket";
+import {
+  connectNotificationSocket,
+  disconnectNotificationSocket,
+} from "../socket/notificationSocket";
 import { addNotification } from "@/store/notificationSlice";
 import { Notification } from "@/types/notification.types";
 

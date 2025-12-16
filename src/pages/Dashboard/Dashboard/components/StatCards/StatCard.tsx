@@ -10,7 +10,7 @@ interface StatCardProps {
 }
 
 export default function StatCard({ title, value, change, icon, subHead = false }: StatCardProps) {
-  const isPositive = change >= 0;
+  const isPositive = change >= 10;
 
   return (
     <Card className="p-4 md:p-6">

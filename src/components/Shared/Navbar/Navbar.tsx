@@ -7,10 +7,7 @@ import NotificationList from "./component/NotificationList";
 const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
 
-  console.log(user)
-  const unread = useAppSelector(
-    (state) => state.notifications.unread
-  );
+  const unread = useAppSelector((state) => state.notifications.unread);
 
   const [open, setOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
@@ -37,7 +34,6 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 right-0 left-0 lg:left-64 bg-white border-b border-gray-200 z-30 h-14 sm:h-16">
       <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 ml-12 lg:ml-0">
-        
         {/* Search Bar */}
         <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md hidden sm:block">
           <div className="relative">
@@ -57,7 +53,6 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4 relative">
-          
           {/* Notification */}
           <div className="relative" ref={notificationRef}>
             <button
@@ -81,14 +76,14 @@ const Navbar = () => {
 
           {/* User */}
           <div className="flex items-center gap-2">
-           <div className="flex flex-col">
-             <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
-              Admin User
-            </span>
-             <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
-              {user?.role || "admin"}
-            </span>
-           </div>
+            <div className="flex flex-col">
+              <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
+                Admin User
+              </span>
+              <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
+                {user?.role || "admin"}
+              </span>
+            </div>
             <Avatar className="w-7 h-7 sm:w-8 sm:h-8">
               <AvatarImage
                 src={

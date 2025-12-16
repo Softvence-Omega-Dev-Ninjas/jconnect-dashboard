@@ -54,6 +54,7 @@ const Users = () => {
       "Role",
       "Joined",
     ];
+
     const body = users.map((r: User) =>
       [
         r.id,
@@ -124,6 +125,7 @@ const Users = () => {
       console.error("Failed to toggle user status:", error);
     }
   };
+  
   const columns: Column<User>[] = [
     { header: "Name", accessor: "full_name" },
     { header: "Email", accessor: "email", hideOnMobile: true },

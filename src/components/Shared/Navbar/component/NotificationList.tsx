@@ -8,13 +8,10 @@ type Props = {
 
 const NotificationList = ({ onClose }: Props) => {
   const dispatch = useAppDispatch();
-  const notifications = useAppSelector(
-    (state) => state.notifications.list
-  );
+  const notifications = useAppSelector((state) => state.notifications.list);
 
   return (
     <div className="w-96 bg-white shadow-xl rounded-md max-h-[420px] overflow-y-auto">
-      
       {/* Header */}
       <div className="flex justify-between items-center px-4 py-3 border-b">
         <h4 className="font-semibold text-sm">Notifications</h4>
@@ -28,7 +25,10 @@ const NotificationList = ({ onClose }: Props) => {
           </button>
 
           {/*Close button */}
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
             <X size={16} />
           </button>
         </div>
