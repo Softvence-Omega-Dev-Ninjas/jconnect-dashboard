@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 import Cookies from "js-cookie";
 import { Role } from "@/config/rbac";
 import { UserMeResponse } from "./authTypes";

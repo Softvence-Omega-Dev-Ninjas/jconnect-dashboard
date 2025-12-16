@@ -6,6 +6,7 @@ import NotificationList from "./component/NotificationList";
 
 const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
+
   console.log(user)
   const unread = useAppSelector(
     (state) => state.notifications.unread
