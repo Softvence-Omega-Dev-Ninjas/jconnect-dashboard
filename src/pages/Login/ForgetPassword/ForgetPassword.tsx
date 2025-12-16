@@ -27,7 +27,9 @@ const ForgotPassword: React.FC = () => {
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     if (mode === "email") {
       try {
-        const result = await sendPasswordResetCode({email:data.email}).unwrap();
+        const result = await sendPasswordResetCode({
+          email: data.email,
+        }).unwrap();
         console.log(result);
         navigate("/verify-otp", {
           state: {
