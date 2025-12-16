@@ -1,4 +1,3 @@
-// src/routes/Routes.tsx
 import { createBrowserRouter } from "react-router-dom";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Dashboard from "@/pages/Dashboard/Dashboard/Dashboard";

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Lock, AlertCircle } from "lucide-react";
-
 import {
   useResetPasswordMutation,
   ResetPasswordPayload,
@@ -16,7 +15,9 @@ interface LocationState {
   resetToken: string;
 }
 
-type FormInputs = Pick<ResetPasswordPayload, "newPassword" | "confirmPassword">;
+type FormInputs = {
+  newPassword: string;
+};
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -28,12 +29,10 @@ const ResetPassword: React.FC = () => {
   const {
     handleSubmit,
     control,
-    watch,
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
       newPassword: "",
-      confirmPassword: "",
     },
     mode: "onTouched",
   });
@@ -51,8 +50,7 @@ const ResetPassword: React.FC = () => {
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const payload: ResetPasswordPayload = {
       resetToken,
-      newPassword: data.newPassword,
-      confirmPassword: data.confirmPassword,
+      password: data.newPassword,
     };
 
     try {
@@ -65,8 +63,6 @@ const ResetPassword: React.FC = () => {
     }
   };
 
-  const newPasswordValue = watch("newPassword");
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg px-4 md:py-10 md:px-8 w-full max-w-lg border border-gray-200">
@@ -75,16 +71,17 @@ const ResetPassword: React.FC = () => {
             <Lock className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-black text-center">
-            Reset Your Password
+            Set New Password
           </h1>
           <p className="text-lg text-gray-600 text-center">
-            Set your new password below.
+            Enter your new password below to reset.
           </p>
         </header>
 
         <main>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6">
+              {/* New Password Field */}
               <Controller
                 name="newPassword"
                 control={control}
@@ -120,39 +117,7 @@ const ResetPassword: React.FC = () => {
                 )}
               />
 
-              <Controller
-                name="confirmPassword"
-                control={control}
-                rules={{
-                  required: "Confirm password is required",
-                  validate: (value) =>
-                    value === newPasswordValue || "Passwords do not match",
-                }}
-                render={({ field }) => (
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="confirmPassword"
-                      className="text-gray-700 block text-sm font-medium"
-                    >
-                      Confirm New Password
-                    </label>
-                    <input
-                      {...field}
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="Confirm new password"
-                      className="w-full p-3 bg-white border border-gray-300 text-black rounded-md focus:outline-none focus:border-red-600"
-                    />
-                    {errors.confirmPassword && (
-                      <p className="text-red-500 mt-2 text-sm flex items-center">
-                        <AlertCircle className="w-4 h-4 mr-1" />
-                        {errors.confirmPassword.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
-
+              {/* API Error Message */}
               <ApiErrorMessage
                 error={error}
                 fallbackMessage="Failed to reset password. Please try again."

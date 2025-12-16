@@ -31,8 +31,7 @@ interface ResendOtpResponse {
 
 export interface ResetPasswordPayload {
   resetToken: string;
-  newPassword: string;
-  confirmPassword: string;
+  password: string;
 }
 
 interface ResetPasswordResponse {
@@ -71,15 +70,15 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
     verifyOtp: builder.mutation<VerifyOtpResponse, VerifyOtpPayload>({
-   query: ({ emailOtp: code, resetToken }) => ({
-    url: "/auth/resend-verify-otp",
-    method: "POST",
-    body: { 
-      emailOtp: code, 
-      resetToken 
-    },
-   }),
-  }),
+      query: ({ emailOtp: code, resetToken }) => ({
+        url: "/auth/resend-verify-otp",
+        method: "POST",
+        body: {
+          emailOtp: code,
+          resetToken,
+        },
+      }),
+    }),
     resendOtp: builder.mutation<ResendOtpResponse, ResendOtpPayload>({
       query: (data) => ({
         url: "/auth/resend-otp",
@@ -111,5 +110,5 @@ export const {
   useSendPasswordResetCodePhoneMutation,
   useVerifyOtpMutation,
   useResendOtpMutation,
-  useResetPasswordMutation
+  useResetPasswordMutation,
 } = authApi;
