@@ -145,6 +145,7 @@ const EditUser = () => {
               value={formData.full_name}
               onChange={handleChange}
               required
+              disabled={isSuperAdmin}
             />
           </div>
           <div>
@@ -201,6 +202,7 @@ const EditUser = () => {
                 onCheckedChange={(checked) =>
                   setFormData((prev) => ({ ...prev, isVerified: checked }))
                 }
+                disabled={isSuperAdmin}
               />
             </div>
           </div>
@@ -212,7 +214,7 @@ const EditUser = () => {
               onValueChange={(value: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER") =>
                 setFormData((prev) => ({ ...prev, role: value }))
               }
-              // disabled={isSuperAdmin}
+              disabled={isSuperAdmin}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select Role" />

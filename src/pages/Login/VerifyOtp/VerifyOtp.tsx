@@ -7,17 +7,30 @@ import { useTimer } from "./hooks/useTimer";
 import { LocationState } from "./types";
 import { OTP_LENGTH, RESEND_TIMEOUT_SECONDS } from "./constants";
 
+import {
+  useVerifyOtpMutation,
+  useResendOtpMutation,
+} from "@/redux/features/auth/authApi";
+
 const VerifyOtp: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as LocationState | undefined;
 
+  const [verifyOtp, { isLoading: isVerifying, error: verifyError }] =
+    useVerifyOtpMutation();
+  const [resendOtp, { isLoading: isResending, error: resendError }] =
+    useResendOtpMutation();
+
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
-  const [error, setError] = useState<string | null>(null);
+  const [customError, setCustomError] = useState<string | null>(null);
+
   const { timer, resetTimer } = useTimer(RESEND_TIMEOUT_SECONDS);
 
-  const isVerifying = false;
-  const isResending = false;
+  const currentError =
+    verifyError || resendError
+      ? "Invalid or expired code. Please try again."
+      : customError;
 
   useEffect(() => {
     if (!state?.method || !state?.value || !state?.resetToken) {
@@ -33,18 +46,19 @@ const VerifyOtp: React.FC = () => {
     const code = otp.join("");
 
     if (code.length !== OTP_LENGTH) {
-      setError(`Please enter the complete ${OTP_LENGTH}-digit code.`);
+      setCustomError(`Please enter the complete ${OTP_LENGTH}-digit code.`);
       return;
     }
 
     try {
-      // await verifyOtp({ code, method, value, resetToken }).unwrap();
+      await verifyOtp({ emailOtp: code, resetToken }).unwrap();
+
       navigate("/reset-password", {
         state: { code, method, value, resetToken },
       });
     } catch (err) {
-      console.log(err);
-      setError("Invalid or expired code. Please try again.");
+      console.error("OTP Verification failed:", err);
+      setCustomError("Invalid or expired code. Please try again.");
     }
   };
 
@@ -52,19 +66,21 @@ const VerifyOtp: React.FC = () => {
     if (isResending || timer > 0) return;
 
     try {
-      // await resendOtp({ method, value }).unwrap();
+      await resendOtp({ method, value }).unwrap();
+
       resetTimer();
-      setError(null);
+      setCustomError(null);
       setOtp(Array(OTP_LENGTH).fill(""));
+      alert("New code sent successfully!");
     } catch (err) {
-      console.log(err);
-      setError("Failed to resend code.");
+      console.error("Resend failed:", err);
+      setCustomError("Failed to resend code.");
     }
   };
 
   const handleOtpChange = (newOtp: string[]) => {
     setOtp(newOtp);
-    setError(null);
+    setCustomError(null);
   };
 
   return (
@@ -76,8 +92,10 @@ const VerifyOtp: React.FC = () => {
           <div className="space-y-8">
             <OtpInput otp={otp} onChange={handleOtpChange} />
 
-            {error && (
-              <p className="text-red-500 mt-4 text-center text-sm">{error}</p>
+            {currentError && (
+              <p className="text-red-500 mt-4 text-center text-sm">
+                {currentError}
+              </p>
             )}
 
             <div className="text-center mt-6">
@@ -95,9 +113,9 @@ const VerifyOtp: React.FC = () => {
               onClick={handleVerify}
               disabled={isVerifying || otp.join("").length !== OTP_LENGTH}
               className="w-full py-3 rounded text-white font-bold
-                bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)]
-                shadow-[0_4px_12px_rgba(0,0,0,0.35)]
-                hover:opacity-95 transition duration-200 disabled:opacity-50"
+    bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)]
+    shadow-[0_4px_12px_rgba(0,0,0,0.35)]
+    hover:opacity-95 transition duration-200 disabled:opacity-50"
             >
               {isVerifying ? "Verifying..." : "Verify Code"}
             </button>

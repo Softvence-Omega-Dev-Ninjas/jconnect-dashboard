@@ -1,4 +1,3 @@
-// src/routes/Routes.tsx
 import { createBrowserRouter } from "react-router-dom";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Dashboard from "@/pages/Dashboard/Dashboard/Dashboard";
@@ -14,6 +13,7 @@ import SingleUserDetail from "@/pages/Dashboard/Users/components/UserDetails/Use
 import EditUser from "@/pages/Dashboard/Users/components/UserEdit/UserEdit";
 import ForgotPassword from "@/pages/Login/ForgetPassword/ForgetPassword";
 import VerifyOtp from "@/pages/Login/VerifyOtp/VerifyOtp";
+import ResetPassword from "@/pages/Login/ResetPassword/ResetPassword";
 
 const routes = createBrowserRouter([
   {
@@ -27,6 +27,10 @@ const routes = createBrowserRouter([
   {
     path: "/verify-otp",
     element: <VerifyOtp />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
   {
     path: "/",
