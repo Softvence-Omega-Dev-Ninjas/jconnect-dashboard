@@ -31,7 +31,6 @@ const Users = () => {
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
   >("all");
-  // const itemsPerPage = 3;
 
   const { data, isLoading, error } = useGetUsersQuery({
     page: currentPage,
