@@ -3,15 +3,18 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useAppSelector } from "@/redux/hook";
 import { useEffect, useRef, useState } from "react";
 import NotificationList from "./component/NotificationList";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 
 const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
-
-  console.log(user)
   const unread = useAppSelector((state) => state.notifications.unread);
+  const isConnected = useAppSelector((state) => state.notifications.isConnected);
 
   const [open, setOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Initialize socket connection and load notifications
+  useNotificationSocket();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -58,14 +61,21 @@ const Navbar = () => {
           <div className="relative" ref={notificationRef}>
             <button
               onClick={() => setOpen((p) => !p)}
-              className="relative text-gray-600 hover:text-gray-900 p-1"
+              className="relative text-gray-600 hover:text-gray-900 p-1 transition-colors"
             >
               <Bell className="w-5 h-5" />
               {unread > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
-                  {unread}
+                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
+                  {unread > 9 ? "9+" : unread}
                 </span>
               )}
+              {/* Connection indicator */}
+              <span
+                className={`absolute bottom-0 right-0 w-2 h-2 rounded-full border border-white ${
+                  isConnected ? "bg-green-500" : "bg-gray-400"
+                }`}
+                title={isConnected ? "Connected" : "Disconnected"}
+              />
             </button>
 
             {open && (
@@ -79,10 +89,10 @@ const Navbar = () => {
           <div className="flex items-center gap-2">
             <div className="flex flex-col">
               <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
-                Admin User
+                {user?.full_name || "Admin User"}
               </span>
-              <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
-                {user?.role}
+              <span className="text-[10px] text-gray-500 hidden md:block max-w-[120px] truncate">
+                {user?.role || "admin"}
               </span>
             </div>
             <Avatar className="w-7 h-7 sm:w-8 sm:h-8">

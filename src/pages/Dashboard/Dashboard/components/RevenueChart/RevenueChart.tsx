@@ -30,19 +30,29 @@ export default function RevenueChart() {
     if (!revenue) return null;
 
     const months = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
-    
+
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
-    
+
     const filteredRevenue = revenue.filter((it) => {
       const [yearStr, monthStr] = it.month.split("-");
       const year = parseInt(yearStr);
       const month = parseInt(monthStr);
-      
+
       if (dateRange === "1 year") {
         if (year === currentYear) {
           return month <= currentMonth;
@@ -66,17 +76,17 @@ export default function RevenueChart() {
     });
 
     const years = Object.keys(map).sort();
-    
+
     let displayYears: string[];
     let showSingleYear = false;
-    
+
     if (dateRange === "1 year") {
       displayYears = [String(currentYear)];
       showSingleYear = true;
     } else {
       displayYears = years.length >= 2 ? years.slice(-2) : years;
     }
-    
+
     const y1 = displayYears[0] ?? String(currentYear - 1);
     const y2 = displayYears[1] ?? String(currentYear);
 
@@ -100,8 +110,8 @@ export default function RevenueChart() {
     ? ((chartData as any).__years as string[])
     : ["2024", "2025"];
   const isSingleYear = chartData ? (chartData as any).__isSingleYear : false;
-  
-  const displayYear = isSingleYear ? years[0] : null;
+
+  const displayYear = isSingleYear ? years[0] : "";
   const yearA = years[1] ?? "2025";
   const yearB = years[0] ?? "2024";
 
@@ -113,17 +123,23 @@ export default function RevenueChart() {
           {isSingleYear ? (
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-blue-500"></div>
-              <span className="text-xs md:text-sm text-gray-600">{displayYear}</span>
+              <span className="text-xs md:text-sm text-gray-600">
+                {displayYear}
+              </span>
             </div>
           ) : (
             <>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-blue-500"></div>
-                <span className="text-xs md:text-sm text-gray-600">{yearA}</span>
+                <span className="text-xs md:text-sm text-gray-600">
+                  {yearA}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-red-500"></div>
-                <span className="text-xs md:text-sm text-gray-600">{yearB}</span>
+                <span className="text-xs md:text-sm text-gray-600">
+                  {yearB}
+                </span>
               </div>
             </>
           )}
@@ -158,8 +174,8 @@ export default function RevenueChart() {
               tickFormatter={(value) => `$${Number(value).toLocaleString()}`}
             />
             <Tooltip
-              formatter={(value: any) => [
-                `$${Number(value).toLocaleString()}`,
+              formatter={(value: number | string) => [
+                `${Number(value).toLocaleString()}`,
                 "Revenue",
               ]}
             />
