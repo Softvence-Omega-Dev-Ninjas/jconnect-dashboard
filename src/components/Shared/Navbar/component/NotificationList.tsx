@@ -74,9 +74,9 @@ const NotificationList = ({ onClose }: Props) => {
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case "USERREGISTRATION_CREATE":
+      case "user.create":
         return "👤";
-      case "SERVICE_CREATE":
+      case "service.create":
         return "🛠️";
       default:
         return "📢";
@@ -124,7 +124,7 @@ const NotificationList = ({ onClose }: Props) => {
               }`}
             >
               <div className="flex items-start gap-3">
-                <span className="text-2xl flex-shrink-0">
+                <span className="text-2xl shrink-0">
                   {getNotificationIcon(n.type)}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -132,6 +132,7 @@ const NotificationList = ({ onClose }: Props) => {
                     <p className="text-sm font-medium text-gray-900">
                       {n.title}
                     </p>
+                  
                     <span className="text-[10px] text-gray-400 whitespace-nowrap">
                       {formatTimeAgo(n.createdAt)}
                     </span>
