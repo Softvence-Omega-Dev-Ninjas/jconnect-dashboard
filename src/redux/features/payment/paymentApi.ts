@@ -3,8 +3,10 @@ import { baseApi } from "../../api/baseApi";
 export interface TransactionHistoryQueryParams {
   page: number;
   limit: number;
-  status?: string; 
+  status?: string;
   type?: string;
+  month?: number; 
+  sort?: "asc" | "desc"; 
 }
 
 interface SellerInfo {
@@ -28,7 +30,7 @@ interface Payment {
 export interface TransactionHistoryResponse {
   success: boolean;
   message: string;
-  data: Payment[]; 
+  data: Payment[];
   meta: {
     total: number;
     page: number;
@@ -38,24 +40,27 @@ export interface TransactionHistoryResponse {
     hasPrev: boolean;
   };
 }
-
-
 export const PaymentsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllTransactionHistory: builder.query<
-      TransactionHistoryResponse, 
-      TransactionHistoryQueryParams 
+      TransactionHistoryResponse,
+      TransactionHistoryQueryParams
     >({
       query: (params) => {
         const queryParams = new URLSearchParams({
           page: String(params.page),
           limit: String(params.limit),
+          sort: params.sort || "desc",
         });
-        if (params.status && params.status.toLowerCase() !== "all") {
+
+        if (params.status) {
           queryParams.append("status", params.status);
         }
-        if (params.type && params.type.toLowerCase() !== "all") {
+        if (params.type) {
           queryParams.append("type", params.type);
+        }
+        if (params.month !== undefined) {
+          queryParams.append("month", String(params.month));
         }
 
         return {
@@ -68,4 +73,4 @@ export const PaymentsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {  useGetAllTransactionHistoryQuery } = PaymentsApi;
+export const { useGetAllTransactionHistoryQuery } = PaymentsApi;

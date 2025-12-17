@@ -2,45 +2,25 @@ import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveAs } from "file-saver";
-import PaymentFilterBar from "./PementFilterBar";
 import { Search } from "lucide-react";
-import ApiErrorMessage from "@/components/Shared/ApiErrorMessage/ApiErrorMessage";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
+import ApiErrorMessage from "@/components/Shared/ApiErrorMessage/ApiErrorMessage";
 import {
   TransactionHistoryQueryParams,
   useGetAllTransactionHistoryQuery,
 } from "@/redux/features/payment/paymentApi";
 import { DisplayPayment, Payment } from "@/types/TransactionHistory.type";
 import StatusBadge from "@/components/Shared/StatusBadge/StatusBadge";
+import PaymentFilterBar from "./PementFilterBar";
 
 const ITEMS_PER_PAGE = 10;
-
-const MONTHS_DATA = [
-  { value: "all", label: "All Months" },
-  { value: "1", label: "January" },
-  { value: "2", label: "February" },
-  { value: "3", label: "March" },
-  { value: "4", label: "April" },
-  { value: "5", label: "May" },
-  { value: "6", label: "June" },
-  { value: "7", label: "July" },
-  { value: "8", label: "August" },
-  { value: "9", label: "September" },
-  { value: "10", label: "October" },
-  { value: "11", label: "November" },
-  { value: "12", label: "December" },
-];
-
 const getMonthLabel = (monthValue: string) => {
-  return (
-    MONTHS_DATA.find((m) => m.value === monthValue)?.label || "Selected Month"
-  );
+  return monthValue === "all" ? "Selected Month" : monthValue;
 };
 
 const TransactionHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("all");
-
   const [monthFilter, setMonthFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("desc");
 
@@ -50,8 +30,10 @@ const TransactionHistory = () => {
     return {
       page: currentPage,
       limit: ITEMS_PER_PAGE,
-      status: statusFilter,
-      month: monthFilter === "all" ? undefined : monthFilter,
+      status: statusFilter === "all" ? undefined : statusFilter,
+      month:
+        monthFilter === "all" ? undefined : (monthFilter as unknown as number),
+
       sort: sortOrder as "asc" | "desc",
     };
   }, [currentPage, statusFilter, monthFilter, sortOrder]);
@@ -113,7 +95,6 @@ const TransactionHistory = () => {
     PENDING: "bg-yellow-100 text-yellow-700",
     IN_PROGRESS: "bg-yellow-100 text-yellow-700",
     CANCELLED: "bg-red-100 text-red-700",
-
     PROCESSING: "bg-blue-100 text-blue-700",
   };
 
@@ -195,7 +176,7 @@ const TransactionHistory = () => {
         <div className="text-center py-10">
           <ApiErrorMessage
             error={error}
-            fallbackMessage="Failed to load transaction history. Please try again."
+            fallbackMessage={`Failed to load transaction history. Please check your network or backend support for month filtering.`}
             className="text-red-500"
           />
           <button
@@ -208,17 +189,21 @@ const TransactionHistory = () => {
       ) : transformedData.length === 0 ? (
         <div className="text-center py-10 text-gray-500">
           <Search className="w-8 h-8 mx-auto mb-2" />
-
           {statusFilter !== "all" || monthFilter !== "all" ? (
             <>
-              {statusFilter !== "all" && (
-                 <p className="text-base font-semibold">
+              <p className="text-base font-semibold">
                 No transactions found matching your criteria.
               </p>
+
+              {statusFilter !== "all" && (
+                <p className="text-base font-semibold mt-2">
+                  {statusFilter} has no data.
+                </p>
               )}
+
               {monthFilter !== "all" && (
-                <p className="text-base font-semibold mt-1 ">
-                   {getMonthLabel(monthFilter)} has no data found.
+                <p className="text-base font-semibold mt-2">
+                  {getMonthLabel(monthFilter)} Month has no data.
                 </p>
               )}
             </>

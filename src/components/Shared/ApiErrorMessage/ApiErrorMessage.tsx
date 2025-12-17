@@ -23,7 +23,7 @@ function isApiError(error: any): error is ApiError {
 }
 
 interface ApiErrorMessageProps {
-  error: any;
+  error?: any;
   fallbackMessage?: string;
   className?: string;
 }
