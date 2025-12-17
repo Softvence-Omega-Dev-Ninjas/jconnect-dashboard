@@ -31,10 +31,18 @@ export const settingsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Settings'],
     }),
+    createAnnouncement: builder.mutation({
+      query: (data) => ({
+        url: "/settings/announcement",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
 export const { 
   useGetPlatformSettingsQuery, 
-  useUpdatePlatformSettingsMutation 
+  useUpdatePlatformSettingsMutation,
+  useCreateAnnouncementMutation
 } = settingsApi;

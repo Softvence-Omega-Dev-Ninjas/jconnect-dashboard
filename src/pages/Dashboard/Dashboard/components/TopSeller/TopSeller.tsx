@@ -1,4 +1,5 @@
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import { useGetTopSellersQuery } from "@/redux/features/dashboard/dashboardApi";
 import { useState } from "react";
 
@@ -54,9 +55,7 @@ export const TopSellers = () => {
     );
   if (error)
     return (
-      <div className="p-3 sm:p-4 text-center text-red-500">
-        Error loading top sellers data.
-      </div>
+      <NoDataFound dataTitle="top sellers"/>
     );
   if (sellers.length === 0)
     return (

@@ -7,6 +7,7 @@ import NotificationList from "./component/NotificationList";
 const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
 
+  console.log(user)
   const unread = useAppSelector((state) => state.notifications.unread);
 
   const [open, setOpen] = useState(false);
@@ -81,7 +82,7 @@ const Navbar = () => {
                 Admin User
               </span>
               <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
-                {user?.role || "admin"}
+                {user?.role}
               </span>
             </div>
             <Avatar className="w-7 h-7 sm:w-8 sm:h-8">
