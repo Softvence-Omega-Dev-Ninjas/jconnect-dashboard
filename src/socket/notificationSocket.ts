@@ -27,12 +27,12 @@ export const connectNotificationSocket = (dispatch: AppDispatch) => {
   });
 
   socket.on("connect", () => {
-    console.log("✅ Connected to notification socket");
+    console.log("Connected to notification socket");
     dispatch(setSocketConnected(true));
   });
 
   socket.on("disconnect", () => {
-    console.log("❌ Disconnected from notification socket");
+    console.log(" Disconnected from notification socket");
     dispatch(setSocketConnected(false));
   });
 
