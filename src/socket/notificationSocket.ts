@@ -42,7 +42,7 @@ export const connectNotificationSocket = (dispatch: AppDispatch) => {
   });
 
   // ------------------ Listen for USER REGISTRATION events ---------------------------
-  socket.on("USERREGISTRATION_CREATE", (data: any) => {
+  socket.on("user.create", (data: any) => {
     console.log("📬 New user registration notification:", data);
     const notification = {
       id: `${Date.now()}-${Math.random()}`,
