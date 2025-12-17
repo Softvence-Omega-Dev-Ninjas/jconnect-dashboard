@@ -14,6 +14,7 @@ import EditUser from "@/pages/Dashboard/Users/components/UserEdit/UserEdit";
 import ForgotPassword from "@/pages/Login/ForgetPassword/ForgetPassword";
 import VerifyOtp from "@/pages/Login/VerifyOtp/VerifyOtp";
 import ResetPassword from "@/pages/Login/ResetPassword/ResetPassword";
+import HistoryDetails from "@/pages/Dashboard/Payments/components/HistoryDetails";
 
 const routes = createBrowserRouter([
   {
@@ -73,6 +74,14 @@ const routes = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Payments />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/payment/:id",
+        element: (
+          <ProtectedRoute>
+            <HistoryDetails></HistoryDetails>
           </ProtectedRoute>
         ),
       },

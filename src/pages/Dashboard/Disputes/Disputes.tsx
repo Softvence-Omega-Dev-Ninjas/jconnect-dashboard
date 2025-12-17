@@ -5,6 +5,7 @@ import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import { useGetDisputesQuery } from "@/redux/features/disputes/disputesApi";
 import FilterBar from "./components/FilterBar";
 import { saveAs } from "file-saver";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 
 interface Dispute {
   id: string;
@@ -98,7 +99,7 @@ const Disputes = () => {
   ];
 
   if (isLoading) return <div className="p-4 md:p-6">Loading...</div>;
-  if (error) return <div className="p-4 md:p-6">Error loading disputes</div>;
+  if (error) return <NoDataFound dataTitle="Disputes Data" />;
 
   return (
     <div className="space-y-6">

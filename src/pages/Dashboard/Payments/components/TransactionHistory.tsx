@@ -131,7 +131,7 @@ const TransactionHistory = () => {
           className="px-2 sm:px-3 py-1 text-xs sm:text-sm hover:underline text-red-600"
           onClick={(e) => {
             e.stopPropagation();
-            navigate(`/payments/${item.id}`);
+            navigate(`/payment/${item.id}`);
           }}
         >
           View
