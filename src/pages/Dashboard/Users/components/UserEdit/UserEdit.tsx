@@ -226,7 +226,6 @@ const EditUser = () => {
                 <SelectItem value="SUPPORT_ADMIN">SUPPORT ADMIN</SelectItem>
                 <SelectItem value="MODERATOR">MODERATOR</SelectItem>
                 <SelectItem value="MEMBER">MEMBER</SelectItem>
-                <SelectItem value="USER">USER</SelectItem>
                 <SelectItem value="ARTIST">ARTIST</SelectItem>
 
                 {user.role === "SUPER_ADMIN" && (
