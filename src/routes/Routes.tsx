@@ -1,4 +1,3 @@
-// src/routes/Routes.tsx
 import { createBrowserRouter } from "react-router-dom";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Dashboard from "@/pages/Dashboard/Dashboard/Dashboard";
@@ -12,57 +11,104 @@ import Disputes from "@/pages/Dashboard/Disputes/Disputes";
 import DisputeView from "@/pages/Dashboard/Disputes/DisputeView/DisputeView";
 import SingleUserDetail from "@/pages/Dashboard/Users/components/UserDetails/UserDetailsPage";
 import EditUser from "@/pages/Dashboard/Users/components/UserEdit/UserEdit";
+import ForgotPassword from "@/pages/Login/ForgetPassword/ForgetPassword";
+import VerifyOtp from "@/pages/Login/VerifyOtp/VerifyOtp";
+import ResetPassword from "@/pages/Login/ResetPassword/ResetPassword";
 
 const routes = createBrowserRouter([
   {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/verify-otp",
+    element: <VerifyOtp />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
+  },
+  {
     path: "/",
-    element: (
-      <ProtectedRoute>
-        <DashboardLayout />
-      </ProtectedRoute>
-    ),
+    element: <DashboardLayout />,
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/users",
-        element: <Users />,
+        element: (
+          <ProtectedRoute>
+            <Users />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/users/:id",
-        element: <SingleUserDetail />,
+        element: (
+          <ProtectedRoute>
+            <SingleUserDetail />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: "/users/edit/:id", 
-        element: <EditUser />,
+        path: "/users/edit/:id",
+        element: (
+          <ProtectedRoute>
+            <EditUser />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/payments",
-        element: <Payments />,
+        element: (
+          <ProtectedRoute>
+            <Payments />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/reports",
-        element: <Reports />,
+        element: (
+          <ProtectedRoute>
+            <Reports />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/settings",
-        element: <Settings />,
+        element: (
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "disputes",
-        element: <Disputes />,
+        element: (
+          <ProtectedRoute>
+            <Disputes />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "disputes/:id",
-        element: <DisputeView />,
+        element: (
+          <ProtectedRoute>
+            <DisputeView />
+          </ProtectedRoute>
+        ),
       },
     ],
-  },
-  {
-    path: "/login",
-    element: <Login />,
   },
 ]);
 

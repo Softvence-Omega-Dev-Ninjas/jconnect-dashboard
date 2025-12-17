@@ -67,8 +67,8 @@ export default function RevenueChart() {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Date Range</SelectLabel>
-                  <SelectItem value="1 year">Last one year</SelectItem>
-                  <SelectItem value="2 years">Last two years</SelectItem>
+                  <SelectItem value="1 year">Last One Year</SelectItem>
+                  <SelectItem value="2 years">Last Two Years</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -81,7 +81,7 @@ export default function RevenueChart() {
           <LineChart data={chartData ?? []} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis dataKey="label" stroke="#9ca3af" tick={{ fontSize: 10 }} />
-            <YAxis stroke="#9ca3af" tick={{ fontSize: 10 }} />
+            <YAxis stroke="#9ca3af" tick={{ fontSize: 10 }} tickFormatter={(value) => `$${Number(value).toLocaleString()}`}/>
             <Tooltip formatter={(value: any) => [`$${Number(value).toLocaleString()}`, "Revenue"]} />
             <Line type="monotone" dataKey={yearA} stroke="#2B7FFF" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} />
             <Line type="monotone" dataKey={yearB} stroke="#BD001F" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 5 }} />

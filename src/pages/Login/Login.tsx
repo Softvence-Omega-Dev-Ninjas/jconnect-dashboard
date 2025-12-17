@@ -65,7 +65,12 @@ const Login: React.FC = () => {
         });
 
         // Store user in Redux
-        dispatch(setCredentials({ user: res.data.user }));
+        dispatch(
+          setCredentials({
+            user: res.data.user,
+            token: res.data.token,
+          })
+        );
 
         // Navigate
         toast.success("Login successful!");
@@ -126,9 +131,12 @@ const Login: React.FC = () => {
               >
                 Password
               </label>
-              <a className="text-base font-bold text-[#666161] hover:underline cursor-pointer">
+              <button onClick={(e)=>{
+                e.preventDefault();
+                navigate('/forgot-password')
+              }} className="text-base font-bold text-[#666161] hover:underline cursor-pointer">
                 Forget Password?
-              </a>
+              </button>
             </div>
             <div className="relative">
               <input

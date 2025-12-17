@@ -12,6 +12,8 @@ export interface OverviewStats {
     totalRevenue: number;
     totalUser: number;
     userPercentage: number;
+    stripePayouts: number;
+    stripePayoutsPercentage: number;
   };
 }
 

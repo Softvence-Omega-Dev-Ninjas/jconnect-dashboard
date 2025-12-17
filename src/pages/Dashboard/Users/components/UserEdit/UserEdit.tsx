@@ -28,7 +28,7 @@ interface EditFormState {
   pinCode: number | null;
   isActive: boolean;
   isVerified: boolean;
-  role: "SUPER_ADMIN" | "ADMIN" | "USER";
+  role: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER";
   profilePhoto: string | null;
 }
 
@@ -67,7 +67,7 @@ const EditUser = () => {
         pinCode: user.pinCode || null,
         isActive: user.isActive,
         isVerified: user.isVerified,
-        role: user.role as "SUPER_ADMIN" | "ADMIN" | "USER",
+        role: user.role as "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER",
         profilePhoto: user.profilePhoto || null,
       });
     }
@@ -99,11 +99,10 @@ const EditUser = () => {
       }).unwrap();
 
       toast.success("User updated successfully!");
-
       navigate(`/users/${userId}`);
     } catch (updateError) {
       console.error("User update failed:", updateError);
-      toast.error("Failed to update user.");
+      toast.error(`Failed to update ${formData.role}` );
     }
   };
 
@@ -146,6 +145,7 @@ const EditUser = () => {
               value={formData.full_name}
               onChange={handleChange}
               required
+              disabled={isSuperAdmin}
             />
           </div>
           <div>
@@ -153,6 +153,7 @@ const EditUser = () => {
             <Input
               id="email"
               type="email"
+              disabled={formData.role === "USER" ? false : true}
               value={formData.email}
               onChange={handleChange}
               required
@@ -160,7 +161,7 @@ const EditUser = () => {
           </div>
           <div>
             <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" value={formData.phone} onChange={handleChange} />
+            <Input id="phone" disabled={formData.role === "USER" ? false : true} value={formData.phone} onChange={handleChange} />
           </div>
           <div>
             <Label htmlFor="pinCode">Pin Code</Label>
@@ -201,15 +202,16 @@ const EditUser = () => {
                 onCheckedChange={(checked) =>
                   setFormData((prev) => ({ ...prev, isVerified: checked }))
                 }
+                disabled={isSuperAdmin}
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-3  col-span-4 w-[200px] ">
+          <div className="flex items-center justify-center gap-3  col-span-4 ">
             <Label htmlFor="role">User Role</Label>
             <Select
               value={formData.role}
-              onValueChange={(value: "SUPER_ADMIN" | "ADMIN" | "USER") =>
+              onValueChange={(value: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER") =>
                 setFormData((prev) => ({ ...prev, role: value }))
               }
               disabled={isSuperAdmin}
@@ -218,8 +220,12 @@ const EditUser = () => {
                 <SelectValue placeholder="Select Role" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
+                <SelectItem value="FINANCE_ADMIN">Finance Admin</SelectItem>
+                <SelectItem value="ANALYST">Analyst</SelectItem>
+                <SelectItem value="SUPPORT_ADMIN">Support Admin</SelectItem>
                 <SelectItem value="USER">User</SelectItem>
-                <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="ARTIST">Artist</SelectItem>
 
                 {user.role === "SUPER_ADMIN" && (
                   <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>

@@ -3,7 +3,7 @@ import {
   Column,
   DataTable,
 } from "../../../components/Shared/DataTable/DataTable";
-import { Download, Pencil, Trash, View } from "lucide-react";
+import { Download, Pencil, RefreshCcw, Trash, View } from "lucide-react";
 import { saveAs } from "file-saver";
 import {
   useDeleteUserMutation,
@@ -23,13 +23,14 @@ const Users = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
 
+
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
   >("all");
-  const itemsPerPage = 3;
 
   const { data, isLoading, error } = useGetUsersQuery({
     page: currentPage,
@@ -37,7 +38,7 @@ const Users = () => {
     isActive: statusFilter === "all" ? undefined : statusFilter === "active",
   });
 
-  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
 
   const users = data?.data || [];
   const totalItems = data?.total || 0;
@@ -53,6 +54,7 @@ const Users = () => {
       "Role",
       "Joined",
     ];
+
     const body = users.map((r: User) =>
       [
         r.id,
@@ -123,6 +125,7 @@ const Users = () => {
       console.error("Failed to toggle user status:", error);
     }
   };
+  
   const columns: Column<User>[] = [
     { header: "Name", accessor: "full_name" },
     { header: "Email", accessor: "email", hideOnMobile: true },
@@ -159,17 +162,17 @@ const Users = () => {
           <button onClick={(e)=>{
             e.preventDefault();
             handleEditUser(item.id)
-          }} className="p-1 rounded-md text-blue-600 hover:bg-gray-100">
+          }} className="p-1 rounded-md text-[#727171] hover:bg-gray-100">
             <Pencil className="w-5 h-5" />
           </button>
           <button className="p-1 rounded-md text-red-600 hover:bg-gray-100">
-            <Trash
+           {item.isActive ? <Trash
               onClick={(e) => {
                 e.stopPropagation();
                 handleOpenDeleteDialog(item);
               }}
               className="w-4 h-4 sm:w-5 sm:h-5"
-            />
+            /> : <RefreshCcw className="w-4 h-4 sm:w-5 sm:h-5 text-[#0088FF]"/>}
           </button>
         </div>
       ),
@@ -177,7 +180,6 @@ const Users = () => {
   ];
 
   if (isLoading) return <UsersSkeleton />;
-  if(isDeleting) return toast.loading("Deleting user...");
   if (error) return <NoDataFound dataTitle="Users Data" />;
 
   return (
@@ -238,6 +240,7 @@ const Users = () => {
           currentPage={currentPage}
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
           onPageChange={setCurrentPage}
         />
       </div>
