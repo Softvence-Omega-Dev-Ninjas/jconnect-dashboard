@@ -220,12 +220,14 @@ const EditUser = () => {
                 <SelectValue placeholder="Select Role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-                <SelectItem value="FINANCE_ADMIN">Finance Admin</SelectItem>
-                <SelectItem value="ANALYST">Analyst</SelectItem>
-                <SelectItem value="SUPPORT_ADMIN">Support Admin</SelectItem>
-                <SelectItem value="USER">User</SelectItem>
-                <SelectItem value="ARTIST">Artist</SelectItem>
+                <SelectItem value="SUPER_ADMIN">SUPER ADMIN</SelectItem>
+                <SelectItem value="FINANCE_ADMIN">FINANCE ADMIN</SelectItem>
+                <SelectItem value="ANALYST">ANALYST</SelectItem>
+                <SelectItem value="SUPPORT_ADMIN">SUPPORT ADMIN</SelectItem>
+                <SelectItem value="MODERATOR">MODERATOR</SelectItem>
+                <SelectItem value="MEMBER">MEMBER</SelectItem>
+                <SelectItem value="USER">USER</SelectItem>
+                <SelectItem value="ARTIST">ARTIST</SelectItem>
 
                 {user.role === "SUPER_ADMIN" && (
                   <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>

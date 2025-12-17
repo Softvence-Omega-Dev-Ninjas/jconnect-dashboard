@@ -8,7 +8,7 @@ export const connectNotificationSocket = () => {
 
   if (!token) return null;
 
-  socket = io("ws://localhost:5050/notification", {
+  socket = io("https://jconnect-server.saikat.com.bd/notification", {
     transports: ["websocket"],
     auth: {
       token: `Bearer ${token}`,
