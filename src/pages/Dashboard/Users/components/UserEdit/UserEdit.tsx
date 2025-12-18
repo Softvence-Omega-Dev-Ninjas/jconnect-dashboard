@@ -25,11 +25,11 @@ interface EditFormState {
   full_name: string;
   email: string;
   phone: string;
-  pinCode: number | null;
+   pinCode: number | undefined;
   isActive: boolean;
   isVerified: boolean;
   role: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER";
-  profilePhoto: string | null;
+  profilePhoto: string | undefined;
 }
 
 const EditUser = () => {
@@ -51,11 +51,11 @@ const EditUser = () => {
     full_name: "",
     email: "",
     phone: "",
-    pinCode: null,
+    pinCode: undefined,
     isActive: false,
     isVerified: false,
     role: "USER",
-    profilePhoto: "",
+   profilePhoto: undefined,
   });
 
   useEffect(() => {
@@ -64,11 +64,11 @@ const EditUser = () => {
         full_name: user.full_name || "",
         email: user.email || "",
         phone: user.phone || "",
-        pinCode: user.pinCode || null,
+        pinCode: user.pinCode || undefined,
         isActive: user.isActive,
         isVerified: user.isVerified,
         role: user.role as "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER",
-        profilePhoto: user.profilePhoto || null,
+       profilePhoto: user.profilePhoto || undefined,
       });
     }
   }, [user]);
@@ -85,11 +85,11 @@ const EditUser = () => {
       full_name: formData.full_name,
       email: formData.email,
       phone: formData.phone,
-      pinCode: formData.pinCode,
+      pinCode: formData.pinCode ?? undefined,
       isActive: formData.isActive,
       isVerified: formData.isVerified,
       role: formData.role,
-      profilePhoto: formData.profilePhoto,
+      profilePhoto: formData.profilePhoto ?? undefined,
     };
 
     try {
@@ -169,11 +169,11 @@ const EditUser = () => {
             <Input
               id="pinCode"
               type="number"
-              value={formData.pinCode === null ? "" : formData.pinCode}
+              value={formData.pinCode === undefined ? "" : formData.pinCode}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
-                  pinCode: parseInt(e.target.value) || null,
+                  pinCode: parseInt(e.target.value) || undefined,
                 }))
               }
             />
@@ -220,12 +220,13 @@ const EditUser = () => {
                 <SelectValue placeholder="Select Role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-                <SelectItem value="FINANCE_ADMIN">Finance Admin</SelectItem>
-                <SelectItem value="ANALYST">Analyst</SelectItem>
-                <SelectItem value="SUPPORT_ADMIN">Support Admin</SelectItem>
-                <SelectItem value="USER">User</SelectItem>
-                <SelectItem value="ARTIST">Artist</SelectItem>
+                <SelectItem value="SUPER_ADMIN">SUPER ADMIN</SelectItem>
+                <SelectItem value="FINANCE_ADMIN">FINANCE ADMIN</SelectItem>
+                <SelectItem value="ANALYST">ANALYST</SelectItem>
+                <SelectItem value="SUPPORT_ADMIN">SUPPORT ADMIN</SelectItem>
+                <SelectItem value="MODERATOR">MODERATOR</SelectItem>
+                <SelectItem value="MEMBER">MEMBER</SelectItem>
+                <SelectItem value="ARTIST">ARTIST</SelectItem>
 
                 {user.role === "SUPER_ADMIN" && (
                   <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
