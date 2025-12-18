@@ -1,6 +1,5 @@
-import { useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { useGetUserByIdQuery } from "@/redux/features/users/usersApi";
-import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -11,11 +10,13 @@ import {
   ContactRound,
   Loader2,
   Image,
+  ArrowLeft,
 } from "lucide-react";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 
 const SingleUserDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const userId = id || "";
 
@@ -59,7 +60,17 @@ const SingleUserDetail = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <PageHeading title={`User Details: ${user.full_name}`} />
+      <div className="">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center text-gray-500 hover:text-red-600 transition-all group w-fit"
+        >
+          <div className="p-2 rounded-full group-hover:bg-red-50 mr-2 transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </div>
+          <span className="font-semibold">Back to User</span>
+        </button>
+      </div>
 
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md border-t-4 border-red-600 overflow-scroll sm:overflow-visible">
         <div className="flex items-center space-x-4">
