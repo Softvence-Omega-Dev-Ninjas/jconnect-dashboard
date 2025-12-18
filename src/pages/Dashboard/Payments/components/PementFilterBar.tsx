@@ -89,7 +89,7 @@ const PaymentFilterBar = ({
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
-        <span className="text-sm font-medium whitespace-nowrap">Month:</span>
+        <span className="text-sm font-medium whitespace-nowrap">Date Range:</span>
         <Select value={monthFilter} onValueChange={onMonthChange}>
           <SelectTrigger className="w-full sm:w-[140px] text-xs bg-white">
             <SelectValue placeholder="Select Month" />

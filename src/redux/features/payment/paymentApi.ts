@@ -1,3 +1,4 @@
+import { TransactionDetailsResponse } from "@/types/TransactionHistory.type";
 import { baseApi } from "../../api/baseApi";
 
 export interface TransactionHistoryQueryParams {
@@ -5,8 +6,8 @@ export interface TransactionHistoryQueryParams {
   limit: number;
   status?: string;
   type?: string;
-  month?: number; 
-  sort?: "asc" | "desc"; 
+  month?: number;
+  sort?: "asc" | "desc";
 }
 
 interface SellerInfo {
@@ -70,7 +71,17 @@ export const PaymentsApi = baseApi.injectEndpoints({
       },
       providesTags: ["Transactions"],
     }),
+    getTransactionDetails: builder.query<
+      TransactionDetailsResponse,
+      string | undefined
+    >({
+      query: (id) => ({
+        url: `/payments/transaction-history/${id}`,
+        method: "GET",
+      }),
+      providesTags: (_result, _error, id) => [{ type: "Transactions", id }],
+    }),
   }),
 });
 
-export const { useGetAllTransactionHistoryQuery } = PaymentsApi;
+export const { useGetAllTransactionHistoryQuery, useGetTransactionDetailsQuery } = PaymentsApi;
