@@ -78,6 +78,6 @@ export const {
   useGetPlatformSettingsQuery,
   useUpdatePlatformSettingsMutation,
   useCreateAnnouncementMutation,
-  useGetNotificationSettingsQuery, 
-  useUpdateNotificationSettingsMutation
+  useGetNotificationSettingsQuery,
+  useUpdateNotificationSettingsMutation,
 } = settingsApi;

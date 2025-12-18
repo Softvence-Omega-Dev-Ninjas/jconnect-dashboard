@@ -27,15 +27,11 @@ const SingleUserDetail = () => {
   });
 
   if (isLoading) {
-    return (
-      <LoadingSpinner message="Loading user details..." />
-    );
+    return <LoadingSpinner message="Loading user details..." />;
   }
 
   if (error instanceof Error || !user) {
-    return (
-      <NoDataFound dataTitle="No user details. Please try again later." />
-    );
+    return <NoDataFound dataTitle="No user details. Please try again later." />;
   }
 
   const formatDate = (dateString: string | null) => {
@@ -73,7 +69,9 @@ const SingleUserDetail = () => {
             <h2 className="text-2xl font-bold text-gray-900 mr-2">
               {user.full_name}
             </h2>
-            <p className="hidden md:flex text-sm text-gray-500">User ID: {user.id}</p>
+            <p className="hidden md:flex text-sm text-gray-500">
+              User ID: {user.id}
+            </p>
           </div>
         </div>
         <div className="space-x-1 flex">
@@ -99,7 +97,7 @@ const SingleUserDetail = () => {
           <CardContent className="space-y-2">
             <div className="flex items-center gap-1">
               <Mail className="h-4 w-4 text-gray-500" />
-            <p className="text-lg font-semibold">{user.email}</p>
+              <p className="text-lg font-semibold">{user.email}</p>
             </div>
             <div className="flex items-center text-sm text-gray-600">
               <Phone className="h-4 w-4 mr-2" />
