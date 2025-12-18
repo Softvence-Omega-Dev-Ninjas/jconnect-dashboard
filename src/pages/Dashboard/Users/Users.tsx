@@ -31,7 +31,6 @@ const Users = () => {
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
   >("all");
-  // const itemsPerPage = 3;
 
   const { data, isLoading, error } = useGetUsersQuery({
     page: currentPage,
@@ -55,6 +54,7 @@ const Users = () => {
       "Role",
       "Joined",
     ];
+
     const body = users.map((r: User) =>
       [
         r.id,
@@ -125,6 +125,7 @@ const Users = () => {
       console.error("Failed to toggle user status:", error);
     }
   };
+  
   const columns: Column<User>[] = [
     { header: "Name", accessor: "full_name" },
     { header: "Email", accessor: "email", hideOnMobile: true },

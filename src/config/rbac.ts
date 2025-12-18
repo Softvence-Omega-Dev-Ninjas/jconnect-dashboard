@@ -1,5 +1,5 @@
 export const ROLES = {
-  SUPER_ADMIN: "SUPER_ADMIN",
+  ADMIN: "ADMIN",
   FINANCE_ADMIN: "FINANCE_ADMIN",
   ANALYST: "ANALYST",
   SUPPORT_ADMIN: "SUPPORT_ADMIN",
@@ -9,17 +9,17 @@ export type Role = (typeof ROLES)[keyof typeof ROLES];
 
 export const ROUTE_PERMISSIONS: Record<string, Role[]> = {
   "/": [
-    ROLES.SUPER_ADMIN,
+    ROLES.ADMIN,
     ROLES.FINANCE_ADMIN,
     ROLES.ANALYST,
     ROLES.SUPPORT_ADMIN,
   ],
-  "/users": [ROLES.SUPER_ADMIN, ROLES.SUPPORT_ADMIN],
-  "/users/:id": [ROLES.SUPER_ADMIN, ROLES.SUPPORT_ADMIN],
-  "/users/edit/:id": [ROLES.SUPER_ADMIN, ROLES.SUPPORT_ADMIN],
-  "/payments": [ROLES.SUPER_ADMIN, ROLES.FINANCE_ADMIN],
-  "/reports": [ROLES.SUPER_ADMIN, ROLES.FINANCE_ADMIN],
-  "/settings": [ROLES.SUPER_ADMIN],
-  "/disputes": [ROLES.SUPER_ADMIN, ROLES.ANALYST],
-  "/disputes/:id": [ROLES.SUPER_ADMIN, ROLES.ANALYST],
+  "/users": [ROLES.ADMIN, ROLES.SUPPORT_ADMIN],
+  "/users/:id": [ROLES.ADMIN, ROLES.SUPPORT_ADMIN],
+  "/users/edit/:id": [ROLES.ADMIN, ROLES.SUPPORT_ADMIN],
+  "/payments": [ROLES.ADMIN, ROLES.FINANCE_ADMIN],
+  "/reports": [ROLES.ADMIN, ROLES.FINANCE_ADMIN],
+  "/settings": [ROLES.ADMIN],
+  "/disputes": [ROLES.ADMIN, ROLES.ANALYST],
+  "/disputes/:id": [ROLES.ADMIN, ROLES.ANALYST],
 };
