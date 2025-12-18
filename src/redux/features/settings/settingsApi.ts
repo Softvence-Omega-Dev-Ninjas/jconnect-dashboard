@@ -28,7 +28,7 @@ export interface NotificationSetting {
 
 export interface NotificationSettingsResponse {
   message: string;
-  data: NotificationSetting[];
+  data: NotificationSetting;
 }
 
 export const settingsApi = baseApi.injectEndpoints({
@@ -57,7 +57,7 @@ export const settingsApi = baseApi.injectEndpoints({
       }),
     }),
     getNotificationSettings: builder.query<NotificationSettingsResponse, void>({
-      query: () => "/settings/notification-toggle-settings-only-admin",
+      query: () => "/notification-setting",
       providesTags: ["NotificationSettings"],
     }),
     updateNotificationSettings: builder.mutation<
@@ -65,7 +65,7 @@ export const settingsApi = baseApi.injectEndpoints({
       Partial<NotificationSetting>
     >({
       query: (data) => ({
-        url: "/settings/notification-toggle-settings-only-admin",
+        url: "/notification-setting",
         method: "PATCH",
         body: data,
       }),

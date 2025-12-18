@@ -4,12 +4,13 @@ import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  User as UserIcon,
   Mail,
   Phone,
   Calendar,
   Shield,
   ContactRound,
+  Loader2,
+  Image,
 } from "lucide-react";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
@@ -62,8 +63,23 @@ const SingleUserDetail = () => {
 
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md border-t-4 border-red-600 overflow-scroll sm:overflow-visible">
         <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-            <UserIcon className="w-8 h-8 text-red-600" />
+          <div className="relative w-20 h-20 rounded-full border-2 border-white shadow-md overflow-hidden bg-gray-100 shrink-0">
+            {user.profilePhoto ? (
+              <img
+                src={user.profilePhoto}
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                <Image />
+              </div>
+            )}
+            {isLoading && (
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <Loader2 className="w-6 h-6 text-white animate-spin" />
+              </div>
+            )}
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mr-2">
