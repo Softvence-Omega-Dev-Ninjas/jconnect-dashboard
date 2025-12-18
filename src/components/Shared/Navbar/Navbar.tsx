@@ -89,10 +89,10 @@ const Navbar = () => {
           <div className="flex items-center gap-2">
             <div className="flex flex-col">
               <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
-                {user?.full_name || "Admin User"}
+                {user?.full_name || "..."}
               </span>
               <span className="text-[10px] text-gray-500 hidden md:block max-w-[120px] truncate">
-                {user?.role || "admin"}
+                {user?.role || "..."}
               </span>
             </div>
             <Avatar className="w-7 h-7 sm:w-8 sm:h-8">

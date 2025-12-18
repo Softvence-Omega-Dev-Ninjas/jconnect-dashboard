@@ -63,7 +63,6 @@ const Login: React.FC = () => {
           sameSite: "Lax",
           secure: secureFlag,
         });
-
         // Store user in Redux
         dispatch(
           setCredentials({
