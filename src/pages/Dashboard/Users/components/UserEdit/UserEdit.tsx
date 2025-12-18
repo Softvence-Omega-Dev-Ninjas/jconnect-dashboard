@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Image, Loader2, UploadCloud } from "lucide-react"; // আইকনের জন্য
+import { ArrowLeft, Image, Loader2, UploadCloud } from "lucide-react"; // আইকনের জন্য
 import {
   useGetUserByIdQuery,
   useUpdateUserMutation,
@@ -46,7 +46,11 @@ const EditUser = () => {
   const userId = id || "";
   const navigate = useNavigate();
 
-  const { data: user, isLoading, error } = useGetUserByIdQuery(userId, { skip: !userId });
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useGetUserByIdQuery(userId, { skip: !userId });
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
   const [formData, setFormData] = useState<EditFormState>({
@@ -117,7 +121,8 @@ const EditUser = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isUploading) return toast.warning("Please wait for image to finish uploading");
+    if (isUploading)
+      return toast.warning("Please wait for image to finish uploading");
 
     const updatedFields: UpdateUserPayload = {
       ...formData,
@@ -134,15 +139,26 @@ const EditUser = () => {
   };
 
   if (isLoading) return <LoadingSpinner message="Loading user data..." />;
-  if (error || !user) return <NoDataFound dataTitle="User" noDataText="User not found." />;
+  if (error || !user)
+    return <NoDataFound dataTitle="User" noDataText="User not found." />;
 
   const isSuperAdmin = user.role === "SUPER_ADMIN";
 
   return (
     <div className="p-2 md:p-6 max-w-4xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl">
-          Profile Update: <span className="font-bold">{user.full_name}</span>
+      <div className="relative flex items-center mb-2 w-full min-h-[50px]">
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute left-0 flex items-center text-gray-500 hover:text-red-600 transition-all group cursor-pointer"
+        >
+          <div className="p-2 rounded-full group-hover:bg-red-50 mr-2 transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </div>
+          <span className="font-semibold hidden sm:inline">Back to user</span>
+        </button>
+
+        <h1 className="text-2xl md:text-4xl font-bold text-center w-full text-gray-800">
+          Update Profile
         </h1>
       </div>
 
@@ -154,13 +170,26 @@ const EditUser = () => {
           {/* Full Name */}
           <div>
             <Label htmlFor="full_name">Full Name</Label>
-            <Input id="full_name" value={formData.full_name} onChange={handleChange} required disabled={isSuperAdmin} />
+            <Input
+              id="full_name"
+              value={formData.full_name}
+              onChange={handleChange}
+              required
+              disabled={isSuperAdmin}
+            />
           </div>
 
           {/* Email */}
           <div>
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" value={formData.email} onChange={handleChange} required disabled={!isSuperAdmin && formData.role !== "ARTIST"} />
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              disabled={!isSuperAdmin && formData.role !== "ARTIST"}
+            />
           </div>
 
           {/* Profile Picture Upload Section */}
@@ -170,10 +199,14 @@ const EditUser = () => {
               {/* Preview Image */}
               <div className="relative w-20 h-20 rounded-full border-2 border-white shadow-md overflow-hidden bg-gray-100 shrink-0">
                 {formData.profilePhoto ? (
-                  <img src={formData.profilePhoto} alt="Preview" className="w-full h-full object-cover" />
+                  <img
+                    src={formData.profilePhoto}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400">
-                   <Image />
+                    <Image />
                   </div>
                 )}
                 {isUploading && (
@@ -216,7 +249,12 @@ const EditUser = () => {
               id="pinCode"
               type="number"
               value={formData.pinCode ?? ""}
-              onChange={(e) => setFormData((prev) => ({ ...prev, pinCode: parseInt(e.target.value) || undefined }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  pinCode: parseInt(e.target.value) || undefined,
+                }))
+              }
             />
           </div>
         </div>
@@ -226,18 +264,40 @@ const EditUser = () => {
           <div className="flex flex-col md:flex-row items-center col-span-8 gap-6">
             <div className="flex items-center gap-3">
               <Label htmlFor="isActive">Active</Label>
-              <Switch id="isActive" checked={formData.isActive} onCheckedChange={(val) => setFormData((prev) => ({ ...prev, isActive: val }))} disabled={isSuperAdmin} />
+              <Switch
+                id="isActive"
+                checked={formData.isActive}
+                onCheckedChange={(val) =>
+                  setFormData((prev) => ({ ...prev, isActive: val }))
+                }
+                disabled={isSuperAdmin}
+              />
             </div>
             <div className="flex items-center gap-3">
               <Label htmlFor="isVerified">Verified</Label>
-              <Switch id="isVerified" checked={formData.isVerified} onCheckedChange={(val) => setFormData((prev) => ({ ...prev, isVerified: val }))} disabled={isSuperAdmin} />
+              <Switch
+                id="isVerified"
+                checked={formData.isVerified}
+                onCheckedChange={(val) =>
+                  setFormData((prev) => ({ ...prev, isVerified: val }))
+                }
+                disabled={isSuperAdmin}
+              />
             </div>
           </div>
 
           <div className="flex items-center gap-3 col-span-4">
             <Label htmlFor="role">Role</Label>
-            <Select value={formData.role} onValueChange={(val: EditFormState["role"]) => setFormData((prev) => ({ ...prev, role: val }))} disabled={isSuperAdmin}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+            <Select
+              value={formData.role}
+              onValueChange={(val: EditFormState["role"]) =>
+                setFormData((prev) => ({ ...prev, role: val }))
+              }
+              disabled={isSuperAdmin}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="SUPER_ADMIN">SUPER ADMIN</SelectItem>
                 <SelectItem value="ADMIN">ADMIN</SelectItem>
@@ -252,7 +312,7 @@ const EditUser = () => {
           <Button
             type="submit"
             disabled={isUpdating || isUploading}
-            className="w-full py-6 rounded-xl text-white font-bold bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)] shadow-lg hover:scale-[1.01] transition-all disabled:opacity-50"
+            className="w-full py-4 rounded-xl text-white font-bold bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)] shadow-lg hover:scale-[1.01] transition-all disabled:opacity-50"
           >
             {isUpdating ? "Saving Changes..." : "Save Changes"}
           </Button>
