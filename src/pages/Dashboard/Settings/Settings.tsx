@@ -9,8 +9,8 @@ const Settings = () => {
       <Platform />
       {/* <AdminRoleManagement /> */}
       <div className="space-y-7 bg-white rounded-lg shadow-md p-6 mt-4">
-      <CommunicationNotifications />
-      <AdminAnnouncement />
+        <CommunicationNotifications />
+        <AdminAnnouncement />
       </div>
     </div>
   );

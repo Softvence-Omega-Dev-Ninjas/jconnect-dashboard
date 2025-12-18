@@ -13,28 +13,13 @@ interface FilterBarProps {
   onExport?: () => void;
 }
 
-const FilterBar = ({ statusFilter, onStatusChange, onExport }: FilterBarProps) => {
+const FilterBar = ({
+  statusFilter,
+  onStatusChange,
+  onExport,
+}: FilterBarProps) => {
   return (
     <div className="flex flex-col lg:flex-row lg:flex-wrap items-start lg:items-center gap-3 md:gap-4 p-3 md:p-4 rounded-lg">
-      {/* Priority Filter */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
-        <span className="text-sm font-medium whitespace-nowrap">Priority:</span>
-        <div className="bg-white p-2 md:p-3 rounded-2xl border flex flex-wrap gap-1">
-          <button className="px-2 md:px-3 py-1.5 text-xs font-medium btn-primary rounded">
-            All
-          </button>
-          <button className="px-2 md:px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
-            High
-          </button>
-          <button className="px-2 md:px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
-            Medium
-          </button>
-          <button className="px-2 md:px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded">
-            Low
-          </button>
-        </div>
-      </div>
-
       {/* Status Filter */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
         <span className="text-sm font-medium whitespace-nowrap">Status:</span>
@@ -42,7 +27,9 @@ const FilterBar = ({ statusFilter, onStatusChange, onExport }: FilterBarProps) =
           <button
             onClick={() => onStatusChange("all")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "all" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
+              statusFilter === "all"
+                ? "btn-primary"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             All
@@ -50,7 +37,9 @@ const FilterBar = ({ statusFilter, onStatusChange, onExport }: FilterBarProps) =
           <button
             onClick={() => onStatusChange("pending")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "pending" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
+              statusFilter === "pending"
+                ? "btn-primary"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             Pending
@@ -58,7 +47,9 @@ const FilterBar = ({ statusFilter, onStatusChange, onExport }: FilterBarProps) =
           <button
             onClick={() => onStatusChange("under_review")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "under_review" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
+              statusFilter === "under_review"
+                ? "btn-primary"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             Under Review
@@ -66,7 +57,9 @@ const FilterBar = ({ statusFilter, onStatusChange, onExport }: FilterBarProps) =
           <button
             onClick={() => onStatusChange("resolved")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "resolved" ? "btn-primary" : "text-gray-600 hover:bg-gray-100"
+              statusFilter === "resolved"
+                ? "btn-primary"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             Resolved
@@ -76,7 +69,9 @@ const FilterBar = ({ statusFilter, onStatusChange, onExport }: FilterBarProps) =
 
       {/* Date Range */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
-        <span className="text-sm font-medium whitespace-nowrap">Date Range:</span>
+        <span className="text-sm font-medium whitespace-nowrap">
+          Date Range:
+        </span>
         <Select defaultValue="this-month">
           <SelectTrigger className="w-full sm:w-[140px] text-xs bg-white">
             <SelectValue />

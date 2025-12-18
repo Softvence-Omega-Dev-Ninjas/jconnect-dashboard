@@ -88,7 +88,7 @@ const HistoryDetails = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* LEFT SIDE: Main Info (8 Columns) */}
-          <div className="lg:col-span-8 space-y-8">
+          <div className="lg:col-span-8 space-y-6">
             {/* Order Primary Card */}
             <Card className="overflow-hidden border-none shadow-xl shadow-gray-200/50 rounded-3xl">
               <CardHeader className="pb-4">
@@ -178,10 +178,10 @@ const HistoryDetails = () => {
           </div>
 
           {/* RIGHT SIDE: Sidebar (4 Columns) */}
-          <div className="lg:col-span-4 space-y-8">
+          <div className="lg:col-span-4 space-y-5">
             {/* Financial Summary Card */}
             <Card className="border-none shadow-2xl rounded-3xl bg-gray-900 text-white overflow-hidden">
-              <div className="p-6 space-y-6 relative">
+              <div className="p-5 space-y-6 relative">
                 {/* Decorative background element */}
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-red-600/20 rounded-full blur-3xl" />
 
@@ -269,12 +269,6 @@ const HistoryDetails = () => {
                     </span>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  className="w-full border-red-100 text-red-600 hover:bg-red-50 font-bold"
-                >
-                  Contact Seller
-                </Button>
               </CardContent>
             </Card>
           </div>
