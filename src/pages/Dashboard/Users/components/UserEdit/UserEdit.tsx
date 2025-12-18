@@ -25,10 +25,18 @@ interface EditFormState {
   full_name: string;
   email: string;
   phone: string;
-   pinCode: number | undefined;
+  pinCode: number | undefined;
   isActive: boolean;
   isVerified: boolean;
-  role: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER";
+  role:
+    | "SUPER_ADMIN"
+    | "ADMIN"
+    | "ARTIST"
+    | "MEMBER"
+    | "FINANCE_ADMIN"
+    | "ANALYST"
+    | "SUPPORT_ADMIN"
+    | "MODERATOR";
   profilePhoto: string | undefined;
 }
 
@@ -54,8 +62,8 @@ const EditUser = () => {
     pinCode: undefined,
     isActive: false,
     isVerified: false,
-    role: "USER",
-   profilePhoto: undefined,
+    role: "ARTIST",
+    profilePhoto: undefined,
   });
 
   useEffect(() => {
@@ -67,8 +75,8 @@ const EditUser = () => {
         pinCode: user.pinCode || undefined,
         isActive: user.isActive,
         isVerified: user.isVerified,
-        role: user.role as "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER",
-       profilePhoto: user.profilePhoto || undefined,
+        role: user.role as EditFormState["role"],
+        profilePhoto: user.profilePhoto || undefined,
       });
     }
   }, [user]);
@@ -102,7 +110,7 @@ const EditUser = () => {
       navigate(`/users/${userId}`);
     } catch (updateError) {
       console.error("User update failed:", updateError);
-      toast.error(`Failed to update ${formData.role}` );
+      toast.error(`Failed to update ${formData.role}`);
     }
   };
 
@@ -130,7 +138,10 @@ const EditUser = () => {
   return (
     <div className="p-2 md:p-6 max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-4xl">Profile Update: <span className="font-bold">{` ${user.full_name}`}</span></h1>
+        <h1 className="text-4xl">
+          Profile Update:{" "}
+          <span className="font-bold">{` ${user.full_name}`}</span>
+        </h1>
       </div>
 
       <form
@@ -153,7 +164,7 @@ const EditUser = () => {
             <Input
               id="email"
               type="email"
-              disabled={formData.role === "USER" ? false : true}
+              disabled={formData.role === "ARTIST" ? false : true}
               value={formData.email}
               onChange={handleChange}
               required
@@ -161,7 +172,12 @@ const EditUser = () => {
           </div>
           <div>
             <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" disabled={formData.role === "USER" ? false : true} value={formData.phone} onChange={handleChange} />
+            <Input
+              id="phone"
+              disabled={formData.role === "ARTIST" ? false : true}
+              value={formData.phone}
+              onChange={handleChange}
+            />
           </div>
           <div>
             <Label htmlFor="pinCode">Pin Code</Label>
@@ -211,7 +227,7 @@ const EditUser = () => {
             <Label htmlFor="role">User Role</Label>
             <Select
               value={formData.role}
-              onValueChange={(value: "SUPER_ADMIN" | "ADMIN" | "ARTIST" | "USER") =>
+              onValueChange={(value: EditFormState["role"]) =>
                 setFormData((prev) => ({ ...prev, role: value }))
               }
               disabled={isSuperAdmin}
@@ -250,7 +266,7 @@ const EditUser = () => {
           <Button
             type="submit"
             disabled={isUpdating}
-           className="w-full py-3 rounded text-white font-bold
+            className="w-full py-3 rounded text-white font-bold
          bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)]
          shadow-[0_4px_12px_rgba(0,0,0,0.35)]
          hover:opacity-95 transition duration-200 cursor-pointer disabled:opacity-50"

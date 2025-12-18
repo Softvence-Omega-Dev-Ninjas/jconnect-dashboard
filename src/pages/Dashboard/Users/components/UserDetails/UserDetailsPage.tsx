@@ -9,6 +9,7 @@ import {
   Phone,
   Calendar,
   Shield,
+  ContactRound,
 } from "lucide-react";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
@@ -69,13 +70,13 @@ const SingleUserDetail = () => {
             <UserIcon className="w-8 h-8 text-red-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900 mr-2">
               {user.full_name}
             </h2>
-            <p className="text-sm text-gray-500">User ID: {user.id}</p>
+            <p className="hidden md:flex text-sm text-gray-500">User ID: {user.id}</p>
           </div>
         </div>
-        <div className="space-y-1">
+        <div className="space-x-1 flex">
           {getStatusBadge(user.isActive)}
           <Badge
             variant="outline"
@@ -87,16 +88,19 @@ const SingleUserDetail = () => {
       </div>
 
       {/* --- Primary Contact and Status Info --- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card className="shadow-lg overflow-scroll sm:overflow-visible">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Contact Information
             </CardTitle>
-            <Mail className="h-4 w-4 text-gray-500" />
+            <ContactRound />
           </CardHeader>
           <CardContent className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Mail className="h-4 w-4 text-gray-500" />
             <p className="text-lg font-semibold">{user.email}</p>
+            </div>
             <div className="flex items-center text-sm text-gray-600">
               <Phone className="h-4 w-4 mr-2" />
               {user.phone || "Phone Not Provided"}

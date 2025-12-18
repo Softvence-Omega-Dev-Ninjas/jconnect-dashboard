@@ -13,23 +13,41 @@ interface UpdatePlatformSettingsRequest {
   minimum_payout?: number;
 }
 
+export interface NotificationSetting {
+  id: string;
+  email: boolean;
+  userUpdates: boolean;
+  serviceCreate: boolean;
+  review: boolean;
+  post: boolean;
+  message: boolean;
+  userRegistration: boolean;
+  Service: boolean;
+  userId: string;
+}
+
+export interface NotificationSettingsResponse {
+  message: string;
+  data: NotificationSetting[];
+}
+
 export const settingsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getPlatformSettings: builder.query<PlatformSettings, void>({
       query: () => "/settings",
       providesTags: ["Settings"],
     }),
-    
+
     updatePlatformSettings: builder.mutation<
       PlatformSettings,
       UpdatePlatformSettingsRequest
     >({
       query: (data) => ({
-        url: '/settings',
-        method: 'PATCH',
+        url: "/settings",
+        method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ['Settings'],
+      invalidatesTags: ["Settings"],
     }),
     createAnnouncement: builder.mutation({
       query: (data) => ({
@@ -38,11 +56,28 @@ export const settingsApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    getNotificationSettings: builder.query<NotificationSettingsResponse, void>({
+      query: () => "/settings/notification-toggle-settings-only-admin",
+      providesTags: ["NotificationSettings"],
+    }),
+    updateNotificationSettings: builder.mutation<
+      NotificationSettingsResponse,
+      Partial<NotificationSetting>
+    >({
+      query: (data) => ({
+        url: "/settings/notification-toggle-settings-only-admin",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["NotificationSettings"],
+    }),
   }),
 });
 
-export const { 
-  useGetPlatformSettingsQuery, 
+export const {
+  useGetPlatformSettingsQuery,
   useUpdatePlatformSettingsMutation,
-  useCreateAnnouncementMutation
+  useCreateAnnouncementMutation,
+  useGetNotificationSettingsQuery, 
+  useUpdateNotificationSettingsMutation
 } = settingsApi;

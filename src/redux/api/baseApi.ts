@@ -48,6 +48,7 @@ export const baseApi = createApi({
     "User",
     "Transactions",
     "Notifications",
+    "NotificationSettings"
   ],
   endpoints: () => ({}),
 });

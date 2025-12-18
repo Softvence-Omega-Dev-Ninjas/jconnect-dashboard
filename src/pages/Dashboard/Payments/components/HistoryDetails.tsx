@@ -178,7 +178,7 @@ const HistoryDetails = () => {
           </div>
 
           {/* RIGHT SIDE: Sidebar (4 Columns) */}
-          <div className="lg:col-span-4 space-y-8">
+          <div className="lg:col-span-4 space-y-5">
             {/* Financial Summary Card */}
             <Card className="border-none shadow-2xl rounded-3xl bg-gray-900 text-white overflow-hidden">
               <div className="p-6 space-y-6 relative">
@@ -269,12 +269,6 @@ const HistoryDetails = () => {
                     </span>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  className="w-full border-red-100 text-red-600 hover:bg-red-50 font-bold"
-                >
-                  Contact Seller
-                </Button>
               </CardContent>
             </Card>
           </div>
