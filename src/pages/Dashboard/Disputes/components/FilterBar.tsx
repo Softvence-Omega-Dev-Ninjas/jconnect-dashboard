@@ -45,16 +45,6 @@ const FilterBar = ({
             Pending
           </button>
           <button
-            onClick={() => onStatusChange("under_review")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "under_review"
-                ? "btn-primary"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            Under Review
-          </button>
-          <button
             onClick={() => onStatusChange("resolved")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
               statusFilter === "resolved"
@@ -63,6 +53,16 @@ const FilterBar = ({
             }`}
           >
             Resolved
+          </button>
+          <button
+            onClick={() => onStatusChange("reject")}
+            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
+              statusFilter === "resolved"
+                ? "btn-primary"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            Reject
           </button>
         </div>
       </div>
