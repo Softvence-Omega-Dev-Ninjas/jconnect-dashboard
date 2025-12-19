@@ -61,14 +61,14 @@ interface TopSellersQueryParams {
 
 //User weekly activity response type
 export interface ActivityItem {
- date: string;
- activePercentage: number;
- inactivePercentage: number;
+  date: string;
+  activePercentage: number;
+  inactivePercentage: number;
 }
 interface UserActivityWeeklyResponse {
-    status: number;
-    message: string;
-    data: ActivityItem[];
+  status: number;
+  message: string;
+  data: ActivityItem[];
 }
 
 export const dashboardApi = baseApi.injectEndpoints({
@@ -94,9 +94,10 @@ export const dashboardApi = baseApi.injectEndpoints({
       transformResponse: (response: TopSellersResponse) => response,
     }),
     getWeeklyUserActivity: builder.query<ActivityItem[], void>({
-   query: () => "/admin/dashboard-stats/user-activity-weekly",
-   transformResponse: (response: UserActivityWeeklyResponse) => response.data,
-  }),
+      query: () => "/admin/dashboard-stats/user-activity-weekly",
+      transformResponse: (response: UserActivityWeeklyResponse) =>
+        response.data,
+    }),
   }),
 });
 

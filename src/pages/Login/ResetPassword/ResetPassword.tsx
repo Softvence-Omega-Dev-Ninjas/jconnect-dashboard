@@ -7,6 +7,7 @@ import {
   ResetPasswordPayload,
 } from "@/redux/features/auth/authApi";
 import ApiErrorMessage from "@/components/Shared/ApiErrorMessage/ApiErrorMessage";
+import { toast } from "sonner";
 
 interface LocationState {
   code: string;
@@ -56,7 +57,7 @@ const ResetPassword: React.FC = () => {
     try {
       await resetPassword(payload).unwrap();
 
-      alert("Your password has been successfully reset! Please login.");
+       toast.success("Your password has been successfully reset! Please login.");
       navigate("/login", { replace: true });
     } catch (err) {
       console.error("Password reset failed:", err);

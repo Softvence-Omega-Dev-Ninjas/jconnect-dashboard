@@ -1,6 +1,3 @@
-import React from "react";
-import { RotateCw } from "lucide-react";
-
 interface ResendButtonProps {
   timer: number;
   isResending: boolean;
@@ -8,23 +5,26 @@ interface ResendButtonProps {
 }
 
 const ResendButton: React.FC<ResendButtonProps> = ({ timer, isResending, onResend }) => {
-  if (timer > 0) {
-    return (
-      <p className="text-gray-600 text-sm">
-        Resend code in <span className="font-bold text-red-600">{timer}s</span>
-      </p>
-    );
-  }
+  const minutes = Math.floor(timer / 60);
+  const seconds = timer % 60;
+  const timeDisplay = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
   return (
-    <button
-      onClick={onResend}
-      disabled={isResending}
-      className="text-red-600 font-semibold flex items-center justify-center mx-auto hover:text-red-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      <RotateCw className="w-4 h-4 mr-2" />
-      {isResending ? "Sending..." : "Resend Code"}
-    </button>
+    <div className="text-sm">
+      {timer > 0 ? (
+        <p className="text-gray-500">
+          Resend code in <span className="font-bold text-red-600">{timeDisplay}</span>
+        </p>
+      ) : (
+        <button
+          onClick={onResend}
+          disabled={isResending}
+          className="text-red-600 font-bold hover:underline disabled:opacity-50"
+        >
+          {isResending ? "Sending..." : "Resend Code"}
+        </button>
+      )}
+    </div>
   );
 };
 
