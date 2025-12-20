@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import { useGetTopSellersQuery } from "@/redux/features/dashboard/dashboardApi";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 interface SellerData {
   username: string;
@@ -11,11 +14,15 @@ interface SellerData {
 }
 
 export const TopSellers = () => {
+  const searchTerm = useSelector(
+    (state: any) => state.search?.searchTerm || ""
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const { data, isLoading, error } = useGetTopSellersQuery({
     page: currentPage,
     limit: itemsPerPage,
+    search: searchTerm,
   });
 
   const sellers: SellerData[] = data?.data?.data || [];
@@ -44,23 +51,12 @@ export const TopSellers = () => {
       accessor: "avgOrderValue",
       hideOnMobile: true,
       render: (item) => `$${item.avgOrderValue.toFixed(2)}`,
-    }
+    },
   ];
 
-  if (isLoading)
-    return (
-      <div className="p-3 sm:p-4 text-center text-gray-500">
-        Loading Top Sellers...
-      </div>
-    );
-  if (error)
-    return (
-      <NoDataFound dataTitle="top sellers"/>
-    );
-  if (sellers.length === 0)
-    return (
-      <div className="p-3 sm:p-4 text-center text-gray-500">No top sellers found.</div>
-    );
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <NoDataFound dataTitle="top sellers" />;
+  if (sellers.length === 0) return <NoDataFound dataTitle="top sellers Data" />;
 
   return (
     <DataTable

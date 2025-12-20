@@ -10,9 +10,14 @@ import {
   useUpdateNotificationSettingsMutation,
 } from "@/redux/features/settings/settingsApi";
 import { notificationItems } from "./NotificationItems/NotificationItems";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 
 const CommunicationNotifications = () => {
-  const { data: apiResponse, isLoading } = useGetNotificationSettingsQuery();
+  const {
+    data: apiResponse,
+    isLoading,
+    error,
+  } = useGetNotificationSettingsQuery();
   const [updateSettings, { isLoading: isUpdating }] =
     useUpdateNotificationSettingsMutation();
   const [localSettings, setLocalSettings] =
@@ -23,6 +28,10 @@ const CommunicationNotifications = () => {
       setLocalSettings(apiResponse.data);
     }
   }, [apiResponse]);
+
+  if (error) {
+    return <NoDataFound dataTitle="Notification Data" />;
+  }
 
   if (isLoading || !localSettings) {
     return (
@@ -83,7 +92,7 @@ const CommunicationNotifications = () => {
       <PageHeading title="Communication & Notifications" />
 
       <div
-        className={`space-y-8 mt-6 transition-opacity duration-200 ${
+        className={`space-y-8 mt-6 transition-opacity duration-200 bg-white rounded-lg shadow-md p-6 ${
           isUpdating ? "opacity-75" : "opacity-100"
         }`}
       >

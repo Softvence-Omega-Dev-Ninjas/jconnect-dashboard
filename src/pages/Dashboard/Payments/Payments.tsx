@@ -37,7 +37,7 @@ const Payments = () => {
 
   if (isLoading) return <LoadingSpinner message="Loading overview stats..." />;
   if (error) {
-    return <NoDataFound dataTitle="Users Overview Date" />;
+    return <NoDataFound dataTitle="Payment Data" />;
   }
 
   return (

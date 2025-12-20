@@ -83,8 +83,8 @@ export function DataTable<T>({
               {columns.map((column, index) => (
                 <TableHead
                   key={index}
-                  className={`px-2 sm:px-4 py-3 text-xs sm:text-sm font-medium whitespace-nowrap ${
-                    column.hideOnMobile ? "hidden sm:table-cell" : ""
+                  className={`px-2 sm:px-4 py-3 text-xs sm:text-sm font-medium whitespace-nowrap last:text-center ${
+                    column.hideOnMobile ? "" : ""
                   } ${column.headerClassName || ""}`}
                 >
                   {column.header}
@@ -116,8 +116,8 @@ export function DataTable<T>({
                   {columns.map((column, index) => (
                     <TableCell
                       key={index}
-                      className={`px-2 sm:px-4 py-3 text-xs sm:text-sm whitespace-nowrap ${
-                        column.hideOnMobile ? "hidden sm:table-cell" : ""
+                      className={`px-2 sm:px-4 py-3 text-xs sm:text-sm whitespace-nowrap last:text-center ${
+                        column.hideOnMobile ? "" : ""
                       } ${column.cellClassName || ""}`}
                     >
                       {column.render

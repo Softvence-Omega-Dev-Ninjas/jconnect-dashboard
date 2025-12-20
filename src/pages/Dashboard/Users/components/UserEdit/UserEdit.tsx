@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, ChangeEvent } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowLeft, Image, Loader2, UploadCloud } from "lucide-react"; // আইকনের জন্য
+import { ArrowLeft, Image, Loader2, UploadCloud } from "lucide-react";
 import {
   useGetUserByIdQuery,
   useUpdateUserMutation,
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
+import Cookies from "js-cookie";
 
 interface EditFormState {
   full_name: string;
@@ -29,15 +31,7 @@ interface EditFormState {
   pinCode: number | undefined;
   isActive: boolean;
   isVerified: boolean;
-  role:
-    | "SUPER_ADMIN"
-    | "ADMIN"
-    | "ARTIST"
-    | "MEMBER"
-    | "FINANCE_ADMIN"
-    | "ANALYST"
-    | "SUPPORT_ADMIN"
-    | "MODERATOR";
+  role: "SUPER_ADMIN" | "ADMIN" | "ARTIST";
   profilePhoto: string | undefined;
 }
 
@@ -142,7 +136,9 @@ const EditUser = () => {
   if (error || !user)
     return <NoDataFound dataTitle="User" noDataText="User not found." />;
 
-  const isSuperAdmin = user.role === "SUPER_ADMIN";
+  const currentUserRole = Cookies.get("role");
+  const isCurrentUserSuperAdmin = currentUserRole === "SUPER_ADMIN";
+  const isEditingUserSuperAdmin = user?.role === "SUPER_ADMIN";
 
   return (
     <div className="p-2 md:p-6 max-w-4xl mx-auto">
@@ -175,7 +171,7 @@ const EditUser = () => {
               value={formData.full_name}
               onChange={handleChange}
               required
-              disabled={isSuperAdmin}
+              disabled={isEditingUserSuperAdmin}
             />
           </div>
 
@@ -188,7 +184,7 @@ const EditUser = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              disabled={!isSuperAdmin && formData.role !== "ARTIST"}
+              disabled={!isEditingUserSuperAdmin && formData.role !== "ARTIST"}
             />
           </div>
 
@@ -270,7 +266,7 @@ const EditUser = () => {
                 onCheckedChange={(val) =>
                   setFormData((prev) => ({ ...prev, isActive: val }))
                 }
-                disabled={isSuperAdmin}
+                disabled={isEditingUserSuperAdmin}
               />
             </div>
             <div className="flex items-center gap-3">
@@ -281,30 +277,35 @@ const EditUser = () => {
                 onCheckedChange={(val) =>
                   setFormData((prev) => ({ ...prev, isVerified: val }))
                 }
-                disabled={isSuperAdmin}
+                disabled={isEditingUserSuperAdmin}
               />
             </div>
           </div>
 
           <div className="flex items-center gap-3 col-span-4">
             <Label htmlFor="role">Role</Label>
-            <Select
-              value={formData.role}
-              onValueChange={(val: EditFormState["role"]) =>
-                setFormData((prev) => ({ ...prev, role: val }))
-              }
-              disabled={isSuperAdmin}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SUPER_ADMIN">SUPER ADMIN</SelectItem>
-                <SelectItem value="ADMIN">ADMIN</SelectItem>
-                <SelectItem value="ARTIST">ARTIST</SelectItem>
-                <SelectItem value="MEMBER">MEMBER</SelectItem>
-              </SelectContent>
-            </Select>
+            {isCurrentUserSuperAdmin ? (
+              <Select
+                value={formData.role}
+                onValueChange={(val: any) =>
+                  setFormData((p) => ({ ...p, role: val }))
+                }
+                disabled={isEditingUserSuperAdmin}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SUPER_ADMIN">SUPER ADMIN</SelectItem>
+                  <SelectItem value="ADMIN">ADMIN</SelectItem>
+                  <SelectItem value="ARTIST">ARTIST</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              <span className="px-3 py-1 bg-gray-100 rounded border text-sm font-bold">
+                {formData.role}
+              </span>
+            )}
           </div>
         </div>
 

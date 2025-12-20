@@ -24,7 +24,7 @@ export default function DashboardLayout() {
       <Sidebar />
       <div className="flex-1 w-full lg:ml-64 min-w-0">
         <Navbar />
-        <main className="pt-20 px-3 pb-4 sm:px-4 md:px-6 md:pb-6 w-full overflow-x-hidden">
+        <main className="pt-20 px-3 pb-4 sm:px-4 md:px-6 md:pb-6 w-full overflow-x-hidden mt-5">
           <Outlet />
         </main>
       </div>
