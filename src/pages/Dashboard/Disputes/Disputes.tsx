@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import {
@@ -11,6 +11,7 @@ import {
 import FilterBar from "./components/FilterBar";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import { toast } from "sonner";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 
 interface Dispute {
   id: string;
@@ -19,11 +20,16 @@ interface Dispute {
   disputedBy: string;
   status: string;
   submittedDate: string;
+  rawDate: Date;
 }
 
 const Disputes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date().getMonth().toString()
+  );
+
   const navigate = useNavigate();
   const itemsPerPage = 9;
 
@@ -40,47 +46,66 @@ const Disputes = () => {
             ? "The dispute has been reviewed and resolved by the administrator."
             : "The dispute has been rejected after review.",
       };
-
-      console.log("Sending Payload:", payload);
-
       await updateStatus(payload).unwrap();
-      alert("Update Success!");
+      toast.success("Update Success!");
     } catch (err: any) {
-      console.error("Full Error Object:", err);
-      const serverMessage = err?.data?.message || "Permission Denied!";
-      // alert(`Error: ${serverMessage}`);
-      toast.error(`Error: ${serverMessage}`);
+      toast.error(err?.data?.message || "Permission Denied!");
     }
   };
 
-  const transformedData: Dispute[] = (data || []).map(
-    (item: DisputeResponse) => ({
-      id: item.id,
-      caseId: item.order.orderCode,
-      orderId: item.order.orderCode,
-      disputedBy: item.user.full_name,
-      status: item.status,
-      submittedDate: new Date(item.createdAt).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
-    })
-  );
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+    return (data as DisputeResponse[])
+      .map((item) => ({
+        id: item.id,
+        caseId: item.order.orderCode,
+        orderId: item.order.orderCode,
+        disputedBy: item.user.full_name,
+        status: item.status,
+        rawDate: new Date(item.createdAt),
+        submittedDate: new Date(item.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+      }))
+      .filter((item) => {
+        const matchesStatus =
+          statusFilter === "all"
+            ? true
+            : item.status === statusFilter.toUpperCase();
+        const matchesMonth =
+          item.rawDate.getMonth().toString() === selectedMonth;
+        return matchesStatus && matchesMonth;
+      });
+  }, [data, statusFilter, selectedMonth]);
 
-  const filteredData = transformedData.filter((item) =>
-    statusFilter === "all" ? true : item.status === statusFilter.toUpperCase()
-  );
-
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const handleExport = () => {
+    if (filteredData.length === 0) {
+      toast.error("No data found to export.");
+      return;
+    }
+    const headers = "Case ID,Order ID,Disputed By,Status,Submitted Date\n";
+    const rows = filteredData
+      .map(
+        (item) =>
+          `${item.caseId},${item.orderId},${item.disputedBy},${item.status},${item.submittedDate}`
+      )
+      .join("\n");
+    const blob = new Blob([headers + rows], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Disputes_Report.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   const columns: Column<Dispute>[] = [
     { header: "Case ID", accessor: "caseId" },
     { header: "Order ID", accessor: "orderId", hideOnMobile: true },
     { header: "Disputed by", accessor: "disputedBy" },
+    { header: "Submitted Date", accessor: "submittedDate" },
     {
       header: "Status",
       accessor: "status",
@@ -98,14 +123,13 @@ const Disputes = () => {
         </span>
       ),
     },
-
     {
       header: "Action",
       render: (item) => (
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className="text-gray-600 hover:text-red-600 font-medium text-xs sm:text-sm"
+            className="text-gray-600 hover:text-red-600 text-sm"
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/disputes/${item.id}`);
@@ -113,11 +137,10 @@ const Disputes = () => {
           >
             View
           </button>
-          <span className="text-gray-300">/</span>
           <button
             type="button"
-            className="text-emerald-600 hover:text-emerald-700 font-medium text-xs sm:text-sm disabled:opacity-30"
-            disabled={item.status === "RESOLVED" || item.status === "REJECTED"}
+            disabled={item.status !== "UNDER_REVIEW"}
+            className="text-emerald-600 disabled:opacity-30 text-sm"
             onClick={(e) => {
               e.stopPropagation();
               handleStatusUpdate(item.id, "RESOLVED");
@@ -130,17 +153,28 @@ const Disputes = () => {
     },
   ];
 
-  if (isLoading)
-    return <div className="p-10 text-center">Loading Disputes...</div>;
-  if (error) return <NoDataFound dataTitle="Disputes Data" />;
+  if (isLoading) return <LoadingSpinner />;
+  if (error) {
+    return <NoDataFound dataTitle="Disputes Data" />;
+  }
 
   return (
     <div className="space-y-6">
       <PageHeading title="Disputes" />
-      <FilterBar statusFilter={statusFilter} onStatusChange={setStatusFilter} />
+      <FilterBar
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+        selectedMonth={selectedMonth}
+        onMonthChange={setSelectedMonth}
+        onExport={handleExport}
+      />
+
       <DataTable
         columns={columns}
-        data={paginatedData}
+        data={filteredData.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        )}
         getRowKey={(item) => item.id}
         showPagination={true}
         currentPage={currentPage}
