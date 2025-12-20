@@ -29,15 +29,7 @@ interface EditFormState {
   pinCode: number | undefined;
   isActive: boolean;
   isVerified: boolean;
-  role:
-    | "SUPER_ADMIN"
-    | "ADMIN"
-    | "ARTIST"
-    | "MEMBER"
-    | "FINANCE_ADMIN"
-    | "ANALYST"
-    | "SUPPORT_ADMIN"
-    | "MODERATOR";
+  role: "SUPER_ADMIN" | "ADMIN" | "ARTIST";
   profilePhoto: string | undefined;
 }
 
@@ -302,7 +294,6 @@ const EditUser = () => {
                 <SelectItem value="SUPER_ADMIN">SUPER ADMIN</SelectItem>
                 <SelectItem value="ADMIN">ADMIN</SelectItem>
                 <SelectItem value="ARTIST">ARTIST</SelectItem>
-                <SelectItem value="MEMBER">MEMBER</SelectItem>
               </SelectContent>
             </Select>
           </div>

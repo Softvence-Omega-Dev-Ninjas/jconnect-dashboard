@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams, useNavigate } from "react-router-dom";
 import { X, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react";
 import PageHeading from "@/components/Shared/PageHeading/PageHeading";
