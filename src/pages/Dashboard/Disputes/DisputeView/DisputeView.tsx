@@ -92,7 +92,7 @@ const DisputeView = () => {
             className="px-5 py-2.5 bg-red-600 text-white font-semibold rounded-xl flex items-center gap-2 hover:bg-red-700 disabled:bg-gray-200"
           >
             <X className="w-4 h-4" />
-            <span>{isUpdating ? "Rejecting..." : "Reject"}</span>
+            <span>{isUpdating ? "Closing..." : "Case Close"}</span>
           </button>
         </div>
       </div>
