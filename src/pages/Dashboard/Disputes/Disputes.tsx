@@ -137,6 +137,7 @@ const Disputes = () => {
           >
             View
           </button>
+          <span>/</span>
           <button
             type="button"
             disabled={item.status !== "UNDER_REVIEW"}

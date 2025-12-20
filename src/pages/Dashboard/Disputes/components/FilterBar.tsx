@@ -38,7 +38,7 @@ const FilterBar = ({
             <button
               key={s}
               onClick={() => onStatusChange(s)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+              className={`px-3 py-1.5 text-xs font-medium rounded transition-all ${
                 statusFilter === s ? "bg-[#BD001F] text-white" : "text-gray-600 hover:bg-gray-100"
               }`}
             >
@@ -68,7 +68,7 @@ const FilterBar = ({
         </Select>
       </div>
 
-      <button onClick={onExport} className="lg:ml-auto px-4 py-2 bg-[#BD001F] text-white rounded-xl flex items-center gap-2 hover:bg-[#d60b2d] transition-all">
+      <button onClick={onExport} className="lg:ml-auto px-4 py-2 bg-[#BD001F] text-white rounded flex items-center gap-2 hover:bg-[#d60b2d] transition-all">
         <span className="text-sm font-medium">Export</span>
         <Download className="w-4 h-4" />
       </button>
