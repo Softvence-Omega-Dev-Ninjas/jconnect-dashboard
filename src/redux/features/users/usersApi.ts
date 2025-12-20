@@ -77,17 +77,27 @@ export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query<
       UserResponse,
-      { page?: number; limit?: number; isActive?: boolean }
+      { page?: number; limit?: number; searchTerm?: string; isActive?: boolean }
     >({
-      query: ({ page = 1, limit = 10, isActive }) => {
-        let url = `/users/getalluser?page=${page}&limit=${limit}`;
-        if (isActive !== undefined) {
-          url += `&isActive=${isActive}`;
-        }
-        return url;
+      query: (args) => {
+        const { page, limit, searchTerm, isActive } = args;
+
+        const params = new URLSearchParams();
+
+        if (page) params.append("page", page.toString());
+        if (limit) params.append("limit", limit.toString());
+        if (searchTerm) params.append("search", searchTerm); 
+        if (isActive !== undefined)
+          params.append("isActive", isActive.toString());
+
+        return {
+          url: `/users/getalluser?${params.toString()}`,
+          method: "GET",
+        };
       },
       providesTags: ["Users"],
     }),
+
     getUserById: builder.query<FullUserDetail, string>({
       query: (id) => `/users/${id}`,
       transformResponse: (response: FullUserDetail) => {

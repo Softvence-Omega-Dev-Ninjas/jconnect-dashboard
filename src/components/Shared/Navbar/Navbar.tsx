@@ -1,14 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Bell, Search } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useAppSelector } from "@/redux/hook";
 import { useEffect, useRef, useState } from "react";
 import NotificationList from "./component/NotificationList";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { clearSearch, setSearchTerm } from "@/redux/features/search/searchSlice";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const searchTerm = useSelector((state: any) => state.search?.searchTerm || "");
+
   const user = useAppSelector((state) => state.auth.user);
   const unread = useAppSelector((state) => state.notifications.unread);
-  const isConnected = useAppSelector((state) => state.notifications.isConnected);
+  const isConnected = useAppSelector(
+    (state) => state.notifications.isConnected
+  );
 
   const [open, setOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
@@ -35,18 +45,59 @@ const Navbar = () => {
     };
   }, [open]);
 
+  const getSearchConfig = () => {
+    if (pathname.includes("/")) {
+      return { show: true, placeholder: "Search by username" };
+    }
+    if (pathname.includes("/users")) {
+      return { show: true, placeholder: "Search by username" };
+    }
+    if (pathname.includes("/payments")) {
+      return { show: true, placeholder: "Search by Order ID" };
+    }
+    if (pathname.includes("/disputes")) {
+      return { show: true, placeholder: "Search by Case ID, Order ID" };
+    }
+    if (pathname.includes("/disputes/:id")) {
+      return { show: true, placeholder: "Search by Case ID, Order ID" };
+    }
+    if (pathname.includes("/reports")) {
+      return { show: true, placeholder: "Search by anything" };
+    }
+    if (pathname.includes("/settings")) {
+      return { show: true, placeholder: "Search by Order ID" };
+    }
+    return { show: false, placeholder: "" };
+  };
+
+  const config = getSearchConfig();
+
+  useEffect(() => {
+    dispatch(clearSearch());
+  }, [pathname, dispatch]);
+
   return (
     <nav className="fixed top-0 right-0 left-0 lg:left-64 bg-white border-b border-gray-200 z-30 h-14 sm:h-16">
       <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 ml-12 lg:ml-0">
         {/* Search Bar */}
         <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md hidden sm:block">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full pl-9 pr-3 py-1.5 sm:py-2 bg-[#F8E6E9] border border-gray-200 rounded-md text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-gray-300"
-            />
+            {/* Dynamic Search Bar */}
+            {config.show && (
+              <div className="relative w-full max-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => {
+                    console.log("Searching for:", e.target.value);
+                    dispatch(setSearchTerm(e.target.value))}
+                  }
+                  placeholder={config.placeholder}
+                  className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm transition-all"
+                />
+              </div>
+            )}
           </div>
         </div>
 
