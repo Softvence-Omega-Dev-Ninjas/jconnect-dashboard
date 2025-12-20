@@ -81,7 +81,7 @@ export const authApi = baseApi.injectEndpoints({
     }),
     resendOtp: builder.mutation<ResendOtpResponse, ResendOtpPayload>({
       query: (data) => ({
-        url: "/auth/resend-otp",
+        url: "/auth/reset-verify-otp",
         method: "POST",
         body: data,
       }),

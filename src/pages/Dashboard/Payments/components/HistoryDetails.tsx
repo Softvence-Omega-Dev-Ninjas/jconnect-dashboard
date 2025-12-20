@@ -62,6 +62,7 @@ const HistoryDetails = () => {
   return (
     <div className="min-h-screen bg-gray-50/30 pb-12">
       <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
+        
         {/* Top Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <button
@@ -86,11 +87,13 @@ const HistoryDetails = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* MAIN GRID - Items Stretch ensures equal column height */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
           {/* LEFT SIDE: Main Info (8 Columns) */}
-          <div className="lg:col-span-8 space-y-6">
+          <div className="lg:col-span-8 flex flex-col gap-6">
             {/* Order Primary Card */}
-            <Card className="overflow-hidden border-none shadow-xl shadow-gray-200/50 rounded-3xl">
+            <Card className="flex-1 flex flex-col overflow-hidden border-none shadow-xl shadow-gray-200/50 rounded-3xl">
               <CardHeader className="pb-4">
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                   <div className="flex items-center gap-3">
@@ -117,8 +120,8 @@ const HistoryDetails = () => {
                 </div>
               </CardHeader>
 
-              <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
-                <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2">
+              <CardContent className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+                <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
                   <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
                     <CreditCard className="w-3 h-3 mr-2" /> Transaction ID
                   </div>
@@ -127,7 +130,7 @@ const HistoryDetails = () => {
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2">
+                <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
                   <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
                     <Calendar className="w-3 h-3 mr-2" /> Date & Time
                   </div>
@@ -137,7 +140,7 @@ const HistoryDetails = () => {
             </Card>
 
             {/* Proof Section */}
-            <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white ">
+            <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white">
               <CardHeader className="bg-gray-50/50 border-b border-gray-100">
                 <CardTitle className="text-lg font-bold flex items-center text-gray-700">
                   <CheckCircle2 className="w-5 h-5 mr-2 text-emerald-500" />
@@ -168,9 +171,7 @@ const HistoryDetails = () => {
                   </div>
                 ) : (
                   <div className="text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                    <p className="text-gray-400 italic">
-                      No proof submitted yet.
-                    </p>
+                    <p className="text-gray-400 italic">No proof submitted yet.</p>
                   </div>
                 )}
               </CardContent>
@@ -178,25 +179,20 @@ const HistoryDetails = () => {
           </div>
 
           {/* RIGHT SIDE: Sidebar (4 Columns) */}
-          <div className="lg:col-span-4 space-y-5">
-            {/* Financial Summary Card */}
-            <Card className="border-none shadow-2xl rounded-3xl bg-gray-900 text-white overflow-hidden">
-              <div className="p-5 space-y-6 relative">
-                {/* Decorative background element */}
+          <div className="lg:col-span-4 flex flex-col gap-5">
+            {/* Financial Summary Card - h-full will match the left side height */}
+            <Card className="flex-1 border-none shadow-2xl rounded-3xl bg-gray-900 text-white overflow-hidden flex flex-col">
+              <div className="p-6 space-y-6 relative flex-1 flex flex-col">
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-red-600/20 rounded-full blur-3xl" />
 
                 <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-red-500">
                   Finance Summary
                 </h3>
 
-                <div className="space-y-4">
+                <div className="space-y-4 flex-1">
                   <div className="flex justify-between items-center group">
-                    <span className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                      Gross Amount
-                    </span>
-                    <span className="font-bold text-lg">
-                      ${transaction.amount.toFixed(2)}
-                    </span>
+                    <span className="text-gray-400 group-hover:text-gray-300 transition-colors">Gross Amount</span>
+                    <span className="font-bold text-lg">${transaction.amount.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between items-center group">
@@ -206,41 +202,33 @@ const HistoryDetails = () => {
                         {transaction.platformFee_percents}%
                       </span>
                     </div>
-                    <span className="text-red-400 font-medium">
-                      -${transaction.PlatfromRevinue.toFixed(2)}
-                    </span>
+                    <span className="text-red-400 font-medium">-${transaction.PlatfromRevinue.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between items-center group">
-                    <span className="text-gray-400 group-hover:text-gray-300">
-                      Stripe Processing
-                    </span>
-                    <span className="text-red-400 font-medium">
-                      -${transaction.stripeFee.toFixed(2)}
-                    </span>
+                    <span className="text-gray-400 group-hover:text-gray-300">Stripe Processing</span>
+                    <span className="text-red-400 font-medium">-${transaction.stripeFee.toFixed(2)}</span>
                   </div>
+                </div>
 
-                  <div className="pt-6 border-t border-gray-800">
-                    <div className="flex justify-between items-end">
-                      <div>
-                        <p className="text-[10px] font-black uppercase text-emerald-500 tracking-widest mb-1">
-                          Net Earnings
-                        </p>
-                        <p className="text-4xl font-black">
-                          ${transaction.seller_amount.toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-500">
-                        <DollarSign className="w-6 h-6" />
-                      </div>
+                <div className="pt-6 border-t border-gray-800 mt-auto">
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <p className="text-[10px] font-black uppercase text-emerald-500 tracking-widest mb-1">
+                        Net Earnings
+                      </p>
+                      <p className="text-4xl font-black">${transaction.seller_amount.toFixed(2)}</p>
+                    </div>
+                    <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-500">
+                      <DollarSign className="w-6 h-6" />
                     </div>
                   </div>
                 </div>
               </div>
             </Card>
 
-            {/* Seller Contact Card */}
-            <Card className="border-none shadow-sm bg-white overflow-hidden">
+            {/* Seller Contact Card - h-fit ensures it only takes needed space at the bottom */}
+            <Card className="h-fit border-none shadow-sm bg-white overflow-hidden">
               <CardContent className="pt-6 space-y-4">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center border-2 border-red-100">
@@ -250,23 +238,17 @@ const HistoryDetails = () => {
                     <h4 className="font-bold text-gray-900 leading-tight">
                       {transaction.seller.full_name}
                     </h4>
-                    <p className="text-xs text-gray-500">
-                      {transaction.seller.email}
-                    </p>
+                    <p className="text-xs text-gray-500">{transaction.seller.email}</p>
                   </div>
                 </div>
                 <div className="space-y-3 bg-gray-50 p-4 rounded-xl text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-500">Contact:</span>
-                    <span className="font-bold text-gray-700">
-                      {transaction.seller.phone}
-                    </span>
+                    <span className="font-bold text-gray-700">{transaction.seller.phone}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500">Total Payout:</span>
-                    <span className="font-bold text-green-600">
-                      ${transaction.seller.withdrawn_amount}
-                    </span>
+                    <span className="font-bold text-green-600">${transaction.seller.withdrawn_amount}</span>
                   </div>
                 </div>
               </CardContent>

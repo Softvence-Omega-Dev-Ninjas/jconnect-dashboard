@@ -25,8 +25,8 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
-
-  if (result?.error?.status === 401 || result?.error?.status === 403) {
+  
+  if (result?.error?.status === 401) {
     api.dispatch(logout());
     if (typeof window !== "undefined") {
       window.location.href = "/login";

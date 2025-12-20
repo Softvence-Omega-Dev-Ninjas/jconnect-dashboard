@@ -25,7 +25,7 @@ const VerifyOtp: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [customError, setCustomError] = useState<string | null>(null);
 
-  const { timer, resetTimer } = useTimer(RESEND_TIMEOUT_SECONDS);
+  const { timer, resetTimer } = useTimer(RESEND_TIMEOUT_SECONDS );
 
   const currentError =
     verifyError || resendError

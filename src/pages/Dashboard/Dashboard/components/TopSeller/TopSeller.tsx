@@ -30,17 +30,17 @@ export const TopSellers = () => {
       ),
     },
     {
-      header: "Deals (30d)",
+      header: "Deals Completed (30d)",
       accessor: "dealsCompleted30d",
     },
     {
-      header: "Revenue (30d)",
+      header: "Total Revenue (30d)",
       accessor: "totalRevenue30d",
       hideOnMobile: true,
       render: (item) => `$${item.totalRevenue30d.toFixed(2)}`,
     },
     {
-      header: "Avg Order",
+      header: "Avg Order Value",
       accessor: "avgOrderValue",
       hideOnMobile: true,
       render: (item) => `$${item.avgOrderValue.toFixed(2)}`,
