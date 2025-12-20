@@ -39,32 +39,38 @@ export interface UpdateUserPayload {
 
 // Full user detail interface
 interface FullUserDetail extends User {
-    profilePhoto: string | null;
-    password?: string;
-    pinCode: number | null;
-    otp: string | null;
-    googleId: string | null;
-    emailOtp: string | null;
-    otpExpiresAt: string | null;
-    is_terms_agreed: boolean;
-    isLogin: boolean;
-    isDeleted: boolean;
-    login_attempts: number;
-    withdrawn_amount: number;
-    phoneOtp: string | null;
-    phoneOtpExpiresAt: string | null;
-    phoneVerified: boolean;
-    last_login_at: string | null;
-    updated_at: string;
-    token_expires_at: string | null;
-    validation_type: string;
-    auth_provider: string | null;
-    stripeAccountId: string | null;
-    sellerIDStripe: string | null;
-    customerIdStripe: string | null;
-    services: []; 
-    ReviewsReceived: [];
-    profile: string | null; 
+  profilePhoto: string | null;
+  password?: string;
+  pinCode: number | null;
+  otp: string | null;
+  googleId: string | null;
+  emailOtp: string | null;
+  otpExpiresAt: string | null;
+  is_terms_agreed: boolean;
+  isLogin: boolean;
+  isDeleted: boolean;
+  login_attempts: number;
+  withdrawn_amount: number;
+  phoneOtp: string | null;
+  phoneOtpExpiresAt: string | null;
+  phoneVerified: boolean;
+  last_login_at: string | null;
+  updated_at: string;
+  token_expires_at: string | null;
+  validation_type: string;
+  auth_provider: string | null;
+  stripeAccountId: string | null;
+  sellerIDStripe: string | null;
+  customerIdStripe: string | null;
+  services: [];
+  ReviewsReceived: [];
+  profile: string | null;
+}
+
+export interface UpdateRoleResponse {
+  success: boolean;
+  message: string;
+  data: string;
 }
 
 export const usersApi = baseApi.injectEndpoints({
@@ -83,12 +89,13 @@ export const usersApi = baseApi.injectEndpoints({
       providesTags: ["Users"],
     }),
     getUserById: builder.query<FullUserDetail, string>({
-        query: (id) => `/users/${id}`,
-        transformResponse: (response: FullUserDetail) => {
-          return response;
-        },
-        providesTags: ["User"],
+      query: (id) => `/users/${id}`,
+      transformResponse: (response: FullUserDetail) => {
+        return response;
+      },
+      providesTags: ["User"],
     }),
+
     updateUser: builder.mutation<User, { id: string; data: UpdateUserPayload }>(
       {
         query: ({ id, data }) => ({
@@ -99,7 +106,16 @@ export const usersApi = baseApi.injectEndpoints({
         invalidatesTags: ["Users", "User"],
       }
     ),
-
+    updateUserRole: builder.mutation<
+      UpdateRoleResponse,
+      { userId: string; role: string }
+    >({
+      query: ({ userId, role }) => ({
+        url: `/users/${userId}/role?role=${role}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Users"],
+    }),
     deleteUser: builder.mutation<{ success: boolean; message: string }, string>(
       {
         query: (id) => ({
@@ -117,4 +133,5 @@ export const {
   useUpdateUserMutation,
   useDeleteUserMutation,
   useGetUserByIdQuery,
+  useUpdateUserRoleMutation,
 } = usersApi;
