@@ -59,13 +59,26 @@ interface ApiResponse<T> {
 
 export const disputesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getDisputes: builder.query<DisputeResponse[], void>({
-      query: () => "/disputes/filter",
+    getDisputes: builder.query<
+      DisputeResponse[],
+      { searchTerm?: string } | void
+    >({
+      query: (params) => {
+        const queryParams = new URLSearchParams();
+
+        if (params && params.searchTerm) {
+          queryParams.append("search", params.searchTerm);
+        }
+
+        return {
+          url: `/disputes/filter?${queryParams.toString()}`,
+          method: "GET",
+        };
+      },
       providesTags: ["Disputes"],
       transformResponse: (response: ApiResponse<DisputeResponse[]>) =>
         response.data,
     }),
-
     getDisputeById: builder.query<DisputeResponse, string>({
       query: (id) => `/disputes/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Disputes", id }],

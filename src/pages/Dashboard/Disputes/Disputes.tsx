@@ -12,6 +12,7 @@ import FilterBar from "./components/FilterBar";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import { toast } from "sonner";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
+import { useSelector } from "react-redux";
 
 interface Dispute {
   id: string;
@@ -30,10 +31,12 @@ const Disputes = () => {
     new Date().getMonth().toString()
   );
 
+  const searchTerm = useSelector((state: any) => state.search?.searchTerm || "");
+
   const navigate = useNavigate();
   const itemsPerPage = 9;
 
-  const { data, isLoading, error } = useGetDisputesQuery();
+  const { data, isLoading, error } = useGetDisputesQuery({searchTerm});
   const [updateStatus] = useUpdateDisputeStatusMutation();
 
   const handleStatusUpdate = async (id: string, newStatus: string) => {

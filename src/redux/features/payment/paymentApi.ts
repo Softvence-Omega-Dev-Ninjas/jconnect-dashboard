@@ -8,6 +8,7 @@ export interface TransactionHistoryQueryParams {
   type?: string;
   month?: number;
   sort?: "asc" | "desc";
+  searchTerm?: string;
 }
 
 interface SellerInfo {
@@ -53,6 +54,9 @@ export const PaymentsApi = baseApi.injectEndpoints({
           limit: String(params.limit),
           sort: params.sort || "desc",
         });
+        if (params.searchTerm) {
+          queryParams.append("search", params.searchTerm);
+        }
 
         if (params.status) {
           queryParams.append("status", params.status);

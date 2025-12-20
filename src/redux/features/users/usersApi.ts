@@ -77,16 +77,16 @@ export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query<
       UserResponse,
-      { page?: number; limit?: number; searchTerm?: string; isActive?: boolean }
+      { page?: number; limit?: number; search?: string; isActive?: boolean }
     >({
       query: (args) => {
-        const { page, limit, searchTerm, isActive } = args;
+        const { page, limit, search, isActive } = args;
 
         const params = new URLSearchParams();
 
         if (page) params.append("page", page.toString());
         if (limit) params.append("limit", limit.toString());
-        if (searchTerm) params.append("search", searchTerm); 
+        if (search) params.append("search", search); 
         if (isActive !== undefined)
           params.append("isActive", isActive.toString());
 

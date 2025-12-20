@@ -78,7 +78,7 @@ const filteredMenuItems = useMemo(() => {
         <div className="p-6 border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-medium">Admin</h2>
+              <h2 className="text-xl font-bold">Admin</h2>
               <p className="text-sm text-[#1E1E1E]">Super Dashboard</p>
             </div>
             <button

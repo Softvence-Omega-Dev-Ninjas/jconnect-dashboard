@@ -57,6 +57,7 @@ interface TopSellersResponse {
 interface TopSellersQueryParams {
   page: number;
   limit: number;
+  search?: string;
 }
 
 //User weekly activity response type
@@ -89,8 +90,18 @@ export const dashboardApi = baseApi.injectEndpoints({
         response.data,
     }),
     getTopSellers: builder.query<TopSellersResponse, TopSellersQueryParams>({
-      query: ({ page, limit }) =>
-        `/admin/dashboard-stats/top-sellers?page=${page}&limit=${limit}`,
+      query: ({ page, limit, search }) => {
+        const params = new URLSearchParams({
+          page: page.toString(),
+          limit: limit.toString(),
+        });
+
+        if (search) {
+          params.append("search", search);
+        }
+
+        return `/admin/dashboard-stats/top-sellers?${params.toString()}`;
+      },
       transformResponse: (response: TopSellersResponse) => response,
     }),
     getWeeklyUserActivity: builder.query<ActivityItem[], void>({

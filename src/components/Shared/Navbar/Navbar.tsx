@@ -7,12 +7,17 @@ import NotificationList from "./component/NotificationList";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { clearSearch, setSearchTerm } from "@/redux/features/search/searchSlice";
+import {
+  clearSearch,
+  setSearchTerm,
+} from "@/redux/features/search/searchSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const searchTerm = useSelector((state: any) => state.search?.searchTerm || "");
+  const searchTerm = useSelector(
+    (state: any) => state.search?.searchTerm || ""
+  );
 
   const user = useAppSelector((state) => state.auth.user);
   const unread = useAppSelector((state) => state.notifications.unread);
@@ -46,9 +51,6 @@ const Navbar = () => {
   }, [open]);
 
   const getSearchConfig = () => {
-    if (pathname.includes("/")) {
-      return { show: true, placeholder: "Search by username" };
-    }
     if (pathname.includes("/users")) {
       return { show: true, placeholder: "Search by username" };
     }
@@ -67,6 +69,9 @@ const Navbar = () => {
     if (pathname.includes("/settings")) {
       return { show: true, placeholder: "Search by Order ID" };
     }
+    if (pathname.includes("/")) {
+      return { show: true, placeholder: "Search by username" };
+    }
     return { show: false, placeholder: "" };
   };
 
@@ -77,7 +82,7 @@ const Navbar = () => {
   }, [pathname, dispatch]);
 
   return (
-    <nav className="fixed top-0 right-0 left-0 lg:left-64 bg-white border-b border-gray-200 z-30 h-14 sm:h-16">
+    <nav className="fixed top-4 right-0 left-0 lg:left-64 bg-white border-b border-gray-200 z-30 h-14 sm:h-16">
       <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 ml-12 lg:ml-0">
         {/* Search Bar */}
         <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md hidden sm:block">
@@ -90,11 +95,10 @@ const Navbar = () => {
                   type="text"
                   value={searchTerm}
                   onChange={(e) => {
-                    console.log("Searching for:", e.target.value);
-                    dispatch(setSearchTerm(e.target.value))}
-                  }
+                    dispatch(setSearchTerm(e.target.value));
+                  }}
                   placeholder={config.placeholder}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm transition-all"
+                  className="w-full pl-10 pr-4 py-2 bg-[#F8E6E9] border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#BD001F] outline-none text-sm transition-all"
                 />
               </div>
             )}

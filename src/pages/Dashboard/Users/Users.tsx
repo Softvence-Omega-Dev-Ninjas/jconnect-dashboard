@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux"; 
+import { useSelector } from "react-redux"; 
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { saveAs } from "file-saver";
@@ -13,8 +13,6 @@ import {
   User,
   useUpdateUserMutation,
 } from "../../../redux/features/users/usersApi";
-import { clearSearch } from "@/redux/features/search/searchSlice";
-
 import {
   Column,
   DataTable,
@@ -26,7 +24,6 @@ import UsersSkeleton from "./components/skeleton/UsersSkeleton";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 
 const Users = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const searchTerm = useSelector(
@@ -45,7 +42,7 @@ const Users = () => {
   const { data, isLoading, error } = useGetUsersQuery({
     page: currentPage,
     limit: itemsPerPage,
-    searchTerm: searchTerm,
+    search: searchTerm,
     isActive: statusFilter === "all" ? undefined : statusFilter === "active",
   });
 
@@ -162,22 +159,6 @@ const Users = () => {
     <>
       <div className="space-y-4">
         <PageHeading title="Users management" />
-
-        {searchTerm && (
-          <div className="flex items-center justify-between bg-blue-50 border border-blue-100 p-3 rounded-lg">
-            <p className="text-sm text-blue-700">
-              Showing search results for:{" "}
-              <span className="font-bold">"{searchTerm}"</span>
-            </p>
-            <button
-              onClick={() => dispatch(clearSearch())}
-              className="text-xs text-blue-600 hover:underline font-semibold"
-            >
-              Clear Search
-            </button>
-          </div>
-        )}
-
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
             <p className="font-semibold text-gray-700 text-sm">Status:</p>

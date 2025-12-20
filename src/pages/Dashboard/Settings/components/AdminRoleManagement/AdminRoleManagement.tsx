@@ -12,8 +12,15 @@ import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 
 const RoleManagement = () => {
   const { user: currentUser } = useSelector((state: any) => state.auth);
+  const searchTerm = useSelector(
+    (state: any) => state.search?.searchTerm || ""
+  );
 
-  const { data, isLoading, error } = useGetUsersQuery({ page: 1, limit: 50 });
+  const { data, isLoading, error } = useGetUsersQuery({
+    page: 1,
+    limit: 50,
+    search: searchTerm,
+  });
   const [updateRole, { isLoading: isUpdating }] = useUpdateUserRoleMutation();
 
   const users = data?.data || [];

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,7 @@ import {
 import { DisplayPayment, Payment } from "@/types/TransactionHistory.type";
 import StatusBadge from "@/components/Shared/StatusBadge/StatusBadge";
 import PaymentFilterBar from "./PementFilterBar";
+import { useSelector } from "react-redux";
 
 const ITEMS_PER_PAGE = 10;
 const getMonthLabel = (monthValue: string) => {
@@ -23,6 +25,9 @@ const TransactionHistory = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [monthFilter, setMonthFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("desc");
+  const searchTerm = useSelector(
+    (state: any) => state.search?.searchTerm || ""
+  );
 
   const navigate = useNavigate();
 
@@ -35,8 +40,9 @@ const TransactionHistory = () => {
         monthFilter === "all" ? undefined : (monthFilter as unknown as number),
 
       sort: sortOrder as "asc" | "desc",
+      searchTerm: searchTerm,
     };
-  }, [currentPage, statusFilter, monthFilter, sortOrder]);
+  }, [currentPage, statusFilter, monthFilter, sortOrder, searchTerm]);
 
   const { data, isLoading, isFetching, error, refetch } =
     useGetAllTransactionHistoryQuery(queryParams);
