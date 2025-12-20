@@ -129,7 +129,7 @@ const Disputes = () => {
     {
       header: "Action",
       render: (item) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           <button
             type="button"
             className="text-gray-600 hover:text-red-600 text-sm"

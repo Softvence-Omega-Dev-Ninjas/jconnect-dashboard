@@ -44,8 +44,7 @@ const RoleManagement = () => {
     <div className="">
       {isSuperAdmin && (
         <>
-          {" "}
-          <div className="flex items-center justify-between mb-6 mt-10">
+          <div className="flex flex-col md:flex-row gap-3 items-center justify-between mb-6 mt-10">
             <PageHeading title="Admin Role Management" />
             <button className=" text-white font-medium bg-[#BD001F] px-3 py-1 rounded-full border border-red-500">
               Total Users: {data?.total || 0}
