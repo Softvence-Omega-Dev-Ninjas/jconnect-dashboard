@@ -2,16 +2,6 @@ import { X, Check, Trash2, Bell } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useDeleteNotificationMutation, useMarkAllNotificationsAsReadMutation, useMarkNotificationAsReadMutation } from "@/redux/features/notification/notificationApi";
 import { deleteNotification, markAsRead, markAllRead } from "@/redux/features/notification/notificationSlice";
-// import {
-//   useMarkNotificationAsReadMutation,
-//   useMarkAllNotificationsAsReadMutation,
-//   useDeleteNotificationMutation,
-// } from "@/store/notificationApi";
-// import {
-//   markAsRead,
-//   markAllRead,
-//   deleteNotification,
-// } from "@/store/notificationSlice";
 
 type Props = {
   onClose: () => void;

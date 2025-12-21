@@ -6,14 +6,6 @@ import {
   disconnectNotificationSocket,
 } from "@/socket/notificationSocket";
 import { setNotifications } from "@/redux/features/notification/notificationSlice";
-// import { setNotifications } from "@/redux/features/notification/notificationSlice";
-
-// import {
-//   connectNotificationSocket,
-//   disconnectNotificationSocket,
-// } from "@/services/notificationSocket";
-
-// import { useGetUserNotificationsQuery } from "@/store/notificationApi";
 
 export const useNotificationSocket = () => {
   const dispatch = useAppDispatch();

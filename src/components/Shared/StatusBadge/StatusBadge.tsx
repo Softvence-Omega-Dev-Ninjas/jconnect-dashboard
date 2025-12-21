@@ -8,7 +8,6 @@ interface StatusColorMap {
 
 interface StatusBadgeProps {
   status: StatusKey;
-
   colorMap: StatusColorMap;
   fallbackColor: string;
 }
