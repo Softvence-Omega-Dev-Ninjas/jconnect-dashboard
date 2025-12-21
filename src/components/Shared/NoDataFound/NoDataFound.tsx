@@ -1,5 +1,5 @@
 import React from 'react';
-import { SearchX } from 'lucide-react'; // Lucide-react icons ব্যবহার করা হয়েছে
+import { SearchX } from 'lucide-react'; 
 
 interface NoDataFoundProps {
   dataTitle: string;
