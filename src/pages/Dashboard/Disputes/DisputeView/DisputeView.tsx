@@ -10,6 +10,7 @@ import ComplaintSection from "./components/ComplaintSection";
 import EvidenceAttachments from "./components/EvidenceAttachments";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 import ApiErrorMessage from "@/components/Shared/ApiErrorMessage/ApiErrorMessage";
+import { toast } from "sonner";
 
 const DisputeView = () => {
   const { id } = useParams();
@@ -38,14 +39,14 @@ const DisputeView = () => {
           resolution,
         }).unwrap();
 
-        alert(`Case successfully ${newStatus.toLowerCase()}!`);
+        toast.success(`Case successfully ${newStatus.toLowerCase()}!`);
         if (newStatus === "REJECTED") navigate("/disputes");
       } catch (err: any) {
         console.error("Update Error:", err);
         if (err?.status === 401) {
-          alert("Your session expired. Please login again.");
+          toast.error("Your session expired. Please login again.");
         } else {
-          alert(`Failed: ${err?.data?.message || "Unknown error occurred"}`);
+          toast.error(`Failed: ${err?.data?.message || "Unknown error occurred"}`);
         }
       }
     }

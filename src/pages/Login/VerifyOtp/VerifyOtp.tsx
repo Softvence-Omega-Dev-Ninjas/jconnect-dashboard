@@ -11,6 +11,7 @@ import {
   useVerifyOtpMutation,
   useResendOtpMutation,
 } from "@/redux/features/auth/authApi";
+import { toast } from "sonner";
 
 const VerifyOtp: React.FC = () => {
   const navigate = useNavigate();
@@ -71,7 +72,7 @@ const VerifyOtp: React.FC = () => {
       resetTimer();
       setCustomError(null);
       setOtp(Array(OTP_LENGTH).fill(""));
-      alert("New code sent successfully!");
+      toast.success("New code sent successfully!");
     } catch (err) {
       console.error("Resend failed:", err);
       setCustomError("Failed to resend code.");
