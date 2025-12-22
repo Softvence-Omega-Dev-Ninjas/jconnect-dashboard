@@ -10,6 +10,7 @@ import ComplaintSection from "./components/ComplaintSection";
 import EvidenceAttachments from "./components/EvidenceAttachments";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 import ApiErrorMessage from "@/components/Shared/ApiErrorMessage/ApiErrorMessage";
+import Swal from "sweetalert2";
 import { toast } from "sonner";
 
 const DisputeView = () => {
@@ -31,35 +32,46 @@ const DisputeView = () => {
         ? `Refund of ৳${amount} has been processed to buyer`
         : "The dispute has been rejected after review.";
 
-    if (window.confirm(`Are you sure you want to ${newStatus} this case?`)) {
-      try {
-        await updateStatus({
-          id: id as string,
-          status: newStatus,
-          resolution,
-        }).unwrap();
+    Swal.fire({
+      title: `Confirm ${newStatus}?`,
+      text: `Are you sure you want to mark this case as ${newStatus.toLowerCase()}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#BD001F",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, Confirm",
+      cancelButtonText: "Cancel",
+      heightAuto: false,
+      customClass: {
+        popup: "rounded-3xl",
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const loadingToast = toast.loading("Updating status...");
 
-        toast.success(`Case successfully ${newStatus.toLowerCase()}!`);
-        if (newStatus === "REJECTED") navigate("/disputes");
-      } catch (err: any) {
-        console.error("Update Error:", err);
-        if (err?.status === 401) {
-          toast.error("Your session expired. Please login again.");
-        } else {
-          toast.error(`Failed: ${err?.data?.message || "Unknown error occurred"}`);
+          await updateStatus({
+            id: id as string,
+            status: newStatus,
+            resolution,
+          }).unwrap();
+
+          toast.dismiss(loadingToast);
+          toast.success(`Case successfully ${newStatus.toLowerCase()}!`);
+
+          if (newStatus === "REJECTED" || newStatus === "RESOLVED") {
+            navigate("/disputes");
+          }
+        } catch (err: any) {
+          toast.error(err?.data?.message || "Something went wrong!");
         }
       }
-    }
+    });
   };
 
-  if (isLoading)
-    return (
-      <LoadingSpinner/>
-    );
+  if (isLoading) return <LoadingSpinner />;
   if (isError || !dispute)
-    return (
-      <ApiErrorMessage  fallbackMessage="Dispute not"/>
-    );
+    return <ApiErrorMessage fallbackMessage="Dispute not" />;
 
   return (
     <div className="space-y-6 pb-10">

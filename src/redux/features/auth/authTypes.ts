@@ -55,7 +55,7 @@ export interface UserMeResponse {
   email: string;
   profilePhoto: string | null;
   phone: string | null;
-  role: "SUPER_ADMIN" | "ADMIN" | "USER";
+  role: "SUPER_ADMIN" | "ADMIN" | "ARTIST";
   isVerified: boolean;
   isActive: boolean;
   isDeleted: boolean;

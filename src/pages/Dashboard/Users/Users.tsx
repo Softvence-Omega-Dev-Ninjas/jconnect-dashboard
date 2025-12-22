@@ -153,7 +153,7 @@ const Users = () => {
 
   if (isLoading) return <UsersSkeleton />;
   if (error)
-    return <NoDataFound dataTitle="Users" noDataText="Something went wrong!" />;
+    return <NoDataFound dataTitle="Users" noDataText="User data not found!" />;
 
   return (
     <>

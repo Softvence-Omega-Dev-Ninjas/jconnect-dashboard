@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { io, Socket } from "socket.io-client";
 import { AppDispatch } from "@/redux/store";
 import { setSocketConnected } from "@/redux/features/notification/notificationSlice";
@@ -27,12 +28,12 @@ export const connectNotificationSocket = (dispatch: AppDispatch) => {
   });
 
   socket.on("connect", () => {
-    console.log("Connected to notification socket");
+    // console.log("Connected to notification socket");
     dispatch(setSocketConnected(true));
   });
 
   socket.on("disconnect", () => {
-    console.log(" Disconnected from notification socket");
+    // console.log(" Disconnected from notification socket");
     dispatch(setSocketConnected(false));
   });
 
@@ -43,7 +44,7 @@ export const connectNotificationSocket = (dispatch: AppDispatch) => {
 
   // ------------------ Listen for USER REGISTRATION events ---------------------------
   socket.on("user.create", (data: any) => {
-    console.log("📬 New user registration notification:", data);
+    // console.log("📬 New user registration notification:", data);
     const notification = {
       id: `${Date.now()}-${Math.random()}`,
       notificationId: data.meta?.id || `notif-${Date.now()}`,
@@ -59,7 +60,7 @@ export const connectNotificationSocket = (dispatch: AppDispatch) => {
 
   //---------------------  Listen for SERVICE CREATE events ----------------------
   socket.on("service.create", (data: any) => {
-    console.log("📬 New service creation notification:", data);
+    // console.log(data)
     const notification = {
       id: `${Date.now()}-${Math.random()}`,
       notificationId: data.meta?.id || `notif-${Date.now()}`,
@@ -74,9 +75,9 @@ export const connectNotificationSocket = (dispatch: AppDispatch) => {
   });
 
   //------------------------- Ping-pong for connection check -----------------------------
-  socket.on("pong", () => {
-    console.log("🏓 Pong received");
-  });
+  // socket.on("pong", () => {
+  //   console.log("🏓 Pong received");
+  // });
 
   return socket;
 };

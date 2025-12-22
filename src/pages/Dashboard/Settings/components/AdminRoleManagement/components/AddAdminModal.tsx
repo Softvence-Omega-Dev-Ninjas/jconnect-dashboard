@@ -28,7 +28,7 @@ const AddAdminModal = () => {
   });
 
   const handleAddAdmin = () => {
-    console.log("Add Admin:", formData);
+    // console.log("Add Admin:", formData);
     setOpen(false);
     setFormData({ name: "", email: "", role: "", password: "" });
   };
