@@ -7,12 +7,14 @@ import UserActivity from "./components/UserActivity/UserActivity";
 
 export default function Dashboard() {
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="space-y-4 md:space-y-8">
       {/* Header */}
-      <PageHeading
-        title="Dashboard"
-        subtitle="Get a complete overview of users, revenues and disputes at a glance"
-      />
+      <div className="">
+        <PageHeading
+          title="Dashboard"
+          subtitle="Get a complete overview of users, revenues and disputes at a glance."
+        />
+      </div>
 
       <StatCardGrid />
 
