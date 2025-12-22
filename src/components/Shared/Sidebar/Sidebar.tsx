@@ -11,7 +11,6 @@ export function Sidebar() {
   const [activeItem, setActiveItem] = useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // const userRole = Cookies.get("role");
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();

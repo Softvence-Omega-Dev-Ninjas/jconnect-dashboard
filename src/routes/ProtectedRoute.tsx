@@ -1,6 +1,3 @@
-// import { Navigate } from "react-router-dom";
-// import Cookies from "js-cookie";
-
 import { ROUTE_PERMISSIONS } from "@/config/rbac";
 import { useAppSelector } from "@/redux/hook";
 import { ReactNode } from "react";
