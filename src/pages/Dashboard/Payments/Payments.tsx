@@ -1,4 +1,4 @@
-import { Users } from "lucide-react";
+import { DollarSign, BanknoteArrowDown, HandCoins } from "lucide-react";
 import RevenueChart from "../Dashboard/components/RevenueChart/RevenueChart";
 import StatCard from "../Dashboard/components/StatCards/StatCard";
 import TransactionHistory from "./components/TransactionHistory";
@@ -9,45 +9,45 @@ import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 const Payments = () => {
   const { data, error, isLoading } = useGetOverviewStatsQuery();
 
+  const stats = data?.data;
+
   const stateCardsData = [
     {
       id: "total-revenue",
       title: "Total Revenue",
-      value: data?.data ? `$${data?.data.totalRevenue.toLocaleString()}` : "$0",
-      change: data?.data ? data?.data.revenuePercentage : 0,
-      icon: Users,
+      value: stats?.totalRevenue || 0,
+      change: stats?.revenuePercentage || 0,
+      icon: DollarSign,
     },
     {
       id: "stripe-payouts",
       title: "Stripe Payouts",
-      value: data?.data
-        ? `$${data?.data.stripePayouts.toLocaleString()}`
-        : "$0",
-      change: data?.data ? data?.data.stripePayoutsPercentage : 0,
-      icon: Users,
+      value: stats?.stripePayouts || 0,
+      change: stats?.stripePayoutsPercentage || 0,
+      icon: HandCoins,
     },
     {
       id: "refunds",
       title: "Refunds",
-      value: data?.data ? `$${data?.data.totalRefund.toLocaleString()}` : "$0",
-      change: data?.data ? data?.data.refundPercentage : 0,
-      icon: Users,
+      value: stats?.totalRefund || 0,
+      change: stats?.refundPercentage || 0,
+      icon: BanknoteArrowDown,
     },
   ];
 
-  if (isLoading) return <LoadingSpinner message="Loading overview stats..." />;
-  if (error) {
-    return <NoDataFound dataTitle="Payment Data" />;
-  }
+  if (isLoading) return <LoadingSpinner message="Loading payment stats..." />;
+  if (error) return <NoDataFound dataTitle="Payment Data" noDataText="Could not fetch payment information." />;
 
   return (
     <div className="space-y-4 md:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl md:text-2xl lg:text-[32px] font-bold">
+        <h1 className="text-xl md:text-2xl lg:text-[32px] font-bold text-gray-800">
           Payments
         </h1>
       </div>
+
+      {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {stateCardsData.map((stat) => {
           const IconComponent = stat.icon;
@@ -57,14 +57,20 @@ const Payments = () => {
               title={stat.title}
               value={stat.value}
               change={stat.change}
+              isCurrency={true} 
+              subHead={true}
               icon={
-                <IconComponent className="w-5 h-5 md:w-6 md:h-6 text-[#BD001F]" />
+                <IconComponent className="w-5 h-5 md:w-6 md:h-6" />
               }
             />
           );
         })}
       </div>
+
+      {/* Chart Section */}
       <RevenueChart />
+
+      {/* History Table Section */}
       <TransactionHistory />
     </div>
   );

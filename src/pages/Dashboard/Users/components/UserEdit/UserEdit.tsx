@@ -6,7 +6,6 @@ import { ArrowLeft, Image, Loader2, UploadCloud } from "lucide-react";
 import {
   useGetUserByIdQuery,
   useUpdateUserMutation,
-  UpdateUserPayload,
 } from "@/redux/features/users/usersApi";
 
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
@@ -22,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
-import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
 
 interface EditFormState {
   full_name: string;
@@ -40,11 +39,14 @@ const EditUser = () => {
   const userId = id || "";
   const navigate = useNavigate();
 
+  const { user: loggedInUser } = useSelector((state: any) => state.auth);
+
   const {
     data: user,
     isLoading,
     error,
   } = useGetUserByIdQuery(userId, { skip: !userId });
+
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
   const [formData, setFormData] = useState<EditFormState>({
@@ -69,13 +71,30 @@ const EditUser = () => {
         pinCode: user.pinCode || undefined,
         isActive: user.isActive,
         isVerified: user.isVerified,
-        role: user.role as EditFormState["role"],
+        role: (user.role as string).toUpperCase() as EditFormState["role"],
         profilePhoto: user.profilePhoto || undefined,
       });
     }
   }, [user]);
 
+  const loggedInUserId =
+    (loggedInUser as any)?._id || (loggedInUser as any)?.id;
+  const targetUserId = (user as any)?._id || (user as any)?.id;
+
+  const isCurrentUserSuperAdmin = loggedInUser?.role === "SUPER_ADMIN";
+  const isTargetUserSuperAdmin = user?.role === "SUPER_ADMIN";
+  const isSelf = loggedInUserId === targetUserId;
+
+  const canEdit = isCurrentUserSuperAdmin
+    ? isTargetUserSuperAdmin
+      ? isSelf
+      : true
+    : isSelf;
+
+  const isFieldDisabled = !canEdit;
+
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (isFieldDisabled) return;
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -91,17 +110,13 @@ const EditUser = () => {
           body: uploadFormData,
         }
       );
-
       const result = await response.json();
-
       if (result.file) {
         setFormData((prev) => ({ ...prev, profilePhoto: result.file }));
         toast.success("Image uploaded successfully!");
-      } else {
-        toast.error("Failed to upload image");
       }
     } catch (err) {
-      console.error("Image upload error:", err);
+      console.log(err);
       toast.error("Image upload failed!");
     } finally {
       setIsUploading(false);
@@ -115,30 +130,31 @@ const EditUser = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isUploading)
-      return toast.warning("Please wait for image to finish uploading");
-
-    const updatedFields: UpdateUserPayload = {
-      ...formData,
-      pinCode: formData.pinCode ?? undefined,
-    };
+    if (isUploading) return toast.warning("Wait for image upload");
 
     try {
-      await updateUser({ id: userId, data: updatedFields }).unwrap();
+      await updateUser({ id: userId, data: formData }).unwrap();
       toast.success("User updated successfully!");
       navigate(`/users/${userId}`);
-    } catch {
-      toast.error(`Failed to update user`);
+    } catch (err: any) {
+      const errorMsg = err?.data?.message || "";
+      if (errorMsg.includes("phone")) {
+        toast.error(
+          "This phone number is already registered with another user."
+        );
+      } else if (errorMsg.includes("email")) {
+        toast.error("This email is already in use.");
+      } else {
+        toast.error(
+          err?.data?.message || "Failed to update user. Please try again."
+        );
+      }
     }
   };
 
   if (isLoading) return <LoadingSpinner message="Loading user data..." />;
   if (error || !user)
     return <NoDataFound dataTitle="User" noDataText="User not found." />;
-
-  const currentUserRole = Cookies.get("role");
-  const isCurrentUserSuperAdmin = currentUserRole === "SUPER_ADMIN";
-  const isEditingUserSuperAdmin = user?.role === "SUPER_ADMIN";
 
   return (
     <div className="p-2 md:p-6 max-w-4xl mx-auto">
@@ -150,9 +166,8 @@ const EditUser = () => {
           <div className="p-2 rounded-full group-hover:bg-red-50 mr-2 transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </div>
-          <span className="font-semibold hidden sm:inline">Back to user</span>
+          <span className="font-semibold hidden sm:inline">Back</span>
         </button>
-
         <h1 className="text-2xl md:text-4xl font-bold text-center w-full text-gray-800">
           Update Profile
         </h1>
@@ -170,8 +185,8 @@ const EditUser = () => {
               id="full_name"
               value={formData.full_name}
               onChange={handleChange}
+              disabled={isFieldDisabled}
               required
-              disabled={isEditingUserSuperAdmin}
             />
           </div>
 
@@ -183,16 +198,21 @@ const EditUser = () => {
               type="email"
               value={formData.email}
               onChange={handleChange}
+              disabled={isFieldDisabled}
               required
-              disabled={!isEditingUserSuperAdmin && formData.role !== "ARTIST"}
             />
           </div>
 
-          {/* Profile Picture Upload Section */}
+          {/* Profile Photo */}
           <div className="md:col-span-2 space-y-3">
             <Label>Profile Picture</Label>
-            <div className="flex items-center gap-5 p-4 border-2 border-dashed border-gray-200 rounded-xl hover:border-red-300 transition-colors bg-gray-50/50">
-              {/* Preview Image */}
+            <div
+              className={`flex items-center gap-5 p-4 border-2 border-dashed rounded-xl ${
+                isFieldDisabled
+                  ? "bg-gray-50 border-gray-100 opacity-60"
+                  : "border-gray-200 hover:border-red-300"
+              }`}
+            >
               <div className="relative w-20 h-20 rounded-full border-2 border-white shadow-md overflow-hidden bg-gray-100 shrink-0">
                 {formData.profilePhoto ? (
                   <img
@@ -212,32 +232,32 @@ const EditUser = () => {
                 )}
               </div>
 
-              {/* Upload Input */}
-              <div className="flex-1 space-y-2">
-                <div className="relative cursor-pointer">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    disabled={isUploading}
-                  />
-                  <div className="flex items-center gap-2 text-sm font-semibold text-red-600 bg-red-50 px-2 py-2 rounded-lg border border-red-100 w-fit hover:bg-red-100 transition">
-                    <UploadCloud className="w-4 h-4" />
-                    {isUploading ? "Uploading..." : "Change Photo"}
+              {!isFieldDisabled && (
+                <div className="flex-1 space-y-2">
+                  <div className="relative cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <div className="flex items-center gap-2 text-sm font-semibold text-red-600 bg-red-50 px-2 py-2 rounded-lg border border-red-100 w-fit">
+                      <UploadCloud className="w-4 h-4" /> Change Photo
+                    </div>
                   </div>
                 </div>
-                <p className="hidden sm:flex text-[10px] text-gray-400 font-medium">
-                  Supported formats: JPG, PNG, GIF (Max 5MB)
-                </p>
-              </div>
+              )}
             </div>
           </div>
 
-          {/* Other fields... (Phone, PinCode, Status, Role) */}
           <div>
             <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" value={formData.phone} onChange={handleChange} />
+            <Input
+              id="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              disabled={isFieldDisabled}
+            />
           </div>
           <div>
             <Label htmlFor="pinCode">Pin Code</Label>
@@ -245,9 +265,10 @@ const EditUser = () => {
               id="pinCode"
               type="number"
               value={formData.pinCode ?? ""}
+              disabled={isFieldDisabled}
               onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
+                setFormData((p) => ({
+                  ...p,
                   pinCode: parseInt(e.target.value) || undefined,
                 }))
               }
@@ -264,9 +285,9 @@ const EditUser = () => {
                 id="isActive"
                 checked={formData.isActive}
                 onCheckedChange={(val) =>
-                  setFormData((prev) => ({ ...prev, isActive: val }))
+                  setFormData((p) => ({ ...p, isActive: val }))
                 }
-                disabled={isEditingUserSuperAdmin}
+                disabled={isFieldDisabled}
               />
             </div>
             <div className="flex items-center gap-3">
@@ -275,25 +296,25 @@ const EditUser = () => {
                 id="isVerified"
                 checked={formData.isVerified}
                 onCheckedChange={(val) =>
-                  setFormData((prev) => ({ ...prev, isVerified: val }))
+                  setFormData((p) => ({ ...p, isVerified: val }))
                 }
-                disabled={isEditingUserSuperAdmin}
+                disabled={isFieldDisabled}
               />
             </div>
           </div>
 
           <div className="flex items-center gap-3 col-span-4">
             <Label htmlFor="role">Role</Label>
-            {isCurrentUserSuperAdmin ? (
+            {isCurrentUserSuperAdmin && !isTargetUserSuperAdmin ? (
               <Select
+                key={formData.role}
                 value={formData.role}
                 onValueChange={(val: any) =>
                   setFormData((p) => ({ ...p, role: val }))
                 }
-                disabled={isEditingUserSuperAdmin}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue />
+                  <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="SUPER_ADMIN">SUPER ADMIN</SelectItem>
@@ -312,8 +333,8 @@ const EditUser = () => {
         <div className="pt-6">
           <Button
             type="submit"
-            disabled={isUpdating || isUploading}
-            className="w-full py-4 rounded-xl text-white font-bold bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)] shadow-lg hover:scale-[1.01] transition-all disabled:opacity-50"
+            disabled={isUpdating || isUploading || isFieldDisabled}
+            className="w-full py-4 rounded-xl text-white font-bold bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)] shadow-lg disabled:opacity-50"
           >
             {isUpdating ? "Saving Changes..." : "Save Changes"}
           </Button>

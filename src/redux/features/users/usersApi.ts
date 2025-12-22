@@ -1,5 +1,6 @@
 import { baseApi } from "./../../api/baseApi";
 export interface User {
+  _id?: string;
   id: string;
   full_name: string;
   email: string;
@@ -86,7 +87,7 @@ export const usersApi = baseApi.injectEndpoints({
 
         if (page) params.append("page", page.toString());
         if (limit) params.append("limit", limit.toString());
-        if (search) params.append("search", search); 
+        if (search) params.append("search", search);
         if (isActive !== undefined)
           params.append("isActive", isActive.toString());
 

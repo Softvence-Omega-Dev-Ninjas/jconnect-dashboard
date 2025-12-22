@@ -1,10 +1,10 @@
 import {
   LayoutDashboard,
-  Users,
-  CreditCard,
   BarChart3,
   Settings,
   HeartHandshake,
+  CircleUserRound,
+  DollarSign,
 } from "lucide-react";
 
 interface MenuItem {
@@ -25,13 +25,13 @@ export const menuItems: MenuItem[] = [
   {
     id: "users",
     label: "User",
-    icon: <Users className="w-5 h-5" />,
+    icon: <CircleUserRound className="w-5 h-5" />,
     allowedRoles: ["SUPER_ADMIN", "ADMIN"],
   },
   {
     id: "payments",
     label: "Payments",
-    icon: <CreditCard className="w-5 h-5" />,
+    icon: <DollarSign className="w-5 h-5" />,
     allowedRoles: ["SUPER_ADMIN", "ADMIN"],
   },
   {
