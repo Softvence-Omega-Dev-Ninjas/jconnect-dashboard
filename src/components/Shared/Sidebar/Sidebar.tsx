@@ -53,7 +53,7 @@ const filteredMenuItems = useMemo(() => {
       {/* Mobile Menu Button */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded-md"
+        className="lg:hidden fixed flex items-center top-6 left-4 z-50 p-2 bg-gray-800 text-white rounded-md"
       >
         <Menu className="w-5 h-5" />
       </button>

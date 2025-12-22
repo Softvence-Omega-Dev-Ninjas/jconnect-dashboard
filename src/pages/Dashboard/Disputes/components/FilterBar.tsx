@@ -31,8 +31,8 @@ const FilterBar = ({
 
   return (
     <div className="flex flex-col lg:flex-row lg:flex-wrap items-center gap-4 p-4 bg-gray-50 rounded-2xl">
-      <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-gray-700">Status:</span>
+      <div className="flex flex-col md:flex-row items-center gap-2">
+        <span className="text-sm font-bold text-gray-700">Status:</span>
         <div className="bg-white p-2 rounded-xl border flex gap-1.5">
           {["all", "UNDER_REVIEW", "RESOLVED", "REJECTED"].map((s) => (
             <button
@@ -49,7 +49,7 @@ const FilterBar = ({
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-gray-700">Month:</span>
+        <span className="text-sm font-bold text-gray-700">Month:</span>
         <Select value={selectedMonth} onValueChange={onMonthChange}>
           <SelectTrigger className="w-48 bg-white border-gray-200 rounded-xl">
             <SelectValue>

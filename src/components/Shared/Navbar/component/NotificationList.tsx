@@ -74,7 +74,7 @@ const NotificationList = ({ onClose }: Props) => {
   };
 
   return (
-    <div className="w-96 bg-white shadow-xl rounded-md max-h-[420px] overflow-y-auto">
+    <div className="sm:w-96 bg-white shadow-xl rounded-md max-h-[420px] overflow-y-auto">
       {/* Header */}
       <div className="flex justify-between items-center px-4 py-3 border-b sticky top-0 bg-white z-10">
         <h4 className="font-semibold text-sm">Notifications</h4>

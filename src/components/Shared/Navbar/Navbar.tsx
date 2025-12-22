@@ -107,7 +107,20 @@ const Navbar = () => {
 
         {/* Mobile Search */}
         <button className="sm:hidden text-gray-600 p-1">
-          <Search className="w-5 h-5" />
+          {config.show && (
+            <div className="relative w-full max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => {
+                  dispatch(setSearchTerm(e.target.value));
+                }}
+                placeholder={config.placeholder}
+                className="w-full pl-10 pr-4 py-2 bg-[#F8E6E9] border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#BD001F] outline-none text-sm transition-all"
+              />
+            </div>
+          )}
         </button>
 
         {/* Right Section */}
