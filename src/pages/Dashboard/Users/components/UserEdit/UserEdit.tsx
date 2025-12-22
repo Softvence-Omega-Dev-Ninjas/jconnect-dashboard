@@ -222,12 +222,12 @@ const EditUser = () => {
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     disabled={isUploading}
                   />
-                  <div className="flex items-center gap-2 text-sm font-semibold text-red-600 bg-red-50 px-4 py-2 rounded-lg border border-red-100 w-fit hover:bg-red-100 transition">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-red-600 bg-red-50 px-2 py-2 rounded-lg border border-red-100 w-fit hover:bg-red-100 transition">
                     <UploadCloud className="w-4 h-4" />
                     {isUploading ? "Uploading..." : "Change Photo"}
                   </div>
                 </div>
-                <p className="text-[10px] text-gray-400 font-medium">
+                <p className="hidden sm:flex text-[10px] text-gray-400 font-medium">
                   Supported formats: JPG, PNG, GIF (Max 5MB)
                 </p>
               </div>

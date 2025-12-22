@@ -16,10 +16,14 @@ export default function Dashboard() {
         />
       </div>
 
-      <StatCardGrid />
+      <div className="">
+        <StatCardGrid />
+      </div>
 
       {/* Revenue Chart */}
-      <RevenueChart />
+      <div className="">
+        <RevenueChart />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <UserActivity />
@@ -27,7 +31,9 @@ export default function Dashboard() {
       </div>
 
       {/* Top Sellers */}
-      <TopSellers />
+      <div className="">
+        <TopSellers />
+      </div>
     </div>
   );
 }
