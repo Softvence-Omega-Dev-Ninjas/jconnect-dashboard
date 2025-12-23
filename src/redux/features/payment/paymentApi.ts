@@ -7,7 +7,7 @@ export interface TransactionHistoryQueryParams {
   status?: string;
   type?: string;
   month?: number;
-  sort?: "asc" | "desc";
+  sortOrder?: "asc" | "desc";
   searchTerm?: string;
 }
 
@@ -52,7 +52,7 @@ export const PaymentsApi = baseApi.injectEndpoints({
         const queryParams = new URLSearchParams({
           page: String(params.page),
           limit: String(params.limit),
-          sort: params.sort || "desc",
+          sortOrder: params.sortOrder || "desc",
         });
         if (params.searchTerm) {
           queryParams.append("search", params.searchTerm);
@@ -88,4 +88,7 @@ export const PaymentsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllTransactionHistoryQuery, useGetTransactionDetailsQuery } = PaymentsApi;
+export const {
+  useGetAllTransactionHistoryQuery,
+  useGetTransactionDetailsQuery,
+} = PaymentsApi;

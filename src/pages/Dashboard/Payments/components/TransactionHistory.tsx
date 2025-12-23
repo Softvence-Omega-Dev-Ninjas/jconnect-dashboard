@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveAs } from "file-saver";
 import { Search } from "lucide-react";
@@ -24,7 +24,7 @@ const TransactionHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("all");
   const [monthFilter, setMonthFilter] = useState("all");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const searchTerm = useSelector(
     (state: any) => state.search?.searchTerm || ""
   );
@@ -39,13 +39,17 @@ const TransactionHistory = () => {
       month:
         monthFilter === "all" ? undefined : (monthFilter as unknown as number),
 
-      sort: sortOrder as "asc" | "desc",
+      sortOrder: sortOrder,
       searchTerm: searchTerm,
     };
   }, [currentPage, statusFilter, monthFilter, sortOrder, searchTerm]);
 
   const { data, isLoading, isFetching, error, refetch } =
     useGetAllTransactionHistoryQuery(queryParams);
+
+  useEffect(() => {
+    refetch();
+  }, [sortOrder, refetch]);
 
   const totalItems = data?.meta?.total || 0;
 
