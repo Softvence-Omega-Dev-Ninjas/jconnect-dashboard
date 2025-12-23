@@ -15,28 +15,43 @@ const Payments = () => {
     {
       id: "total-revenue",
       title: "Total Revenue",
-      value: stats?.totalRevenue || 0,
+      value: stats?.totalRevenue
+        ? Number((stats.totalRevenue / 100).toFixed(2))
+        : 0,
       change: stats?.revenuePercentage || 0,
       icon: DollarSign,
+      isCurrency: true,
     },
     {
       id: "stripe-payouts",
       title: "Stripe Payouts",
-      value: stats?.stripePayouts || 0,
+      value: stats?.stripePayouts
+        ? Number((stats.stripePayouts / 100).toFixed(2))
+        : 0,
       change: stats?.stripePayoutsPercentage || 0,
       icon: HandCoins,
+      isCurrency: true,
     },
     {
       id: "refunds",
       title: "Refunds",
-      value: stats?.totalRefund || 0,
+      value: stats?.totalRefund
+        ? Number((stats.totalRefund / 100).toFixed(2))
+        : 0,
       change: stats?.refundPercentage || 0,
       icon: BanknoteArrowDown,
+      isCurrency: true,
     },
   ];
 
   if (isLoading) return <LoadingSpinner message="Loading payment stats..." />;
-  if (error) return <NoDataFound dataTitle="Payment Data" noDataText="Could not fetch payment information." />;
+  if (error)
+    return (
+      <NoDataFound
+        dataTitle="Payment Data"
+        noDataText="Could not fetch payment information."
+      />
+    );
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -57,11 +72,9 @@ const Payments = () => {
               title={stat.title}
               value={stat.value}
               change={stat.change}
-              isCurrency={true} 
+              isCurrency={true}
               subHead={true}
-              icon={
-                <IconComponent className="w-5 h-5 md:w-6 md:h-6" />
-              }
+              icon={<IconComponent className="w-5 h-5 md:w-6 md:h-6" />}
             />
           );
         })}
