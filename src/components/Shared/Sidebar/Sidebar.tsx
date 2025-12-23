@@ -15,13 +15,11 @@ export function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
 
-
-const { role } = useAppSelector(state => state.auth);
-const filteredMenuItems = useMemo(() => {
-  if (!role) return [];
-  return menuItems.filter(item => item.allowedRoles?.includes(role));
-}, [role]);
-
+  const { role } = useAppSelector((state) => state.auth);
+  const filteredMenuItems = useMemo(() => {
+    if (!role) return [];
+    return menuItems.filter((item) => item.allowedRoles?.includes(role));
+  }, [role]);
 
   useEffect(() => {
     const currentPath = location.pathname.replace("/", "");
@@ -52,7 +50,7 @@ const filteredMenuItems = useMemo(() => {
       {/* Mobile Menu Button */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed flex items-center top-6 left-4 z-50 p-2 bg-gray-800 text-white rounded-md"
+        className="lg:hidden fixed flex items-center top-6 left-4 z-50 p-2  bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)] text-white rounded-md"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -82,7 +80,7 @@ const filteredMenuItems = useMemo(() => {
             </div>
             <button
               onClick={toggleSidebar}
-              className="lg:hidden text-black hover:bg-gray-700 p-1 rounded"
+              className="lg:hidden  bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)] text-white p-1 rounded-full"
             >
               <X className="w-5 h-5" />
             </button>

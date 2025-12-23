@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -67,7 +68,7 @@ const Login: React.FC = () => {
         });
 
         dispatch(
-          setCredentials({ user: res.data.user, token: res.data.token })
+          setCredentials({ user: res.data.user as any, token: res.data.token })
         );
         toast.success("Login successful!");
         navigate("/");
