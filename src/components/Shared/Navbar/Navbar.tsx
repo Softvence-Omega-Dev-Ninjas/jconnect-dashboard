@@ -129,7 +129,7 @@ const Navbar = () => {
           <div className="relative" ref={notificationRef}>
             <button
               onClick={() => setOpen((p) => !p)}
-              className="relative text-gray-600 hover:text-gray-900 p-1 transition-colors"
+              className="relative text-gray-600 hover:text-gray-900 p-1 transition-colors cursor-pointer"
             >
               <Bell className="w-5 h-5" />
               {unread > 0 && (

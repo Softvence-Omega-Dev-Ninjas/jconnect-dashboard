@@ -1,4 +1,9 @@
-import { DollarSign, BanknoteArrowDown, Handshake, CircleUserRound } from "lucide-react";
+import {
+  DollarSign,
+  BanknoteArrowDown,
+  Handshake,
+  CircleUserRound,
+} from "lucide-react";
 import StatCard from "./StatCard";
 import { useGetOverviewStatsQuery } from "@/redux/features/dashboard/dashboardApi";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
@@ -8,7 +13,7 @@ export default function StatCardGrid() {
   const { data, error, isLoading } = useGetOverviewStatsQuery();
 
   const stats = data?.data;
-  
+
   const stateCardsData = [
     {
       id: "total-users",
@@ -16,13 +21,17 @@ export default function StatCardGrid() {
       value: stats?.totalUser || 0,
       change: stats?.userPercentage || 0,
       icon: CircleUserRound,
+      isCurrency: false,
     },
     {
       id: "total-revenue",
       title: "Total Revenue",
-      value: stats?.totalRevenue || 0,
+      value: stats?.totalRevenue
+        ? Number((stats.totalRevenue / 100).toFixed(2))
+        : 0,
       change: stats?.revenuePercentage || 0,
       icon: DollarSign,
+      isCurrency: true,
     },
     {
       id: "total-disputes",
@@ -30,18 +39,22 @@ export default function StatCardGrid() {
       value: stats?.totalDispute || 0,
       change: stats?.disputePercentage || 0,
       icon: Handshake,
+      isCurrency: false,
     },
     {
       id: "total-refunds",
       title: "Total Refunds",
-      value: stats?.totalRefund || 0,
+      value: stats?.totalRefund
+        ? Number((stats.totalRefund / 100).toFixed(2))
+        : 0,
       change: stats?.refundPercentage || 0,
       icon: BanknoteArrowDown,
+      isCurrency: true,
     },
   ];
 
   if (isLoading) return <LoadingSpinner message="Loading overview stats..." />;
-  if (error){
+  if (error) {
     return <NoDataFound dataTitle="Users Overview Date" />;
   }
 
@@ -55,8 +68,11 @@ export default function StatCardGrid() {
             title={stat.title}
             value={stat.value}
             change={stat.change}
-            icon={<IconComponent className="w-5 h-5 md:w-6 md:h-6 text-[#BD001F]" />}
+            icon={
+              <IconComponent className="w-5 h-5 md:w-6 md:h-6 text-[#BD001F]" />
+            }
             subHead={true}
+            isCurrency={stat.isCurrency}
           />
         );
       })}
