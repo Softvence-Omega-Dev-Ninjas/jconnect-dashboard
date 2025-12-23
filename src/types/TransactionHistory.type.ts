@@ -17,7 +17,7 @@ export interface Payment {
 
 export interface DisplayPayment {
   id: string;
-  orderCode: string;
+  orderid: string;
   amount: number;
   netSeller: number;
   PlatfromRevinue: number;

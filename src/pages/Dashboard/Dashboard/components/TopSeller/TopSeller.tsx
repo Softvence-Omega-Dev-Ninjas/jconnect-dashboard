@@ -44,13 +44,21 @@ export const TopSellers = () => {
       header: "Total Revenue (30d)",
       accessor: "totalRevenue30d",
       hideOnMobile: true,
-      render: (item) => `$${item.totalRevenue30d.toFixed(2)}`,
+      render: (item) =>
+        `$${
+          item.totalRevenue30d
+            ? Number((item.totalRevenue30d / 100).toFixed(2))
+            : 0
+        }`,
     },
     {
       header: "Avg Order Value",
       accessor: "avgOrderValue",
       hideOnMobile: true,
-      render: (item) => `$${item.avgOrderValue.toFixed(2)}`,
+      render: (item) =>
+        `$${
+          item.avgOrderValue ? Number((item.avgOrderValue / 100).toFixed(2)) : 0
+        }`,
     },
   ];
 

@@ -31,12 +31,14 @@ const Disputes = () => {
     new Date().getMonth().toString()
   );
 
-  const searchTerm = useSelector((state: any) => state.search?.searchTerm || "");
+  const searchTerm = useSelector(
+    (state: any) => state.search?.searchTerm || ""
+  );
 
   const navigate = useNavigate();
   const itemsPerPage = 9;
 
-  const { data, isLoading, error } = useGetDisputesQuery({searchTerm});
+  const { data, isLoading, error } = useGetDisputesQuery({ searchTerm });
   const [updateStatus] = useUpdateDisputeStatusMutation();
 
   const handleStatusUpdate = async (id: string, newStatus: string) => {
@@ -108,7 +110,6 @@ const Disputes = () => {
     { header: "Case ID", accessor: "caseId" },
     { header: "Order ID", accessor: "orderId", hideOnMobile: true },
     { header: "Disputed by", accessor: "disputedBy" },
-    { header: "Submitted Date", accessor: "submittedDate" },
     {
       header: "Status",
       accessor: "status",
@@ -126,6 +127,7 @@ const Disputes = () => {
         </span>
       ),
     },
+    { header: "Submitted Date", accessor: "submittedDate" },
     {
       header: "Action",
       render: (item) => (

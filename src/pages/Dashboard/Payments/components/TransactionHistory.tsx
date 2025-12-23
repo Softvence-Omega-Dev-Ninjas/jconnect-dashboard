@@ -58,7 +58,7 @@ const TransactionHistory = () => {
 
     return transactionData.map((item) => ({
       id: item.id,
-      orderCode: item.orderCode,
+      orderid: item.orderCode,
       amount: item.amount,
       netSeller: item.seller_amount,
       PlatfromRevinue: item.PlatfromRevinue,
@@ -76,17 +76,17 @@ const TransactionHistory = () => {
     const exportData = transformedData;
 
     const header = [
-      "Order Code",
-      "Seller Name",
+      "Order ID",
+      "Seller Username",
       "Gross Amount",
-      "Net Seller",
+      "Net to Seller",
       "Platform Revenue",
       "Status",
       "Date",
     ];
     const body = exportData.map((item) =>
       [
-        item.orderCode,
+        item.orderid,
         item.sellerUsername,
         item.amount,
         item.netSeller,
@@ -109,18 +109,25 @@ const TransactionHistory = () => {
   };
 
   const columns: Column<DisplayPayment>[] = [
-    { header: "Order Code", accessor: "orderCode" },
-    { header: "Seller", accessor: "sellerUsername", hideOnMobile: true },
+    { header: "Order ID", accessor: "orderid" },
+    {
+      header: "Seller Username",
+      accessor: "sellerUsername",
+      hideOnMobile: true,
+    },
     {
       header: "Amount",
       accessor: "amount",
-      render: (item) => `$${item.amount.toFixed(2)}`,
+      // render: (item) => `$${item.amount.toFixed(2)}`,
+      render: (item) =>
+        `$${item.amount ? Number((item.amount / 100).toFixed(2)) : 0}`,
     },
     {
-      header: "Net",
+      header: "Net to Seller",
       accessor: "netSeller",
       hideOnMobile: true,
-      render: (item) => `$${item.netSeller.toFixed(2)}`,
+      render: (item) =>
+        `$${item.netSeller ? Number((item.netSeller / 100).toFixed(2)) : 0}`,
     },
     {
       header: "Status",

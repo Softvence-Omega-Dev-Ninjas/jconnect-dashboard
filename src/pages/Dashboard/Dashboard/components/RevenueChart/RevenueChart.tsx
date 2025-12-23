@@ -73,7 +73,7 @@ export default function RevenueChart() {
       const year = yearStr;
       const monthIdx = Number(monthStr) - 1;
       if (!map[year]) map[year] = {};
-      map[year][monthIdx] = Number(it.revenue ?? 0);
+      map[year][monthIdx] = Number(it.revenue ?? 0) / 100;
     });
 
     const years = Object.keys(map).sort();
@@ -176,7 +176,7 @@ export default function RevenueChart() {
             />
             <Tooltip
               formatter={(value: number | string) => [
-                `${Number(value).toLocaleString()}`,
+               `$${Number(value).toLocaleString(undefined, {minimumFractionDigits: 2})}`,
                 "Revenue",
               ]}
             />
