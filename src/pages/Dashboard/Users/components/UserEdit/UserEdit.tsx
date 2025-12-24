@@ -108,12 +108,14 @@ const EditUser = () => {
 
     try {
       setIsUploading(true);
+
+      const baseUrl = (import.meta as any).env.VITE_API_URL;
       const response = await fetch(
-        "https://jconnect-server.saikat.com.bd/aws-file-upload-additional-all/upload-image-single",
-        {
-          method: "POST",
-          body: uploadFormData,
-        }
+        `${baseUrl}/aws-file-upload-additional-all/upload-image-single`,
+      {
+        method: "POST",
+        body: uploadFormData,
+      }
       );
       const result = await response.json();
       if (result.file) {
