@@ -82,15 +82,10 @@ const EditUser = () => {
   const targetUserId = (user as any)?._id || (user as any)?.id;
 
   const isCurrentUserSuperAdmin = loggedInUser?.role === "SUPER_ADMIN";
-  const isTargetUserSuperAdmin = user?.role === "SUPER_ADMIN";
+  const isCurrentUserAdmin = loggedInUser?.role === "ADMIN";
   const isSelf = loggedInUserId === targetUserId;
 
-  const canEdit = isCurrentUserSuperAdmin
-    ? isTargetUserSuperAdmin
-      ? isSelf
-      : true
-    : isSelf;
-
+  const canEdit = isCurrentUserSuperAdmin || (isCurrentUserAdmin && isSelf);
   const isFieldDisabled = !canEdit;
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -98,17 +93,29 @@ const EditUser = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload a valid image file.");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image size must be less than 2MB");
+      return;
+    }
+
     const uploadFormData = new FormData();
     uploadFormData.append("file", file);
 
     try {
       setIsUploading(true);
+
+      const baseUrl = (import.meta as any).env.VITE_API_URL;
       const response = await fetch(
-        "https://jconnect-server.saikat.com.bd/aws-file-upload-additional-all/upload-image-single",
-        {
-          method: "POST",
-          body: uploadFormData,
-        }
+        `${baseUrl}/aws-file-upload-additional-all/upload-image-single`,
+      {
+        method: "POST",
+        body: uploadFormData,
+      }
       );
       const result = await response.json();
       if (result.file) {
@@ -116,7 +123,7 @@ const EditUser = () => {
         toast.success("Image uploaded successfully!");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Image upload failed!");
     } finally {
       setIsUploading(false);
@@ -137,18 +144,7 @@ const EditUser = () => {
       toast.success("User updated successfully!");
       navigate(`/users/${userId}`);
     } catch (err: any) {
-      const errorMsg = err?.data?.message || "";
-      if (errorMsg.includes("phone")) {
-        toast.error(
-          "This phone number is already registered with another user."
-        );
-      } else if (errorMsg.includes("email")) {
-        toast.error("This email is already in use.");
-      } else {
-        toast.error(
-          err?.data?.message || "Failed to update user. Please try again."
-        );
-      }
+      toast.error(err?.data?.message || "Failed to update user.");
     }
   };
 
@@ -158,7 +154,8 @@ const EditUser = () => {
 
   return (
     <div className="p-2 md:p-6 max-w-4xl mx-auto">
-      <div className="relative flex items-center mb-2 w-full min-h-[50px]">
+      {/* Header */}
+      <div className="relative flex items-center mb-6 w-full min-h-[50px]">
         <button
           onClick={() => navigate(-1)}
           className="absolute left-0 flex items-center text-gray-500 hover:text-red-600 transition-all group cursor-pointer"
@@ -168,7 +165,7 @@ const EditUser = () => {
           </div>
           <span className="font-semibold hidden sm:inline">Back</span>
         </button>
-        <h1 className="text-2xl md:text-4xl font-bold text-center w-full text-gray-800">
+        <h1 className="text-2xl md:text-3xl font-bold text-center w-full text-gray-800">
           Update Profile
         </h1>
       </div>
@@ -177,8 +174,13 @@ const EditUser = () => {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-xl space-y-6 border-t-4 border-[#BD001F] w-full"
       >
+        {!canEdit && (
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-3 rounded-lg text-sm text-center font-medium">
+            Only Super Admin can update profile.
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Full Name */}
           <div>
             <Label htmlFor="full_name">Full Name</Label>
             <Input
@@ -190,7 +192,6 @@ const EditUser = () => {
             />
           </div>
 
-          {/* Email */}
           <div>
             <Label htmlFor="email">Email</Label>
             <Input
@@ -203,7 +204,7 @@ const EditUser = () => {
             />
           </div>
 
-          {/* Profile Photo */}
+          {/* Profile Photo Section */}
           <div className="md:col-span-2 space-y-3">
             <Label>Profile Picture</Label>
             <div
@@ -241,10 +242,13 @@ const EditUser = () => {
                       onChange={handleImageUpload}
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     />
-                    <div className="flex items-center gap-2 text-sm font-semibold text-red-600 bg-red-50 px-2 py-2 rounded-lg border border-red-100 w-fit">
+                    <div className="flex items-center gap-1 text-sm font-semibold text-red-600 bg-red-50 px-2 py-2 rounded-lg border border-red-100 w-fit">
                       <UploadCloud className="w-4 h-4" /> Change Photo
                     </div>
                   </div>
+                  <p className="text-[10px] text-gray-500 italic hidden md:flex">
+                    Supports: JPG, PNG, GIF, WEBP, SVG, HEIC (Max 2MB)
+                  </p>
                 </div>
               )}
             </div>
@@ -305,15 +309,15 @@ const EditUser = () => {
 
           <div className="flex items-center gap-3 col-span-4">
             <Label htmlFor="role">Role</Label>
-            {isCurrentUserSuperAdmin && !isTargetUserSuperAdmin ? (
+            {isCurrentUserSuperAdmin && !isSelf ? (
               <Select
-                key={formData.role}
                 value={formData.role}
                 onValueChange={(val: any) =>
                   setFormData((p) => ({ ...p, role: val }))
                 }
               >
                 <SelectTrigger className="w-full">
+                  <select name={formData.role} />
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
