@@ -167,7 +167,7 @@ const Navbar = () => {
               <AvatarImage
                 src={
                   user?.profilePhoto ||
-                  "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin"
+                  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
                 }
               />
               <AvatarFallback className="text-xs">
