@@ -38,7 +38,7 @@ const Platform = () => {
   };
 
   const handleSave = async () => {
-    console.log(formData);
+    // console.log(formData);
     try {
       await updateSettings(formData).unwrap();
       toast.success("Settings updated successfully");

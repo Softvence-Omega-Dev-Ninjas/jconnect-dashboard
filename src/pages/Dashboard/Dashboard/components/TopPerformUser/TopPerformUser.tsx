@@ -1,6 +1,7 @@
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import { useGetTopPerformingUsersQuery } from "@/redux/features/dashboard/dashboardApi";
+import { useMemo } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -12,10 +13,25 @@ import {
   Cell,
 } from "recharts";
 
+interface TopUserResponse {
+  name: string;
+  totalAmount: number;
+}
+
 export default function TopPerformingUsersChart() {
   const { data, error, isLoading } = useGetTopPerformingUsersQuery();
 
-  const chartData = data || [];
+  const chartData = useMemo(() => {
+    if (!data) return [];
+
+    return (data as TopUserResponse[])
+      .map((item: TopUserResponse) => ({
+        name: item.name,
+        totalAmount: (item.totalAmount ?? 0) / 100,
+      }))
+      .sort((a, b) => b.totalAmount - a.totalAmount)
+      .slice(0, 5);
+  }, [data]);
 
   const max =
     chartData.length > 0
@@ -25,17 +41,10 @@ export default function TopPerformingUsersChart() {
   const domainMax = Math.ceil((max * 1) / 100) * 100 || 100;
 
   if (isLoading)
-    return (
-      <LoadingSpinner message="Loading Top Performing Users..." />
-    );
-  if (error)
-    return (
-      <NoDataFound dataTitle="Top Performing Users Data" />
-    );
+    return <LoadingSpinner message="Loading Top Performing Users..." />;
+  if (error) return <NoDataFound dataTitle="Top Performing Users Data" />;
   if (chartData.length === 0)
-    return (
-      <NoDataFound dataTitle="No Top Performing Users Data Available" />
-    );
+    return <NoDataFound dataTitle="No Top Performing Users Data Available" />;
 
   return (
     <div className="bg-white rounded shadow-sm p-3 sm:p-5">
@@ -78,26 +87,28 @@ export default function TopPerformingUsersChart() {
               domain={[0, domainMax]}
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "#666", fontSize: 10 }}
+              tick={{ fill: "#666",fontWeight: 800, fontSize: 10 }}
             />
             <YAxis
               type="category"
               dataKey="name"
               width={80}
-              tick={{ fill: "#333", fontWeight: 600, fontSize: 10 }}
+              tick={{ fill: "#333", fontWeight: 800, fontSize: 10 }}
               tickLine={false}
               axisLine={false}
             />
 
             <Tooltip
               formatter={(value: number) => [
-                `$${value.toFixed(2)}`,
+                `$${value.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}`,
                 "Total Revenue",
               ]}
               cursor={{ fill: "rgba(0,0,0,0.04)" }}
             />
 
-            <Bar dataKey="totalAmount" barSize={24} radius={[8, 8, 8, 8]}>
+            <Bar dataKey="totalAmount" barSize={30} radius={[8, 8, 8, 8]}>
               {chartData.map((_, index) => (
                 <Cell key={index} fill="url(#singleRedGradient)" />
               ))}

@@ -1,4 +1,9 @@
-import { Users, DollarSign, RefreshCw, HeartHandshake } from "lucide-react";
+import {
+  DollarSign,
+  BanknoteArrowDown,
+  Handshake,
+  CircleUserRound,
+} from "lucide-react";
 import StatCard from "./StatCard";
 import { useGetOverviewStatsQuery } from "@/redux/features/dashboard/dashboardApi";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
@@ -6,40 +11,50 @@ import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 
 export default function StatCardGrid() {
   const { data, error, isLoading } = useGetOverviewStatsQuery();
-  
+
+  const stats = data?.data;
+
   const stateCardsData = [
     {
       id: "total-users",
       title: "Total Users",
-      value: data?.data ? data?.data.totalUser.toString() : "0",
-      change: data?.data ? data?.data.userPercentage : 0,
-      icon: Users,
+      value: stats?.totalUser || 0,
+      change: stats?.userPercentage || 0,
+      icon: CircleUserRound,
+      isCurrency: false,
     },
     {
       id: "total-revenue",
       title: "Total Revenue",
-      value: data?.data ? `$${data?.data.totalRevenue.toLocaleString()}` : "$0",
-      change: data?.data ? data?.data.revenuePercentage : 0,
+      value: stats?.totalRevenue
+        ? Number((stats.totalRevenue / 100).toFixed(2))
+        : 0,
+      change: stats?.revenuePercentage || 0,
       icon: DollarSign,
+      isCurrency: true,
     },
     {
       id: "total-disputes",
       title: "Total Disputes",
-      value: data?.data ? data?.data.totalDispute.toString() : "0",
-      change: data?.data ? data?.data.disputePercentage : 0,
-      icon: HeartHandshake,
+      value: stats?.totalDispute || 0,
+      change: stats?.disputePercentage || 0,
+      icon: Handshake,
+      isCurrency: false,
     },
     {
       id: "total-refunds",
       title: "Total Refunds",
-      value: data?.data ? `$${data?.data.totalRefund.toLocaleString()}` : "$0",
-      change: data?.data ? data?.data.refundPercentage : 0,
-      icon: RefreshCw,
+      value: stats?.totalRefund
+        ? Number((stats.totalRefund / 100).toFixed(2))
+        : 0,
+      change: stats?.refundPercentage || 0,
+      icon: BanknoteArrowDown,
+      isCurrency: true,
     },
   ];
 
   if (isLoading) return <LoadingSpinner message="Loading overview stats..." />;
-  if (error){
+  if (error) {
     return <NoDataFound dataTitle="Users Overview Date" />;
   }
 
@@ -53,8 +68,11 @@ export default function StatCardGrid() {
             title={stat.title}
             value={stat.value}
             change={stat.change}
-            icon={<IconComponent className="w-5 h-5 md:w-6 md:h-6 text-[#BD001F]" />}
+            icon={
+              <IconComponent className="w-5 h-5 md:w-6 md:h-6 text-[#BD001F]" />
+            }
             subHead={true}
+            isCurrency={stat.isCurrency}
           />
         );
       })}

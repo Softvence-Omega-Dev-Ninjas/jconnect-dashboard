@@ -1,10 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Column, DataTable } from "@/components/Shared/DataTable/DataTable";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import PageHeading from "@/components/Shared/PageHeading/PageHeading";
-import { useGetDisputesQuery } from "@/redux/features/disputes/disputesApi";
+import {
+  useGetDisputesQuery,
+  useUpdateDisputeStatusMutation,
+  DisputeResponse,
+} from "@/redux/features/disputes/disputesApi";
 import FilterBar from "./components/FilterBar";
-import { saveAs } from "file-saver";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
+import { toast } from "sonner";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
+import { useSelector } from "react-redux";
 
 interface Dispute {
   id: string;
@@ -13,58 +21,89 @@ interface Dispute {
   disputedBy: string;
   status: string;
   submittedDate: string;
+  rawDate: Date;
 }
 
 const Disputes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date().getMonth().toString()
+  );
+
+  const searchTerm = useSelector(
+    (state: any) => state.search?.searchTerm || ""
+  );
+
   const navigate = useNavigate();
   const itemsPerPage = 9;
 
-  const { data, isLoading, error } = useGetDisputesQuery();
+  const { data, isLoading, error } = useGetDisputesQuery({ searchTerm });
+  const [updateStatus] = useUpdateDisputeStatusMutation();
 
-  const transformedData: Dispute[] = (data || []).map((item) => ({
-    id: item.id,
-    caseId: item.order.orderCode,
-    orderId: item.order.orderCode,
-    disputedBy: item.user.full_name,
-    status: item.status,
-    submittedDate: new Date(item.createdAt).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }),
-  }));
+  const handleStatusUpdate = async (id: string, newStatus: string) => {
+    try {
+      const payload = {
+        id,
+        status: newStatus,
+        resolution:
+          newStatus === "RESOLVED"
+            ? "The dispute has been reviewed and resolved by the administrator."
+            : "The dispute has been rejected after review.",
+      };
+      await updateStatus(payload).unwrap();
+      toast.success("Update Success!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Permission Denied!");
+    }
+  };
 
-  const filteredData = transformedData.filter((item) =>
-    statusFilter === "all" ? true : item.status === statusFilter.toUpperCase()
-  );
-
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+    return (data as DisputeResponse[])
+      .map((item) => ({
+        id: item.id,
+        caseId: item.order.orderCode,
+        orderId: item.order.orderCode,
+        disputedBy: item.user.full_name,
+        status: item.status,
+        rawDate: new Date(item.createdAt),
+        submittedDate: new Date(item.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+      }))
+      .filter((item) => {
+        const matchesStatus =
+          statusFilter === "all"
+            ? true
+            : item.status === statusFilter.toUpperCase();
+        const matchesMonth =
+          item.rawDate.getMonth().toString() === selectedMonth;
+        return matchesStatus && matchesMonth;
+      });
+  }, [data, statusFilter, selectedMonth]);
 
   const handleExport = () => {
-    const header = [
-      "Case ID",
-      "Order ID",
-      "Disputed By",
-      "Status",
-      "Submitted Date",
-    ];
-    const body = filteredData.map((item) =>
-      [
-        item.caseId,
-        item.orderId,
-        item.disputedBy,
-        item.status,
-        item.submittedDate,
-      ].join(",")
-    );
-    const csv = [header.join(","), ...body].join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, `disputes_${new Date().toISOString().slice(0, 10)}.csv`);
+    if (filteredData.length === 0) {
+      toast.error("No data found to export.");
+      return;
+    }
+    const headers = "Case ID,Order ID,Disputed By,Status,Submitted Date\n";
+    const rows = filteredData
+      .map(
+        (item) =>
+          `${item.caseId},${item.orderId},${item.disputedBy},${item.status},${item.submittedDate}`
+      )
+      .join("\n");
+    const blob = new Blob([headers + rows], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Disputes_Report.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const columns: Column<Dispute>[] = [
@@ -75,44 +114,73 @@ const Disputes = () => {
       header: "Status",
       accessor: "status",
       render: (item) => (
-        <span className="px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-gray-100">
+        <span
+          className={`px-2 py-1 rounded-full text-[10px] font-bold ${
+            item.status === "RESOLVED"
+              ? "bg-green-100 text-green-700"
+              : item.status === "REJECTED"
+              ? "bg-red-100 text-red-700"
+              : "bg-gray-100 text-gray-700"
+          }`}
+        >
           {item.status}
         </span>
       ),
     },
-    { header: "Date", accessor: "submittedDate", hideOnMobile: true },
+    { header: "Submitted Date", accessor: "submittedDate" },
     {
       header: "Action",
       render: (item) => (
-        <button
-          className="px-2 sm:px-3 py-1 text-xs sm:text-sm hover:underline text-gray-700"
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/disputes/${item.id}`);
-          }}
-        >
-          View
-        </button>
+        <div className="flex items-center justify-center gap-2">
+          <button
+            type="button"
+            className="text-gray-600 hover:text-red-600 text-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/disputes/${item.id}`);
+            }}
+          >
+            View
+          </button>
+          <span>/</span>
+          <button
+            type="button"
+            disabled={item.status !== "UNDER_REVIEW"}
+            className="text-emerald-600 disabled:opacity-30 text-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleStatusUpdate(item.id, "RESOLVED");
+            }}
+          >
+            Resolve
+          </button>
+        </div>
       ),
     },
   ];
 
-  if (isLoading) return <div className="p-4 md:p-6">Loading...</div>;
-  if (error) return <div className="p-4 md:p-6">Error loading disputes</div>;
+  if (isLoading) return <LoadingSpinner />;
+  if (error) {
+    return <NoDataFound dataTitle="Disputes Data" />;
+  }
 
   return (
     <div className="space-y-6">
       <PageHeading title="Disputes" />
-
       <FilterBar
         statusFilter={statusFilter}
         onStatusChange={setStatusFilter}
+        selectedMonth={selectedMonth}
+        onMonthChange={setSelectedMonth}
         onExport={handleExport}
       />
 
       <DataTable
         columns={columns}
-        data={paginatedData}
+        data={filteredData.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        )}
         getRowKey={(item) => item.id}
         showPagination={true}
         currentPage={currentPage}

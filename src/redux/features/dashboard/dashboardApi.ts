@@ -12,6 +12,8 @@ export interface OverviewStats {
     totalRevenue: number;
     totalUser: number;
     userPercentage: number;
+    stripePayouts: number;
+    stripePayoutsPercentage: number;
   };
 }
 
@@ -55,18 +57,19 @@ interface TopSellersResponse {
 interface TopSellersQueryParams {
   page: number;
   limit: number;
+  search?: string;
 }
 
 //User weekly activity response type
 export interface ActivityItem {
- date: string;
- activePercentage: number;
- inactivePercentage: number;
+  date: string;
+  activePercentage: number;
+  inactivePercentage: number;
 }
 interface UserActivityWeeklyResponse {
-    status: number;
-    message: string;
-    data: ActivityItem[];
+  status: number;
+  message: string;
+  data: ActivityItem[];
 }
 
 export const dashboardApi = baseApi.injectEndpoints({
@@ -87,14 +90,25 @@ export const dashboardApi = baseApi.injectEndpoints({
         response.data,
     }),
     getTopSellers: builder.query<TopSellersResponse, TopSellersQueryParams>({
-      query: ({ page, limit }) =>
-        `/admin/dashboard-stats/top-sellers?page=${page}&limit=${limit}`,
+      query: ({ page, limit, search }) => {
+        const params = new URLSearchParams({
+          page: page.toString(),
+          limit: limit.toString(),
+        });
+
+        if (search) {
+          params.append("search", search);
+        }
+
+        return `/admin/dashboard-stats/top-sellers?${params.toString()}`;
+      },
       transformResponse: (response: TopSellersResponse) => response,
     }),
     getWeeklyUserActivity: builder.query<ActivityItem[], void>({
-   query: () => "/admin/dashboard-stats/user-activity-weekly",
-   transformResponse: (response: UserActivityWeeklyResponse) => response.data,
-  }),
+      query: () => "/admin/dashboard-stats/user-activity-weekly",
+      transformResponse: (response: UserActivityWeeklyResponse) =>
+        response.data,
+    }),
   }),
 });
 

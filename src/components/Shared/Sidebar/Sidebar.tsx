@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { X, Menu, LogOut } from "lucide-react";
-import { menuItems } from "./MenuItems";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/features/auth/authSlice";
+
+import { menuItems } from "./MenuItems";
+import { useAppSelector } from "@/redux/hook";
 
 export function Sidebar() {
   const [activeItem, setActiveItem] = useState<string>("");
@@ -13,13 +15,18 @@ export function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
 
+  const { role } = useAppSelector((state) => state.auth);
+  const filteredMenuItems = useMemo(() => {
+    if (!role) return [];
+    return menuItems.filter((item) => item.allowedRoles?.includes(role));
+  }, [role]);
+
   useEffect(() => {
     const currentPath = location.pathname.replace("/", "");
     setActiveItem(currentPath);
   }, [location.pathname]);
 
   const handleItemClick = (id: string) => {
-    console.log(id);
     setActiveItem(id);
 
     if (id === "login") {
@@ -43,7 +50,7 @@ export function Sidebar() {
       {/* Mobile Menu Button */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded-md"
+        className="lg:hidden fixed flex items-center top-6 left-4 z-50 p-2  bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)] text-white rounded-md"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -68,12 +75,12 @@ export function Sidebar() {
         <div className="p-6 border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-medium">Admin</h2>
+              <h2 className="text-xl font-bold">Admin</h2>
               <p className="text-sm text-[#1E1E1E]">Super Dashboard</p>
             </div>
             <button
               onClick={toggleSidebar}
-              className="lg:hidden text-black hover:bg-gray-700 p-1 rounded"
+              className="lg:hidden  bg-[linear-gradient(135deg,#7A0012_0%,#FF1845_50%,#D41436_60%,#7A0012_100%)] text-white p-1 rounded-full"
             >
               <X className="w-5 h-5" />
             </button>
@@ -83,7 +90,7 @@ export function Sidebar() {
         {/* Menu Items */}
         <nav className="px-3 py-4">
           <ul className="space-y-1">
-            {menuItems.map((item) => (
+            {filteredMenuItems.map((item) => (
               <li key={item.id}>
                 <button
                   onClick={() => handleItemClick(item.id)}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -41,22 +42,24 @@ const Login: React.FC = () => {
       }).unwrap();
 
       if (res?.success && res.data) {
-        const token = res.data.token;
         const role = res.data.user?.role || "";
 
+        const allowedRoles = ["ADMIN", "SUPER_ADMIN"];
+        if (!allowedRoles.includes(role.toUpperCase())) {
+          toast.error("Access Denied: Only Admins can access this panel.");
+          return;
+        }
+        const token = res.data.token;
         const secureFlag =
           typeof window !== "undefined" &&
           window.location.protocol === "https:";
 
-        // Set token cookie
         Cookies.set("token", token, {
           expires: 7,
           path: "/",
           sameSite: "Lax",
           secure: secureFlag,
         });
-
-        // Set role cookie
         Cookies.set("role", role, {
           expires: 7,
           path: "/",
@@ -64,10 +67,9 @@ const Login: React.FC = () => {
           secure: secureFlag,
         });
 
-        // Store user in Redux
-        dispatch(setCredentials({ user: res.data.user }));
-
-        // Navigate
+        dispatch(
+          setCredentials({ user: res.data.user as any, token: res.data.token })
+        );
         toast.success("Login successful!");
         navigate("/");
       } else {
@@ -126,9 +128,15 @@ const Login: React.FC = () => {
               >
                 Password
               </label>
-              <a className="text-base font-bold text-[#666161] hover:underline cursor-pointer">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/forgot-password");
+                }}
+                className="text-base font-bold text-[#666161] hover:underline cursor-pointer"
+              >
                 Forget Password?
-              </a>
+              </button>
             </div>
             <div className="relative">
               <input

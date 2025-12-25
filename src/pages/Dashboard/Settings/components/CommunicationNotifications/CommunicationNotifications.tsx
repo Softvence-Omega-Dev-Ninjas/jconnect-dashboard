@@ -1,142 +1,156 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeading from "@/components/Shared/PageHeading/PageHeading";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
+import { toast } from "sonner";
+import {
+  NotificationSetting,
+  useGetNotificationSettingsQuery,
+  useUpdateNotificationSettingsMutation,
+} from "@/redux/features/settings/settingsApi";
+import { notificationItems } from "./NotificationItems/NotificationItems";
+import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 
 const CommunicationNotifications = () => {
-  const [notifications, setNotifications] = useState({
-    payment: true,
-    orderCompleted: true,
-    disputeUpdate: true,
-    refundIssued: true,
-    accountSuspension: true,
-    pushNotifications: true,
-  });
+  const {
+    data: apiResponse,
+    isLoading,
+    error,
+  } = useGetNotificationSettingsQuery();
+  const [updateSettings, { isLoading: isUpdating }] =
+    useUpdateNotificationSettingsMutation();
+  const [localSettings, setLocalSettings] =
+    useState<NotificationSetting | null>(null);
 
-  const [announcement, setAnnouncement] = useState({
-    title: "",
-    message: "",
-  });
+  useEffect(() => {
+    if (apiResponse?.data) {
+      setLocalSettings(apiResponse.data);
+    }
+  }, [apiResponse]);
+
+  if (error) {
+    return <NoDataFound dataTitle="Notification Data" />;
+  }
+
+  if (isLoading || !localSettings) {
+    return (
+      <div className="flex h-[400px] items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  const syncWithBackend = async (
+    updatedFields: Partial<NotificationSetting>
+  ) => {
+    try {
+      await updateSettings(updatedFields).unwrap();
+    } catch (error) {
+      console.error("Sync Error:", error);
+      toast.error("Failed to sync settings");
+    }
+  };
+
+  const isMasterActive = notificationItems.some(
+    (item) => localSettings[item.key as keyof NotificationSetting] === true
+  );
+
+  const handleMasterToggle = (val: boolean) => {
+    const updatedState = {
+      ...localSettings,
+      email: val,
+      userUpdates: val,
+      serviceCreate: val,
+      review: val,
+      post: val,
+      message: val,
+      userRegistration: val,
+      Service: val,
+    };
+    setLocalSettings(updatedState);
+    syncWithBackend(updatedState);
+    toast.success(
+      val ? "All notifications enabled" : "All notifications disabled"
+    );
+  };
+  const handleIndividualToggle = (
+    key: keyof NotificationSetting,
+    val: boolean
+  ) => {
+    const updatedState = { ...localSettings, [key]: val };
+    setLocalSettings(updatedState);
+    syncWithBackend(updatedState);
+
+    const notificationName =
+      notificationItems.find((item) => item.key === key)?.label || key;
+    toast.success(`${notificationName} ${val ? "enabled" : "disabled"}`);
+  };
 
   return (
     <>
       <PageHeading title="Communication & Notifications" />
-      <div className="space-y-7 bg-white rounded-lg shadow-md p-6 mt-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-1.5">
-            <Label className="font-medium">Payment</Label>
-            <div className="flex items-center justify-between border border-red-600 rounded-md px-4 py-2">
-              <span className="text-sm">Active</span>
-              <Switch
-                checked={notifications.payment}
-                onCheckedChange={(val) =>
-                  setNotifications({ ...notifications, payment: val })
-                }
-              />
-            </div>
-          </div>
 
-          <div className="space-y-1.5">
-            <Label className="font-medium">Order CompletedQ</Label>
-            <div className="flex items-center justify-between border border-red-600 rounded-md px-4 py-2">
-              <span className="text-sm">Active</span>
-              <Switch
-                checked={notifications.orderCompleted}
-                onCheckedChange={(val) =>
-                  setNotifications({ ...notifications, orderCompleted: val })
-                }
-              />
+      <div
+        className={`space-y-8 mt-6 transition-opacity duration-200 bg-white rounded-lg shadow-md p-6 ${
+          isUpdating ? "opacity-75" : "opacity-100"
+        }`}
+      >
+        {/* Master Control Switch */}
+        <div className="bg-white p-6 rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <Label className="text-lg font-bold text-gray-800">
+                Push Notifications
+              </Label>
+              <p className="text-sm text-gray-500">
+                Enable or disable all notifications at once
+              </p>
             </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="font-medium">Dispute Update</Label>
-            <div className="flex items-center justify-between border border-red-600 rounded-md px-4 py-2">
-              <span className="text-sm">Active</span>
-              <Switch
-                checked={notifications.disputeUpdate}
-                onCheckedChange={(val) =>
-                  setNotifications({ ...notifications, disputeUpdate: val })
-                }
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="font-medium">Refund Issued</Label>
-            <div className="flex items-center justify-between border border-red-600 rounded-md px-4 py-2">
-              <span className="text-sm">Active</span>
-              <Switch
-                checked={notifications.refundIssued}
-                onCheckedChange={(val) =>
-                  setNotifications({ ...notifications, refundIssued: val })
-                }
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="font-medium">Account Suspension Notice</Label>
-            <div className="flex items-center justify-between border border-red-600 rounded-md px-4 py-2">
-              <span className="text-sm">Active</span>
-              <Switch
-                checked={notifications.accountSuspension}
-                onCheckedChange={(val) =>
-                  setNotifications({ ...notifications, accountSuspension: val })
-                }
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label className="font-medium">Push Notifications</Label>
-            <div className="flex items-center justify-between border border-red-600 rounded-md px-4 py-2">
-              <span className="text-sm">Active</span>
-              <Switch
-                checked={notifications.pushNotifications}
-                onCheckedChange={(val) =>
-                  setNotifications({ ...notifications, pushNotifications: val })
-                }
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="border border-gray-300 rounded-lg p-6 space-y-4">
-          <h3 className="font-bold text-xl">Announcement Banner</h3>
-          <div className="space-y-1.5">
-            <Input
-              placeholder="Title"
-              className="border-red-600"
-              value={announcement.title}
-              onChange={(e) =>
-                setAnnouncement({ ...announcement, title: e.target.value })
-              }
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Textarea
-              placeholder="Enter announcement here"
-              className="border-red-600 min-h-[100px]"
-              value={announcement.message}
-              onChange={(e) =>
-                setAnnouncement({ ...announcement, message: e.target.value })
-              }
+            <Switch
+              checked={isMasterActive}
+              onCheckedChange={handleMasterToggle}
+              className="data-[state=checked]:bg-red-600"
+              disabled={isUpdating}
             />
           </div>
         </div>
 
-        <div className="flex justify-center">
-          <Button className="btn-primary">Save Announcement</Button>
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {notificationItems.map((item) => {
+            const isActive =
+              !!localSettings[item.key as keyof NotificationSetting];
 
-        <div>
-          <p className="text-gray-400 text-center">
-            Manage automated messages and system-wide announcements.
-          </p>
+            return (
+              <div key={item.key} className="group">
+                <div className="flex items-center justify-between border border-gray-100 rounded-xl px-5 py-4 bg-white hover:border-red-200 hover:shadow-md transition-all duration-200">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm font-semibold text-gray-700 cursor-pointer">
+                      {item.label}
+                    </Label>
+                    <p
+                      className={`text-xs font-medium ${
+                        isActive ? "text-green-600" : "text-gray-400"
+                      }`}
+                    >
+                      {isActive ? "Enabled" : "Disabled"}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={isActive}
+                    onCheckedChange={(val) =>
+                      handleIndividualToggle(
+                        item.key as keyof NotificationSetting,
+                        val
+                      )
+                    }
+                    className="data-[state=checked]:bg-red-600"
+                    disabled={isUpdating}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </>

@@ -1,19 +1,22 @@
-import { useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { useGetUserByIdQuery } from "@/redux/features/users/usersApi";
-import PageHeading from "@/components/Shared/PageHeading/PageHeading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  User as UserIcon,
   Mail,
   Phone,
   Calendar,
   Shield,
+  ContactRound,
+  Loader2,
+  Image,
+  ArrowLeft,
 } from "lucide-react";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 
 const SingleUserDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const userId = id || "";
 
@@ -26,15 +29,11 @@ const SingleUserDetail = () => {
   });
 
   if (isLoading) {
-    return (
-      <LoadingSpinner message="Loading user details..." />
-    );
+    return <LoadingSpinner message="Loading user details..." />;
   }
 
   if (error instanceof Error || !user) {
-    return (
-      <NoDataFound dataTitle="No user details. Please try again later." />
-    );
+    return <NoDataFound dataTitle="No user details. Please try again later." />;
   }
 
   const formatDate = (dateString: string | null) => {
@@ -61,21 +60,48 @@ const SingleUserDetail = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <PageHeading title={`User Details: ${user.full_name}`} />
+      <div className="">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center text-gray-500 hover:text-red-600 transition-all group w-fit"
+        >
+          <div className="p-2 rounded-full group-hover:bg-red-50 mr-2 transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </div>
+          <span className="font-semibold">Back to User</span>
+        </button>
+      </div>
 
-      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md border-t-4 border-red-600">
+      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md border-t-4 border-red-600 overflow-scroll sm:overflow-visible">
         <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-            <UserIcon className="w-8 h-8 text-red-600" />
+          <div className="relative w-20 h-20 rounded-full border-2 border-white shadow-md overflow-hidden bg-gray-100 shrink-0">
+            {user.profilePhoto ? (
+              <img
+                src={user.profilePhoto}
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                <Image />
+              </div>
+            )}
+            {isLoading && (
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <Loader2 className="w-6 h-6 text-white animate-spin" />
+              </div>
+            )}
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900 mr-2">
               {user.full_name}
             </h2>
-            <p className="text-sm text-gray-500">User ID: {user.id}</p>
+            <p className="hidden md:flex text-sm text-gray-500">
+              User ID: {user.id}
+            </p>
           </div>
         </div>
-        <div className="space-y-1">
+        <div className="space-x-1 flex">
           {getStatusBadge(user.isActive)}
           <Badge
             variant="outline"
@@ -88,15 +114,18 @@ const SingleUserDetail = () => {
 
       {/* --- Primary Contact and Status Info --- */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="shadow-lg">
+        <Card className="shadow-lg overflow-scroll sm:overflow-visible">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Contact Information
             </CardTitle>
-            <Mail className="h-4 w-4 text-gray-500" />
+            <ContactRound />
           </CardHeader>
           <CardContent className="space-y-2">
-            <p className="text-lg font-semibold">{user.email}</p>
+            <div className="flex items-center gap-1">
+              <Mail className="h-4 w-4 text-gray-500" />
+              <p className="text-lg font-semibold">{user.email}</p>
+            </div>
             <div className="flex items-center text-sm text-gray-600">
               <Phone className="h-4 w-4 mr-2" />
               {user.phone || "Phone Not Provided"}
@@ -104,7 +133,7 @@ const SingleUserDetail = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg">
+        <Card className="shadow-lg overflow-scroll sm:overflow-visible">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Verification Status
@@ -125,7 +154,7 @@ const SingleUserDetail = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg">
+        <Card className="shadow-lg overflow-scroll sm:overflow-visible">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Account Dates</CardTitle>
             <Calendar className="h-4 w-4 text-gray-500" />
@@ -142,7 +171,7 @@ const SingleUserDetail = () => {
       </div>
 
       {/* --- Additional Details (Optional) --- */}
-      <Card className="shadow-lg">
+      <Card className="shadow-lg overflow-scroll sm:overflow-visible">
         <CardHeader>
           <CardTitle className="text-lg">
             Financial & Technical Information

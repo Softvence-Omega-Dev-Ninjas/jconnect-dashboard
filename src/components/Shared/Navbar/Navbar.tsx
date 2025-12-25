@@ -1,64 +1,180 @@
-import { Bell, Search, LogOut } from "lucide-react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Bell, Search } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { logout } from "@/redux/features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/redux/hook";
+import { useEffect, useRef, useState } from "react";
+import NotificationList from "./component/NotificationList";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import {
+  clearSearch,
+  setSearchTerm,
+} from "@/redux/features/search/searchSlice";
 
 const Navbar = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const searchTerm = useSelector(
+    (state: any) => state.search?.searchTerm || ""
+  );
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
+  const user = useAppSelector((state) => state.auth.user);
+  const unread = useAppSelector((state) => state.notifications.unread);
+  const isConnected = useAppSelector(
+    (state) => state.notifications.isConnected
+  );
+
+  const [open, setOpen] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Initialize socket connection and load notifications
+  useNotificationSocket();
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
+  const getSearchConfig = () => {
+    if (pathname.includes("/users")) {
+      return { show: true, placeholder: "Search by username" };
+    }
+    if (pathname.includes("/payments")) {
+      return { show: true, placeholder: "Search by Order ID" };
+    }
+    if (pathname.includes("/disputes")) {
+      return { show: true, placeholder: "Search by Case ID, Order ID" };
+    }
+    if (pathname.includes("/disputes/:id")) {
+      return { show: true, placeholder: "Search by Case ID, Order ID" };
+    }
+    if (pathname.includes("/reports")) {
+      return { show: true, placeholder: "Search by anything" };
+    }
+    if (pathname.includes("/settings")) {
+      return { show: true, placeholder: "Search by Order ID" };
+    }
+    if (pathname.includes("/")) {
+      return { show: true, placeholder: "Search by username" };
+    }
+    return { show: false, placeholder: "" };
   };
 
+  const config = getSearchConfig();
+
+  useEffect(() => {
+    dispatch(clearSearch());
+  }, [pathname, dispatch]);
+
   return (
-    <nav className="fixed top-0 right-0 left-0 lg:left-64 bg-white border-b border-gray-200 z-30 h-14 sm:h-16">
+    <nav className="fixed top-4 right-0 left-0 lg:left-64 bg-white border-b border-gray-200 z-30 h-14 sm:h-16">
       <div className="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 ml-12 lg:ml-0">
         {/* Search Bar */}
         <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md hidden sm:block">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full pl-9 pr-3 py-1.5 sm:py-2 bg-[#F8E6E9] border border-gray-200 rounded-md text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-gray-300"
-            />
+            {/* Dynamic Search Bar */}
+            {config.show && (
+              <div className="relative w-full max-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => {
+                    dispatch(setSearchTerm(e.target.value));
+                  }}
+                  placeholder={config.placeholder}
+                  className="w-full pl-10 pr-4 py-2 bg-[#F8E6E9] border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#BD001F] outline-none text-sm transition-all"
+                />
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Mobile Search Icon */}
+        {/* Mobile Search */}
         <button className="sm:hidden text-gray-600 p-1">
-          <Search className="w-5 h-5" />
+          {config.show && (
+            <div className="relative w-full max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => {
+                  dispatch(setSearchTerm(e.target.value));
+                }}
+                placeholder={config.placeholder}
+                className="w-full pl-10 pr-4 py-2 bg-[#F8E6E9] border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#BD001F] outline-none text-sm transition-all"
+              />
+            </div>
+          )}
         </button>
 
         {/* Right Section */}
-        <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-          {/* Notification Bell */}
-          <button className="relative text-gray-600 hover:text-gray-900 p-1">
-            <Bell className="w-5 h-5" />
-            <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
-              2
-            </span>
-          </button>
+        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 relative">
+          {/* Notification */}
+          <div className="relative" ref={notificationRef}>
+            <button
+              onClick={() => setOpen((p) => !p)}
+              className="relative text-gray-600 hover:text-gray-900 p-1 transition-colors cursor-pointer"
+            >
+              <Bell className="w-5 h-5" />
+              {unread > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
+                  {unread > 9 ? "9+" : unread}
+                </span>
+              )}
+              {/* Connection indicator */}
+              <span
+                className={`absolute bottom-0 right-0 w-2 h-2 rounded-full border border-white ${
+                  isConnected ? "bg-green-500" : "bg-gray-400"
+                }`}
+                title={isConnected ? "Connected" : "Disconnected"}
+              />
+            </button>
 
-          {/* Admin User */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
-              {user?.full_name || "Admin User"}
-            </span>
-            <Avatar className="w-7 h-7 sm:w-8 sm:h-8">
-              <AvatarImage src={user?.profilePhoto || "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin"} />
-              <AvatarFallback className="text-xs">{user?.full_name?.charAt(0) || "A"}</AvatarFallback>
-            </Avatar>
+            {open && (
+              <div className="absolute right-0 mt-2 z-50">
+                <NotificationList onClose={() => setOpen(false)} />
+              </div>
+            )}
           </div>
 
-          {/* Logout Button */}
-          <button onClick={handleLogout} className="text-gray-600 hover:text-red-600 p-1" title="Logout">
-            <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
+          {/* User */}
+          <div className="flex items-center gap-2">
+            <div className="flex flex-col">
+              <span className="text-xs sm:text-sm font-medium text-gray-700 hidden md:block max-w-[120px] truncate">
+                {user?.full_name || "..."}
+              </span>
+              <span className="text-[10px] text-gray-500 hidden md:block max-w-[120px] truncate">
+                {user?.role || "..."}
+              </span>
+            </div>
+            <Avatar className="w-7 h-7 sm:w-8 sm:h-8">
+              <AvatarImage
+                src={
+                  user?.profilePhoto ||
+                  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+                }
+              />
+              <AvatarFallback className="text-xs">
+                {user?.full_name?.charAt(0) || "A"}
+              </AvatarFallback>
+            </Avatar>
+          </div>
         </div>
       </div>
     </nav>

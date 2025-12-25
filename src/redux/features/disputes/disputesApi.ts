@@ -1,5 +1,6 @@
 import { baseApi } from "../../api/baseApi";
 
+// --- Interfaces ---
 interface DisputeOrder {
   id: string;
   orderCode: string;
@@ -32,32 +33,8 @@ interface DisputeUser {
   email: string;
   profilePhoto: string | null;
   phone: string | null;
-  password: string;
-  pinCode: number | null;
-  otp: string | null;
-  googleId: string | null;
-  emailOtp: string | null;
-  otpExpiresAt: string | null;
-  isVerified: boolean;
-  is_terms_agreed: boolean;
-  isLogin: boolean;
-  isDeleted: boolean;
-  isActive: boolean;
-  login_attempts: number;
   withdrawn_amount: number;
-  phoneOtp: string | null;
-  phoneOtpExpiresAt: string | null;
-  phoneVerified: boolean;
-  last_login_at: string;
-  created_at: string;
-  updated_at: string;
-  token_expires_at: string | null;
   role: string;
-  validation_type: string;
-  auth_provider: string | null;
-  stripeAccountId: string | null;
-  sellerIDStripe: string | null;
-  customerIdStripe: string | null;
 }
 
 export interface DisputeResponse {
@@ -74,17 +51,64 @@ export interface DisputeResponse {
   user: DisputeUser;
 }
 
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
 export const disputesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getDisputes: builder.query<DisputeResponse[], void>({
-      query: () => "/disputes",
+    getDisputes: builder.query<
+      DisputeResponse[],
+      { searchTerm?: string } | void
+    >({
+      query: (params) => {
+        const queryParams = new URLSearchParams();
+
+        if (params && params.searchTerm) {
+          queryParams.append("search", params.searchTerm);
+        }
+
+        return {
+          url: `/disputes/filter?${queryParams.toString()}`,
+          method: "GET",
+        };
+      },
       providesTags: ["Disputes"],
+      transformResponse: (response: ApiResponse<DisputeResponse[]>) =>
+        response.data,
     }),
     getDisputeById: builder.query<DisputeResponse, string>({
       query: (id) => `/disputes/${id}`,
-      providesTags: ["Disputes"],
+      providesTags: (_result, _error, id) => [{ type: "Disputes", id }],
+      transformResponse: (
+        response: ApiResponse<DisputeResponse> | DisputeResponse
+      ): DisputeResponse => {
+        if ("data" in response && response.data) return response.data;
+        return response as DisputeResponse;
+      },
+    }),
+
+    updateDisputeStatus: builder.mutation<
+      DisputeResponse,
+      { id: string; status: string; resolution?: string }
+    >({
+      query: ({ id, status, resolution }) => ({
+        url: `/disputes/${id}`,
+        method: "PATCH",
+        body: { status, resolution },
+      }),
+      invalidatesTags: (_result, _error, { id }) => [
+        "Disputes",
+        { type: "Disputes", id },
+      ],
     }),
   }),
 });
 
-export const { useGetDisputesQuery, useGetDisputeByIdQuery } = disputesApi;
+export const {
+  useGetDisputesQuery,
+  useGetDisputeByIdQuery,
+  useUpdateDisputeStatusMutation,
+} = disputesApi;

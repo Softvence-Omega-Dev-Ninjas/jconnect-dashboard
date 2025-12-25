@@ -6,72 +6,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MONTHS } from "@/components/Shared/Month/Month";
 
 interface FilterBarProps {
   statusFilter: string;
   onStatusChange: (status: string) => void;
-  typeFilter: string;
-  onTypeChange: (type: string) => void;
+
+  monthFilter: string;
+  onMonthChange: (month: string) => void;
+
+  sortOrder: string;
+  onSortChange: (order: "asc" | "desc") => void;
+
   onExport?: () => void;
 }
 
 const PaymentFilterBar = ({
   statusFilter,
   onStatusChange,
+  monthFilter,
+  onMonthChange,
+  sortOrder,
+  onSortChange,
   onExport,
-  typeFilter,
-  onTypeChange,
 }: FilterBarProps) => {
   return (
-    <div className="flex flex-col lg:flex-row lg:flex-wrap items-start lg:items-center gap-3 md:gap-4 p-3 md:p-4 rounded-lg">
-      {/* Type Filter */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
-        <span className="text-sm font-medium whitespace-nowrap">Type:</span>
-        <div className="bg-white p-2 md:p-3 rounded-2xl border flex flex-wrap gap-1">
-          <button
-            onClick={() => onTypeChange("All")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              typeFilter === "All"
-                ? "btn-primary"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            All
-          </button>
-          <button
-            onClick={() => onTypeChange("Payment")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              typeFilter === "Payment"
-                ? "btn-primary"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            Payment
-          </button>
-          <button
-            onClick={() => onTypeChange("Refund")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              typeFilter === "Refund"
-                ? "btn-primary"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            Refund
-          </button>
-          <button
-            onClick={() => onTypeChange("Payout")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              typeFilter === "Payout"
-                ? "btn-primary"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            Payout
-          </button>
-        </div>
-      </div>
-
-      {/* Status Filter */}
+    <div className="flex flex-col lg:flex-row lg:flex-wrap items-start lg:items-center gap-3 md:gap-4 p-3 md:p-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
         <span className="text-sm font-medium whitespace-nowrap">Status:</span>
         <div className="bg-white p-2 md:p-3 rounded-2xl border flex flex-wrap gap-1">
@@ -79,58 +39,83 @@ const PaymentFilterBar = ({
             onClick={() => onStatusChange("all")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
               statusFilter === "all"
-                ? "btn-primary"
+                ? "btn-primary bg-indigo-600 text-white"
                 : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             All
           </button>
           <button
-            onClick={() => onStatusChange("Refunded")}
+            onClick={() => onStatusChange("PENDING")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "Refunded"
-                ? "btn-primary"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            Active
-          </button>
-          <button
-            onClick={() => onStatusChange("Hold")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "Hold"
-                ? "btn-primary"
+              statusFilter === "PENDING"
+                ? "btn-primary bg-yellow-500 text-white"
                 : "text-gray-600 hover:bg-gray-100"
             }`}
           >
             Pending
           </button>
           <button
-            onClick={() => onStatusChange("Completed")}
+            onClick={() => onStatusChange("IN_PROGRESS")}
             className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "Completed"
-                ? "btn-primary"
+              statusFilter === "IN_PROGRESS"
+                ? "btn-primary bg-blue-500 text-white"
                 : "text-gray-600 hover:bg-gray-100"
             }`}
           >
-            Completed
+            In Progress
+          </button>
+          <button
+            onClick={() => onStatusChange("RELEASED")}
+            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
+              statusFilter === "RELEASED"
+                ? "btn-primary bg-green-500 text-white"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            Released
+          </button>
+          <button
+            onClick={() => onStatusChange("CANCELLED")}
+            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
+              statusFilter === "CANCELLED"
+                ? "btn-primary bg-red-500 text-white"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            Cancelled
           </button>
         </div>
       </div>
 
-      {/* Date Range */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
-        <span className="text-sm font-medium whitespace-nowrap">
-          Date Range:
-        </span>
-        <Select defaultValue="this-month">
+        <span className="text-sm font-medium whitespace-nowrap">Date Range:</span>
+        <Select value={monthFilter} onValueChange={onMonthChange}>
+          <SelectTrigger className="w-full sm:w-[140px] text-xs bg-white">
+            <SelectValue placeholder="Select Month" />
+          </SelectTrigger>
+          <SelectContent>
+            {MONTHS.map((month) => (
+              <SelectItem key={month.value} value={month.value}>
+                {month.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
+        <span className="text-sm font-medium whitespace-nowrap">Sort By:</span>
+        <Select
+          value={sortOrder}
+          onValueChange={(value: "asc" | "desc") => onSortChange(value)}
+        >
           <SelectTrigger className="w-full sm:w-[140px] text-xs bg-white">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="this-month">This Month</SelectItem>
-            <SelectItem value="last-month">Last Month</SelectItem>
-            <SelectItem value="last-3-months">Last 3 Months</SelectItem>
+            <SelectItem value="desc">Newest First</SelectItem>
+            <SelectItem value="asc">Oldest First</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -138,7 +123,7 @@ const PaymentFilterBar = ({
       {/* Export Button */}
       <button
         onClick={onExport}
-        className="w-full lg:w-auto lg:ml-auto px-4 py-2 btn-primary text-sm font-medium rounded flex items-center justify-center gap-2"
+        className="w-full lg:w-auto lg:ml-auto px-4 py-2 bg-[#BD001F] text-white text-sm font-medium rounded-lg flex items-center justify-center gap-2 transition duration-150"
       >
         <span>Export</span>
         <Download className="w-4 h-4" />
