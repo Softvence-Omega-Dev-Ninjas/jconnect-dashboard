@@ -1,0 +1,51 @@
+name: Deploy React App to VPS
+
+on:
+  push:
+    branches:
+      - main  # or the branch you want to deploy from
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code 
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --f
+
+      - name: Build the app
+        run: npm run build
+
+      - name: Setup SSH key for VPS
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS (Clean old files)
+        uses: appleboy/ssh-action@v0.1.5
+        with: 
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          password: ${{ secrets.VPS_PRIVATE_KEY }}
+          script: |
+            cd /var/www/ || exit
+            rm -rf dist # Remove old files
+            exit  # Ensure the action continues
+
+      - name: Upload build files to VPS
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          password: ${{ secrets.VPS_PRIVATE_KEY }}
+          source: "dist/*"
+          target: "/var/www/"
