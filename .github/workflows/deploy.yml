@@ -32,10 +32,10 @@ jobs:
 
       - name: Deploy to VPS (Clean old files)
         uses: appleboy/ssh-action@v0.1.5
-        with: 
+        with:
           host: ${{ secrets.VPS_HOST }}
           username: root
-          password: ${{ secrets.VPS_PRIVATE_KEY }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}  # Use SSH private key for authentication
           script: |
             cd /var/www/ || exit
             rm -rf dist # Remove old files
@@ -46,6 +46,6 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: root
-          password: ${{ secrets.VPS_PRIVATE_KEY }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}  # Use SSH private key for authentication
           source: "dist/*"
           target: "/var/www/"
