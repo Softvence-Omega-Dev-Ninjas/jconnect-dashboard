@@ -11,6 +11,9 @@ const Payments = () => {
 
   const stats = data?.data;
 
+  const toTwoDecimal = (value?: number) =>
+    Number((value ?? 0).toFixed(2));
+  
   const stateCardsData = [
     {
       id: "total-revenue",
@@ -18,7 +21,7 @@ const Payments = () => {
       value: stats?.totalRevenue
         ? Number((stats.totalRevenue / 100).toFixed(2))
         : 0,
-      change: stats?.revenuePercentage || 0,
+      change: toTwoDecimal(stats?.revenuePercentage),
       icon: DollarSign,
       isCurrency: true,
     },
@@ -28,7 +31,7 @@ const Payments = () => {
       value: stats?.stripePayouts
         ? Number((stats.stripePayouts / 100).toFixed(2))
         : 0,
-      change: stats?.stripePayoutsPercentage || 0,
+      change: toTwoDecimal(stats?.stripePayoutsPercentage),
       icon: HandCoins,
       isCurrency: true,
     },
@@ -38,11 +41,12 @@ const Payments = () => {
       value: stats?.totalRefund
         ? Number((stats.totalRefund / 100).toFixed(2))
         : 0,
-      change: stats?.refundPercentage || 0,
+      change: toTwoDecimal(stats?.refundPercentage),
       icon: BanknoteArrowDown,
       isCurrency: true,
     },
   ];
+  
 
   if (isLoading) return <LoadingSpinner message="Loading payment stats..." />;
   if (error)
