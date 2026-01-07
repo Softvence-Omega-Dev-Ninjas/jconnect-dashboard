@@ -2,8 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout } from "../features/auth/authSlice";
 import Cookies from "js-cookie";
 
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://jconnect-server.saikat.com.bd",
+  baseUrl: import.meta.env.VITE_API_URL,
   prepareHeaders: (headers) => {
     const token = Cookies.get("token");
     if (token) {
