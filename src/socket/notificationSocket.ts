@@ -20,12 +20,14 @@ export const connectNotificationSocket = (dispatch: AppDispatch) => {
     socket.disconnect();
   }
 
-  socket = io("https://jconnect-server.saikat.com.bd/notification", {
+  const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+  socket = io(`${SOCKET_URL}/notification`, {
     transports: ["websocket"],
     auth: {
       token: `Bearer ${token}`,
     },
   });
+  
 
   socket.on("connect", () => {
     // console.log("Connected to notification socket");
