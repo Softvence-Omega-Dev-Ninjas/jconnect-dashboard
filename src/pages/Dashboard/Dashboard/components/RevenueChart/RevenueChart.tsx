@@ -22,13 +22,16 @@ import {
 import { useMemo, useState } from "react";
 import { useGetRevenueByMonthQuery } from "@/redux/features/dashboard/dashboardApi";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 
 export default function RevenueChart() {
   const { data: revenue, error, isLoading } = useGetRevenueByMonthQuery();
   const [dateRange, setDateRange] = useState("2 years");
 
   const chartData = useMemo(() => {
-    if (!revenue) return null;
+    if (!revenue || !Array.isArray(revenue) || revenue.length === 0) {
+      return null;
+    }
 
     const months = [
       "Jan",
@@ -49,12 +52,20 @@ export default function RevenueChart() {
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
 
+    // Filter revenue data based on date range
     const filteredRevenue = revenue.filter((it) => {
+      if (!it.month) return false;
+
       const [yearStr, monthStr] = it.month.split("-");
+      if (!yearStr || !monthStr) return false;
+
       const year = parseInt(yearStr);
       const month = parseInt(monthStr);
 
+      if (isNaN(year) || isNaN(month)) return false;
+
       if (dateRange === "1 year") {
+        // Show last 12 months from current date
         if (year === currentYear) {
           return month <= currentMonth;
         } else if (year === currentYear - 1) {
@@ -62,29 +73,46 @@ export default function RevenueChart() {
         }
         return false;
       } else {
+        // Show last 2 years
         return year >= currentYear - 1;
       }
     });
 
     const map: Record<string, Record<number, number>> = {};
 
+    // Map revenue data by year and month
     filteredRevenue.forEach((it) => {
+      if (!it.month) return;
+
       const [yearStr, monthStr] = it.month.split("-");
+      if (!yearStr || !monthStr) return;
+
       const year = yearStr;
       const monthIdx = Number(monthStr) - 1;
+
+      if (isNaN(monthIdx) || monthIdx < 0 || monthIdx > 11) return;
+
       if (!map[year]) map[year] = {};
+      // Revenue is in cents, convert to dollars
       map[year][monthIdx] = Number(it.revenue ?? 0) / 100;
     });
 
-    const years = Object.keys(map).sort();
+    const years = Object.keys(map).sort((a, b) => parseInt(a) - parseInt(b));
+
+    // If no data, return empty structure
+    if (years.length === 0) {
+      return null;
+    }
 
     let displayYears: string[];
     let showSingleYear = false;
 
     if (dateRange === "1 year") {
+      // For 1 year view, show current year
       displayYears = [String(currentYear)];
       showSingleYear = true;
     } else {
+      // For 2 years view, show last 2 years from available data
       displayYears = years.length >= 2 ? years.slice(-2) : years;
     }
 
@@ -102,19 +130,29 @@ export default function RevenueChart() {
     return out as (Record<string, any> & { label: string })[] | null;
   }, [revenue, dateRange]);
 
-  if (isLoading) return <div className="text-center">Loading...</div>;
-  if (error) {
-    return <NoDataFound dataTitle="Revenue Data" />;
+  if (isLoading) {
+    return (
+      <LoadingSpinner
+        message="Loading revenue data..."
+        size="md"
+      />
+    );
   }
 
-  const years = chartData
-    ? ((chartData as any).__years as string[])
-    : ["2024", "2025"];
-  const isSingleYear = chartData ? (chartData as any).__isSingleYear : false;
+  if (error || !chartData) {
+    return (
+      <Card className="p-4 md:p-6">
+        <NoDataFound dataTitle="Revenue Data" />
+      </Card>
+    );
+  }
+
+  const years = ((chartData as any).__years as string[]) || [];
+  const isSingleYear = (chartData as any).__isSingleYear || false;
 
   const displayYear = isSingleYear ? years[0] : "";
-  const yearA = years[1] ?? "2025";
-  const yearB = years[0] ?? "2024";
+  const yearA = years[1] ?? years[0] ?? new Date().getFullYear().toString();
+  const yearB = years[0] ?? (years.length > 1 ? years[1] : String(new Date().getFullYear() - 1));
 
   return (
     <Card className="p-4 md:p-6">
@@ -176,7 +214,7 @@ export default function RevenueChart() {
             />
             <Tooltip
               formatter={(value: number | string) => [
-               `$${Number(value).toLocaleString(undefined, {minimumFractionDigits: 2})}`,
+                `$${Number(value).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
                 "Revenue",
               ]}
             />
@@ -209,12 +247,13 @@ export default function RevenueChart() {
                 />
               </>
             )}
-            {chartData &&
+            {chartData && chartData.length > 0 &&
               (() => {
                 const arr = chartData as any[];
                 let maxIdx = -1;
                 let maxVal = -Infinity;
                 const activeYear = isSingleYear ? displayYear : yearA;
+
                 arr.forEach((d, idx) => {
                   const v = Number(d[activeYear] ?? 0);
                   if (v > maxVal) {
@@ -222,6 +261,8 @@ export default function RevenueChart() {
                     maxIdx = idx;
                   }
                 });
+
+                // Only show reference dot if there's actual data (maxVal > 0)
                 if (maxIdx >= 0 && maxVal > 0) {
                   return (
                     <ReferenceDot

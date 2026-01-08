@@ -1,4 +1,4 @@
-import { X, Check, Trash2, Bell } from "lucide-react";
+import { X, Check, Trash2, Bell, User, Wrench, Megaphone } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useDeleteNotificationMutation, useMarkAllNotificationsAsReadMutation, useMarkNotificationAsReadMutation } from "@/redux/features/notification/notificationApi";
 import { deleteNotification, markAsRead, markAllRead } from "@/redux/features/notification/notificationSlice";
@@ -63,13 +63,14 @@ const NotificationList = ({ onClose }: Props) => {
   };
 
   const getNotificationIcon = (type: string) => {
+    const iconClass = "w-5 h-5 text-[#BD001F]";
     switch (type) {
       case "user.create":
-        return "👤";
+        return <User className={iconClass} />;
       case "service.create":
-        return "🛠️";
+        return <Wrench className={iconClass} />;
       default:
-        return "📢";
+        return <Megaphone className={iconClass} />;
     }
   };
 
@@ -109,20 +110,19 @@ const NotificationList = ({ onClose }: Props) => {
           {notifications.map((n) => (
             <div
               key={n.id}
-              className={`px-4 py-3 border-b hover:bg-gray-50 transition-colors ${
-                !n.read ? "bg-blue-50" : ""
-              }`}
+              className={`px-4 py-3 border-b hover:bg-gray-50 transition-colors ${!n.read ? "bg-blue-50" : ""
+                }`}
             >
               <div className="flex items-start gap-3">
-                <span className="text-2xl shrink-0">
+                <div className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-red-50">
                   {getNotificationIcon(n.type)}
-                </span>
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-sm font-medium text-gray-900">
                       {n.title}
                     </p>
-                  
+
                     <span className="text-[10px] text-gray-400 whitespace-nowrap">
                       {formatTimeAgo(n.createdAt)}
                     </span>
@@ -133,8 +133,9 @@ const NotificationList = ({ onClose }: Props) => {
                   {n.meta && Object.keys(n.meta).length > 0 && (
                     <div className="mt-2 text-xs text-gray-500">
                       {n.meta.name && (
-                        <span className="inline-block mr-2">
-                          👤 {n.meta.name}
+                        <span className="inline-flex items-center gap-1 mr-2">
+                          <User className="w-3 h-3" />
+                          {n.meta.name}
                         </span>
                       )}
                       {n.meta.role && (
