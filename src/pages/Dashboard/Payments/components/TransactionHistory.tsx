@@ -15,13 +15,13 @@ import StatusBadge from "@/components/Shared/StatusBadge/StatusBadge";
 import PaymentFilterBar from "./PementFilterBar";
 import { useSelector } from "react-redux";
 
-const ITEMS_PER_PAGE = 10;
 const getMonthLabel = (monthValue: string) => {
   return monthValue === "all" ? "Selected Month" : monthValue;
 };
 
 const TransactionHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [statusFilter, setStatusFilter] = useState("all");
   const [monthFilter, setMonthFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -34,7 +34,7 @@ const TransactionHistory = () => {
   const queryParams: TransactionHistoryQueryParams = useMemo(() => {
     return {
       page: currentPage,
-      limit: ITEMS_PER_PAGE,
+      limit: itemsPerPage,
       status: statusFilter === "all" ? undefined : statusFilter,
       month:
         monthFilter === "all" ? undefined : (monthFilter as unknown as number),
@@ -42,7 +42,7 @@ const TransactionHistory = () => {
       sortOrder: sortOrder,
       searchTerm: searchTerm,
     };
-  }, [currentPage, statusFilter, monthFilter, sortOrder, searchTerm]);
+  }, [currentPage, statusFilter, monthFilter, sortOrder, searchTerm, itemsPerPage]);
 
   const { data, isLoading, isFetching, error, refetch } =
     useGetAllTransactionHistoryQuery(queryParams);
@@ -239,8 +239,9 @@ const TransactionHistory = () => {
           showPagination={true}
           currentPage={currentPage}
           totalItems={totalItems}
-          itemsPerPage={ITEMS_PER_PAGE}
+          itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
+          setItemsPerPage={setItemsPerPage}
         />
       )}
     </div>
