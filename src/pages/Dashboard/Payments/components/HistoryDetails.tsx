@@ -9,12 +9,19 @@ import {
   DollarSign,
   CreditCard,
   Receipt,
+  Mail,
+  Phone,
+  Package,
+  Clock,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 import StatusBadge from "@/components/Shared/StatusBadge/StatusBadge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetTransactionDetailsQuery } from "@/redux/features/payment/paymentApi";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const HistoryDetails = () => {
   const { id } = useParams();
@@ -48,21 +55,27 @@ const HistoryDetails = () => {
     CANCELLED: "bg-rose-100 text-rose-700 border-rose-200",
   };
 
-  const formattedDate = new Date(transaction.createdAt).toLocaleDateString(
-    "en-US",
-    {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }
-  );
+    });
+  };
+
+  const formattedDate = formatDate(transaction.createdAt);
+  const formattedUpdatedDate = formatDate(transaction.updatedAt);
+  const formattedProofDate = formatDate(transaction.proofSubmittedAt);
+  const formattedDeliveryDate = formatDate(transaction.deliveryDate);
+  const formattedReleasedDate = formatDate(transaction.releasedAt);
 
   return (
     <div className="min-h-screen bg-gray-50/30 pb-12">
       <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-        
+
         {/* Top Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <button
@@ -89,9 +102,9 @@ const HistoryDetails = () => {
 
         {/* MAIN GRID - Items Stretch ensures equal column height */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          
+
           {/* LEFT SIDE: Main Info (8 Columns) */}
-          <div className="lg:col-span-8 flex flex-col gap-6">
+          <div className="lg:col-span-7 flex flex-col gap-6">
             {/* Order Primary Card */}
             <Card className="flex-1 flex flex-col overflow-hidden border-none shadow-xl shadow-gray-200/50 rounded-3xl">
               <CardHeader className="pb-4">
@@ -120,7 +133,7 @@ const HistoryDetails = () => {
                 </div>
               </CardHeader>
 
-              <CardContent className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+              <CardContent className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 pt-4">
                 <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
                   <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
                     <CreditCard className="w-3 h-3 mr-2" /> Transaction ID
@@ -132,9 +145,99 @@ const HistoryDetails = () => {
 
                 <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
                   <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
-                    <Calendar className="w-3 h-3 mr-2" /> Date & Time
+                    <Calendar className="w-3 h-3 mr-2" /> Created Date
                   </div>
-                  <p className="font-bold text-gray-800">{formattedDate}</p>
+                  <p className="font-bold text-gray-800 text-sm">{formattedDate}</p>
+                </div>
+
+                {transaction.paymentIntentId && (
+                  <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
+                    <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                      <CreditCard className="w-3 h-3 mr-2" /> Payment Intent ID
+                    </div>
+                    <p className="font-mono text-xs text-gray-600 break-all leading-relaxed">
+                      {transaction.paymentIntentId}
+                    </p>
+                  </div>
+                )}
+
+                {transaction.serviceId && (
+                  <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
+                    <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                      <Package className="w-3 h-3 mr-2" /> Service ID
+                    </div>
+                    <p className="font-mono text-xs text-gray-600 break-all leading-relaxed">
+                      {transaction.serviceId}
+                    </p>
+                  </div>
+                )}
+
+                {transaction.buyerId && (
+                  <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
+                    <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                      <User className="w-3 h-3 mr-2" /> Buyer ID
+                    </div>
+                    <p className="font-mono text-xs text-gray-600 break-all leading-relaxed">
+                      {transaction.buyerId}
+                    </p>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
+                  <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                    <Clock className="w-3 h-3 mr-2" /> Last Updated
+                  </div>
+                  <p className="font-bold text-gray-800 text-sm">{formattedUpdatedDate}</p>
+                </div>
+
+                {transaction.proofSubmittedAt && (
+                  <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
+                    <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                      <CheckCircle2 className="w-3 h-3 mr-2" /> Proof Submitted
+                    </div>
+                    <p className="font-bold text-gray-800 text-sm">{formattedProofDate}</p>
+                  </div>
+                )}
+
+                {transaction.deliveryDate && (
+                  <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
+                    <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                      <Package className="w-3 h-3 mr-2" /> Delivery Date
+                    </div>
+                    <p className="font-bold text-gray-800 text-sm">{formattedDeliveryDate}</p>
+                  </div>
+                )}
+
+                {transaction.releasedAt && (
+                  <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
+                    <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                      <CheckCircle className="w-3 h-3 mr-2" /> Released Date
+                    </div>
+                    <p className="font-bold text-gray-800 text-sm">{formattedReleasedDate}</p>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 space-y-2 h-fit">
+                  <div className="flex items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                    <CheckCircle2 className="w-3 h-3 mr-2" /> Release Status
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {transaction.isReleased ? (
+                      <>
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <Badge className="bg-green-100 text-green-700 border-green-200">
+                          Released
+                        </Badge>
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="w-4 h-4 text-amber-500" />
+                        <Badge className="bg-amber-100 text-amber-700 border-amber-200">
+                          Not Released
+                        </Badge>
+                      </>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -179,7 +282,7 @@ const HistoryDetails = () => {
           </div>
 
           {/* RIGHT SIDE: Sidebar (4 Columns) */}
-          <div className="lg:col-span-4 flex flex-col gap-5">
+          <div className="lg:col-span-5 flex flex-col gap-5">
             {/* Financial Summary Card - h-full will match the left side height */}
             <Card className="flex-1 border-none shadow-2xl rounded-3xl bg-gray-900 text-white overflow-hidden flex flex-col">
               <div className="p-6 space-y-6 relative flex-1 flex flex-col">
@@ -192,23 +295,41 @@ const HistoryDetails = () => {
                 <div className="space-y-4 flex-1">
                   <div className="flex justify-between items-center group">
                     <span className="text-gray-400 group-hover:text-gray-300 transition-colors">Gross Amount</span>
-                    <span className="font-bold text-lg">${transaction.amount.toFixed(2)}</span>
+                    <span className="font-bold text-lg">${(transaction.amount / 100).toFixed(2)}</span>
                   </div>
 
-                  <div className="flex justify-between items-center group">
-                    <div className="flex items-center text-gray-400 group-hover:text-gray-300">
-                      <span className="mr-2">Platform Fee</span>
-                      <span className="text-[10px] bg-red-900/50 text-red-400 px-2 py-0.5 rounded-full border border-red-800/50">
-                        {transaction.platformFee_percents}%
-                      </span>
+                  {transaction.buyerPay > 0 && (
+                    <div className="flex justify-between items-center group">
+                      <span className="text-gray-400 group-hover:text-gray-300">Buyer Pay</span>
+                      <span className="font-medium text-gray-300">${(transaction.buyerPay / 100).toFixed(2)}</span>
                     </div>
-                    <span className="text-red-400 font-medium">-${transaction.PlatfromRevinue.toFixed(2)}</span>
-                  </div>
+                  )}
 
-                  <div className="flex justify-between items-center group">
-                    <span className="text-gray-400 group-hover:text-gray-300">Stripe Processing</span>
-                    <span className="text-red-400 font-medium">-${transaction.stripeFee.toFixed(2)}</span>
-                  </div>
+                  {transaction.platformFee_percents > 0 && (
+                    <div className="flex justify-between items-center group">
+                      <div className="flex items-center text-gray-400 group-hover:text-gray-300">
+                        <span className="mr-2">Platform Fee</span>
+                        <span className="text-[10px] bg-red-900/50 text-red-400 px-2 py-0.5 rounded-full border border-red-800/50">
+                          {transaction.platformFee_percents}%
+                        </span>
+                      </div>
+                      <span className="text-red-400 font-medium">-${(transaction.PlatfromRevinue / 100).toFixed(2)}</span>
+                    </div>
+                  )}
+
+                  {transaction.stripeFee > 0 && (
+                    <div className="flex justify-between items-center group">
+                      <span className="text-gray-400 group-hover:text-gray-300">Stripe Processing</span>
+                      <span className="text-red-400 font-medium">-${(transaction.stripeFee / 100).toFixed(2)}</span>
+                    </div>
+                  )}
+
+                  {transaction.platformFee > 0 && (
+                    <div className="flex justify-between items-center group">
+                      <span className="text-gray-400 group-hover:text-gray-300">Platform Fee (Fixed)</span>
+                      <span className="text-red-400 font-medium">-${(transaction.platformFee / 100).toFixed(2)}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-6 border-t border-gray-800 mt-auto">
@@ -217,7 +338,7 @@ const HistoryDetails = () => {
                       <p className="text-[10px] font-black uppercase text-emerald-500 tracking-widest mb-1">
                         Net Earnings
                       </p>
-                      <p className="text-4xl font-black">${transaction.seller_amount.toFixed(2)}</p>
+                      <p className="text-4xl font-black">${(transaction.seller_amount / 100).toFixed(2)}</p>
                     </div>
                     <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-500">
                       <DollarSign className="w-6 h-6" />
@@ -229,26 +350,82 @@ const HistoryDetails = () => {
 
             {/* Seller Contact Card - h-fit ensures it only takes needed space at the bottom */}
             <Card className="h-fit border-none shadow-sm bg-white overflow-hidden">
-              <CardContent className="pt-6 space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center border-2 border-red-100">
-                    <User className="text-red-600 w-7 h-7" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 leading-tight">
-                      {transaction.seller.full_name}
+              <CardHeader>
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                  <User className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Seller Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  {transaction.seller?.profilePhoto ? (
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-red-100">
+                      <img
+                        src={transaction.seller.profilePhoto}
+                        alt={transaction.seller.full_name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-red-50 flex items-center justify-center border-2 border-red-100">
+                      <User className="text-red-600 w-6 h-6 sm:w-7 sm:h-7" />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-bold text-gray-900 leading-tight truncate">
+                      {transaction.seller?.full_name || "N/A"}
                     </h4>
-                    <p className="text-xs text-gray-500">{transaction.seller.email}</p>
+                    <p className="text-xs text-gray-500 truncate">{transaction.seller?.email || "N/A"}</p>
                   </div>
                 </div>
-                <div className="space-y-3 bg-gray-50 p-4 rounded-xl text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Contact:</span>
-                    <span className="font-bold text-gray-700">{transaction.seller.phone}</span>
-                  </div>
-                  <div className="flex justify-between">
+                <div className="space-y-3 bg-gray-50 p-3 sm:p-4 rounded-xl text-xs sm:text-sm">
+                  {transaction.seller?.phone && (
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span>Phone:</span>
+                      </div>
+                      <span className="font-bold text-gray-700 truncate">{transaction.seller.phone}</span>
+                    </div>
+                  )}
+                  {transaction.seller?.email && (
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <Mail className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span>Email:</span>
+                      </div>
+                      <span className="font-medium text-gray-700 truncate text-xs">{transaction.seller.email}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between gap-2">
                     <span className="text-gray-500">Total Payout:</span>
-                    <span className="font-bold text-green-600">${transaction.seller.withdrawn_amount}</span>
+                    <span className="font-bold text-green-600">
+                      ${((transaction.seller?.withdrawn_amount || 0) / 100).toFixed(2)}
+                    </span>
+                  </div>
+                  {transaction.seller?.id && (
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-gray-500">Seller ID:</span>
+                      <span className="font-mono text-xs text-gray-600 truncate">{transaction.seller.id}</span>
+                    </div>
+                  )}
+                  {transaction.sellerIdStripe && (
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-gray-500">Stripe ID:</span>
+                      <span className="font-mono text-xs text-gray-600 truncate">{transaction.sellerIdStripe}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-gray-500">Terms Agreed:</span>
+                    {transaction.seller?.is_terms_agreed ? (
+                      <Badge className="bg-green-100 text-green-700 border-green-200 text-xs">
+                        Yes
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-xs">
+                        No
+                      </Badge>
+                    )}
                   </div>
                 </div>
               </CardContent>
