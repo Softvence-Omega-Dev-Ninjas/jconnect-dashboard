@@ -14,12 +14,14 @@ export default function StatCardGrid() {
 
   const stats = data?.data;
 
+  const toTwoDecimal = (value?: number) => Number((value ?? 0).toFixed(2));
+
   const stateCardsData = [
     {
       id: "total-users",
       title: "Total Users",
       value: stats?.totalUser || 0,
-      change: stats?.userPercentage || 0,
+      change: toTwoDecimal(stats?.userPercentage),
       icon: CircleUserRound,
       isCurrency: false,
     },
@@ -29,7 +31,7 @@ export default function StatCardGrid() {
       value: stats?.totalRevenue
         ? Number((stats.totalRevenue / 100).toFixed(2))
         : 0,
-      change: stats?.revenuePercentage || 0,
+      change: toTwoDecimal(stats?.revenuePercentage),
       icon: DollarSign,
       isCurrency: true,
     },
@@ -37,7 +39,7 @@ export default function StatCardGrid() {
       id: "total-disputes",
       title: "Total Disputes",
       value: stats?.totalDispute || 0,
-      change: stats?.disputePercentage || 0,
+      change: toTwoDecimal(stats?.disputePercentage),
       icon: Handshake,
       isCurrency: false,
     },
@@ -47,7 +49,7 @@ export default function StatCardGrid() {
       value: stats?.totalRefund
         ? Number((stats.totalRefund / 100).toFixed(2))
         : 0,
-      change: stats?.refundPercentage || 0,
+      change: toTwoDecimal(stats?.refundPercentage),
       icon: BanknoteArrowDown,
       isCurrency: true,
     },
