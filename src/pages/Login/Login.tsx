@@ -129,6 +129,7 @@ const Login: React.FC = () => {
                 Password
               </label>
               <button
+                type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   navigate("/forgot-password");
