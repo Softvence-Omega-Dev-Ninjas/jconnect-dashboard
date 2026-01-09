@@ -85,10 +85,21 @@ export const PaymentsApi = baseApi.injectEndpoints({
       }),
       providesTags: (_result, _error, id) => [{ type: "Transactions", id }],
     }),
+    refundPayment: builder.mutation<
+      { success: boolean; message: string },
+      string
+    >({
+      query: (id) => ({
+        url: `/payments/refund/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
   }),
 });
 
 export const {
   useGetAllTransactionHistoryQuery,
   useGetTransactionDetailsQuery,
+  useRefundPaymentMutation,
 } = PaymentsApi;

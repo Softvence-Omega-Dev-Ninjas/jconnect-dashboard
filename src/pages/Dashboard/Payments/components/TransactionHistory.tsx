@@ -9,11 +9,14 @@ import ApiErrorMessage from "@/components/Shared/ApiErrorMessage/ApiErrorMessage
 import {
   TransactionHistoryQueryParams,
   useGetAllTransactionHistoryQuery,
+  useRefundPaymentMutation,
 } from "@/redux/features/payment/paymentApi";
 import { DisplayPayment, Payment } from "@/types/TransactionHistory.type";
 import StatusBadge from "@/components/Shared/StatusBadge/StatusBadge";
 import PaymentFilterBar from "./PementFilterBar";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import { toast } from "sonner";
 
 const getMonthLabel = (monthValue: string) => {
   return monthValue === "all" ? "Selected Month" : monthValue;
@@ -46,10 +49,44 @@ const TransactionHistory = () => {
 
   const { data, isLoading, isFetching, error, refetch } =
     useGetAllTransactionHistoryQuery(queryParams);
+  const [refundPayment, { isLoading: isRefunding }] = useRefundPaymentMutation();
 
   useEffect(() => {
     refetch();
   }, [sortOrder, refetch]);
+
+  const handleRefund = async (paymentId: string, orderCode: string) => {
+    const result = await Swal.fire({
+      title: "Confirm Refund?",
+      text: `Are you sure you want to refund payment for order ${orderCode}? This action cannot be undone.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#BD001F",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, Refund",
+      cancelButtonText: "Cancel",
+      heightAuto: false,
+      customClass: {
+        popup: "rounded-3xl",
+      },
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const loadingToast = toast.loading("Processing refund...");
+
+        await refundPayment(paymentId).unwrap();
+
+        toast.dismiss(loadingToast);
+        toast.success("Refund processed successfully! Status updated to CANCELLED.");
+
+        // Refetch the data to update the status
+        refetch();
+      } catch (err: any) {
+        toast.error(err?.data?.message || "Failed to process refund. Please try again.");
+      }
+    }
+  };
 
   const totalItems = data?.meta?.total || 0;
 
@@ -106,6 +143,7 @@ const TransactionHistory = () => {
     IN_PROGRESS: "bg-yellow-100 text-yellow-700",
     CANCELLED: "bg-red-100 text-red-700",
     PROCESSING: "bg-blue-100 text-blue-700",
+    PROOF_SUBMITTED: "bg-purple-100 text-purple-700",
   };
 
   const columns: Column<DisplayPayment>[] = [
@@ -118,7 +156,6 @@ const TransactionHistory = () => {
     {
       header: "Amount",
       accessor: "amount",
-      // render: (item) => `$${item.amount.toFixed(2)}`,
       render: (item) =>
         `$${item.amount ? Number((item.amount / 100).toFixed(2)) : 0}`,
     },
@@ -144,15 +181,32 @@ const TransactionHistory = () => {
     {
       header: "Action",
       render: (item) => (
-        <button
-          className="px-2 sm:px-3 py-1 text-xs sm:text-sm hover:underline text-red-600"
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/payment/${item.id}`);
-          }}
-        >
-          View
-        </button>
+        <div className="flex items-center gap-2 justify-center">
+          <button
+            className="px-1 py-1 text-xs sm:text-sm hover:underline text-red-600"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/payment/${item.id}`);
+            }}
+          >
+            View
+          </button>
+          {item.status !== "CANCELLED" && (
+            <>
+              <span className="text-gray-300">|</span>
+              <button
+                className="px-1 py-1 text-xs sm:text-sm hover:underline text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRefund(item.id, item.orderid);
+                }}
+                disabled={isRefunding}
+              >
+                {isRefunding ? "Processing..." : "Refund"}
+              </button>
+            </>
+          )}
+        </div>
       ),
     },
   ];
