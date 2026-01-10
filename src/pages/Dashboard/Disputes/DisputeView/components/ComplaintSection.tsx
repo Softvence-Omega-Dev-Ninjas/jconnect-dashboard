@@ -23,10 +23,6 @@ const ComplaintSection = ({ dispute }: ComplaintSectionProps) => {
           <span className="font-medium">{dispute.user.phone || "N/A"}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600">Case ID</span>
-          <span className="font-medium">{dispute.order.orderCode}</span>
-        </div>
-        <div className="flex justify-between">
           <span className="text-gray-600">Order ID</span>
           <span className="font-medium">{dispute.order.orderCode}</span>
         </div>

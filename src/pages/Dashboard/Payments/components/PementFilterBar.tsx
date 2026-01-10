@@ -37,51 +37,55 @@ const PaymentFilterBar = ({
         <div className="bg-white p-2 md:p-3 rounded-2xl border flex flex-wrap gap-1">
           <button
             onClick={() => onStatusChange("all")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "all"
-                ? "btn-primary bg-indigo-600 text-white"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
+            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${statusFilter === "all"
+              ? "btn-primary bg-indigo-600 text-white"
+              : "text-gray-600 hover:bg-gray-100"
+              }`}
           >
             All
           </button>
           <button
             onClick={() => onStatusChange("PENDING")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "PENDING"
-                ? "btn-primary bg-yellow-500 text-white"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
+            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${statusFilter === "PENDING"
+              ? "btn-primary bg-yellow-500 text-white"
+              : "text-gray-600 hover:bg-gray-100"
+              }`}
           >
             Pending
           </button>
           <button
             onClick={() => onStatusChange("IN_PROGRESS")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "IN_PROGRESS"
-                ? "btn-primary bg-blue-500 text-white"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
+            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${statusFilter === "IN_PROGRESS"
+              ? "btn-primary bg-blue-500 text-white"
+              : "text-gray-600 hover:bg-gray-100"
+              }`}
           >
             In Progress
           </button>
           <button
             onClick={() => onStatusChange("RELEASED")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "RELEASED"
-                ? "btn-primary bg-green-500 text-white"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
+            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${statusFilter === "RELEASED"
+              ? "btn-primary bg-green-500 text-white"
+              : "text-gray-600 hover:bg-gray-100"
+              }`}
           >
             Released
           </button>
           <button
+            onClick={() => onStatusChange("PROOF_SUBMITTED")}
+            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${statusFilter === "PROOF_SUBMITTED"
+              ? "btn-primary bg-purple-500 text-white"
+              : "text-gray-600 hover:bg-gray-100"
+              }`}
+          >
+            Proof Submitted
+          </button>
+          <button
             onClick={() => onStatusChange("CANCELLED")}
-            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${
-              statusFilter === "CANCELLED"
-                ? "btn-primary bg-red-500 text-white"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
+            className={`px-2 md:px-3 py-1.5 text-xs font-medium rounded ${statusFilter === "CANCELLED"
+              ? "btn-primary bg-red-500 text-white"
+              : "text-gray-600 hover:bg-gray-100"
+              }`}
           >
             Cancelled
           </button>
