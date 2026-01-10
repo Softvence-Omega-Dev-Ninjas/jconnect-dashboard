@@ -26,10 +26,10 @@ const DisputeView = () => {
     useUpdateDisputeStatusMutation();
 
   const handleAction = async (newStatus: "RESOLVED" | "REJECTED") => {
-    const amount = dispute?.order?.amount ?? 0;
+    const amount = dispute?.order?.amount ? (dispute.order.amount / 100).toFixed(2) : "0.00";
     const resolution =
       newStatus === "RESOLVED"
-        ? `Refund of ৳${amount} has been processed to buyer`
+        ? `Refund of $${amount} has been processed to buyer`
         : "The dispute has been rejected after review.";
 
     Swal.fire({
@@ -112,13 +112,12 @@ const DisputeView = () => {
 
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         <div
-          className={`p-4 text-center text-sm font-bold border-b ${
-            dispute.status === "REJECTED"
-              ? "bg-red-50 text-red-600"
-              : dispute.status === "RESOLVED"
+          className={`p-4 text-center text-sm font-bold border-b ${dispute.status === "REJECTED"
+            ? "bg-red-50 text-red-600"
+            : dispute.status === "RESOLVED"
               ? "bg-green-50 text-green-600"
               : "bg-blue-50 text-blue-600"
-          }`}
+            }`}
         >
           <AlertCircle className="w-4 h-4 inline-block mr-1" />
           Status: {dispute.status.replace("_", " ")}

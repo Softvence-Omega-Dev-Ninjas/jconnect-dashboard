@@ -193,7 +193,7 @@ const TransactionHistory = () => {
           </button>
           {item.status !== "CANCELLED" && (
             <>
-              <span className="text-gray-300">|</span>
+              <span>/</span>
               <button
                 className="px-1 py-1 text-xs sm:text-sm hover:underline text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={(e) => {
