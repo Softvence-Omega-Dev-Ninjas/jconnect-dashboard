@@ -37,6 +37,16 @@ export interface TransactionSeller {
   withdrawn_amount: number;
 }
 
+export interface TransactionBuyer {
+  id: string;
+  full_name: string;
+  email: string;
+  profilePhoto: string | null;
+  phone: string;
+  is_terms_agreed: boolean;
+  withdrawn_amount: number;
+}
+
 
 export interface TransactionDetailsData {
   id: string;
@@ -63,6 +73,7 @@ export interface TransactionDetailsData {
   proofUrl: string[];
   proofSubmittedAt: string;
   seller: TransactionSeller;
+  buyer?: TransactionBuyer;
 }
 
 
