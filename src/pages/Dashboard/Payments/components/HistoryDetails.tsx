@@ -110,31 +110,27 @@ const HistoryDetails = () => {
   const formattedDeliveryDate = formatDate(transaction.deliveryDate);
   const formattedReleasedDate = formatDate(transaction.releasedAt);
 
-  // Calculate revenue from buyer and seller with percentages
-  const grossAmount = transaction.amount || 0;
-  const buyerPayAmount = transaction.buyerPay || 0;
-  const sellerAmount = transaction.seller_amount || 0;
-  const platformFee = transaction.platformFee || 0;
+  // Get data from backend response
+  const buyerServicePrice = transaction.buyer?.servicePrice || transaction.amount || 0;
+  const buyerPlatformFeePlus = transaction.buyer?.platformFeePlus || 0;
+  const buyerPays = transaction.buyer?.buyerPays || transaction.buyerPay || 0;
+  const buyerStripeFee = transaction.buyer?.stripeFee || 0;
+  const buyerServicePriceMinus = transaction.buyer?.servicePriceMinus || buyerServicePrice;
+  const buyerPlatformRevenue = transaction.buyer?.platformRevenue || 0;
+
+  const sellerServicePrice = transaction.seller?.servicePrice || transaction.amount || 0;
+  const sellerPlatformFee = transaction.seller?.platformFee || transaction.platformFee || 0;
+  const sellerAmount = transaction.seller?.sellerAmount || transaction.seller_amount || 0;
+  const sellerPlatformRevenue = transaction.seller?.platformRevenue || sellerPlatformFee;
+
   const platformFeePercent = transaction.platformFee_percents || 0;
-  const stripeFee = transaction.stripeFee || 0;
-
-  // Calculate platform fee from buyer based on percentage
-  const platformFeeFromBuyer = buyerPayAmount > 0 && platformFeePercent > 0
-    ? Math.round((buyerPayAmount * platformFeePercent) / 100)
-    : 0;
-
-  // Revenue from buyer: platform fee from buyer
-  const revenueFromBuyer = platformFeeFromBuyer;
-
-  // Revenue from seller: platform fee deducted from seller
-  const revenueFromSeller = platformFee || 0;
 
   // Total platform revenue
-  const totalRevenue = revenueFromBuyer + revenueFromSeller;
+  const totalRevenue = buyerPlatformRevenue + sellerPlatformRevenue;
 
-  // Calculate total revenue percentage
-  const totalRevenuePercentage = grossAmount > 0
-    ? ((totalRevenue / grossAmount) * 100).toFixed(2)
+  // Calculate total revenue percentage based on service price
+  const totalRevenuePercentage = buyerServicePrice > 0
+    ? ((totalRevenue / buyerServicePrice) * 100).toFixed(2)
     : "0.00";
 
   return (
@@ -422,21 +418,15 @@ const HistoryDetails = () => {
                 {/* Buyer Revenue Calculation */}
                 <div className="pt-4 border-t border-gray-200 space-y-3 bg-blue-50/30 p-4 rounded-xl">
                   <div className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3">
-                    Buyer Payment Breakdown
+                    Revenue from Buyer
                   </div>
-                  {grossAmount > 0 && (
+                  {buyerServicePrice > 0 && (
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Gross Amount:</span>
-                      <span className="font-bold text-gray-800">${(grossAmount / 100).toFixed(2)}</span>
+                      <span className="text-gray-600 text-sm">Service Price:</span>
+                      <span className="font-bold text-gray-800">${(buyerServicePrice / 100).toFixed(2)}</span>
                     </div>
                   )}
-                  {buyerPayAmount > 0 && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Buyer Pays:</span>
-                      <span className="font-bold text-gray-800">${(buyerPayAmount / 100).toFixed(2)}</span>
-                    </div>
-                  )}
-                  {platformFeePercent > 0 && buyerPayAmount > 0 && (
+                  {platformFeePercent > 0 && buyerPlatformFeePlus > 0 && (
                     <>
                       <div className="flex justify-between items-center pt-2 border-t border-blue-200">
                         <div className="flex items-center gap-2">
@@ -445,16 +435,30 @@ const HistoryDetails = () => {
                             {platformFeePercent}%
                           </span>
                         </div>
-                        <span className="font-bold text-red-600">-${(platformFeeFromBuyer / 100).toFixed(2)}</span>
+                        <span className="font-bold text-blue-600">+${(buyerPlatformFeePlus / 100).toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between items-center pt-2 border-t border-blue-200">
-                        <span className="text-gray-700 text-sm font-semibold">Buyer Total:</span>
-                        <span className="font-bold text-blue-700">${((buyerPayAmount - platformFeeFromBuyer) / 100).toFixed(2)}</span>
+                        <span className="text-gray-700 text-sm font-semibold">Total Buyer Pays:</span>
+                        <span className="font-bold text-blue-700">${(buyerPays / 100).toFixed(2)}</span>
                       </div>
-                      <div className="flex justify-between items-center pt-2 border-t-2 border-blue-300">
-                        <span className="text-blue-700 text-sm font-bold">Platform Revenue:</span>
-                        <span className="font-bold text-emerald-600">+${(platformFeeFromBuyer / 100).toFixed(2)}</span>
-                      </div>
+                      {transaction.status === "RELEASED" && buyerStripeFee > 0 && (
+                        <div className="flex justify-between items-center pt-2 border-t border-blue-200">
+                          <span className="text-gray-600 text-sm">Stripe Fee:</span>
+                          <span className="font-bold text-red-600">-${(buyerStripeFee / 100).toFixed(2)}</span>
+                        </div>
+                      )}
+                      {transaction.status === "RELEASED" && buyerServicePriceMinus > 0 && (
+                        <div className="flex justify-between items-center pt-2 border-t border-blue-200">
+                          <span className="text-gray-700 text-sm font-semibold">Service Price (After Stripe Fee):</span>
+                          <span className="font-bold text-blue-700">${(buyerServicePriceMinus / 100).toFixed(2)}</span>
+                        </div>
+                      )}
+                      {buyerPlatformRevenue > 0 && (
+                        <div className="flex justify-between items-center pt-2 border-t-2 border-blue-300">
+                          <span className="text-blue-700 text-sm font-bold">Platform Revenue:</span>
+                          <span className="font-bold text-emerald-600">+${(buyerPlatformRevenue / 100).toFixed(2)}</span>
+                        </div>
+                      )}
                     </>
                   )}
                   {platformFeePercent === 0 && (
@@ -549,44 +553,38 @@ const HistoryDetails = () => {
               {/* Seller Revenue Calculation */}
               <div className="pt-4 border-t border-gray-200 space-y-3 bg-red-50/30 p-4 rounded-xl">
                 <div className="text-xs font-bold uppercase tracking-widest text-red-600 mb-3">
-                  Seller Payment Breakdown
+                  Revenue from Seller
                 </div>
-                {grossAmount > 0 && (
+                {sellerServicePrice > 0 && (
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Gross Amount:</span>
-                    <span className="font-bold text-gray-800">${(grossAmount / 100).toFixed(2)}</span>
+                    <span className="text-gray-600 text-sm">Service Price:</span>
+                    <span className="font-bold text-gray-800">${(sellerServicePrice / 100).toFixed(2)}</span>
                   </div>
                 )}
-                {revenueFromSeller > 0 && (
+                {platformFeePercent > 0 && sellerPlatformFee > 0 && (
                   <>
                     <div className="flex justify-between items-center pt-2 border-t border-red-200">
                       <div className="flex items-center gap-2">
                         <span className="text-gray-600 text-sm">Platform Fee:</span>
-                        {platformFeePercent > 0 && (
-                          <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full">
-                            {platformFeePercent}%
-                          </span>
-                        )}
+                        <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full">
+                          {platformFeePercent}%
+                        </span>
                       </div>
-                      <span className="font-bold text-red-600">-${(revenueFromSeller / 100).toFixed(2)}</span>
+                      <span className="font-bold text-red-600">-${(sellerPlatformFee / 100).toFixed(2)}</span>
                     </div>
-                    {stripeFee > 0 && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-sm">Stripe Fee:</span>
-                        <span className="font-bold text-red-600">-${(stripeFee / 100).toFixed(2)}</span>
-                      </div>
-                    )}
                     <div className="flex justify-between items-center pt-2 border-t border-red-200">
                       <span className="text-gray-700 text-sm font-semibold">Seller Receives:</span>
                       <span className="font-bold text-red-700">${(sellerAmount / 100).toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between items-center pt-2 border-t-2 border-red-300">
-                      <span className="text-red-700 text-sm font-bold">Platform Revenue:</span>
-                      <span className="font-bold text-emerald-600">+${(revenueFromSeller / 100).toFixed(2)}</span>
-                    </div>
+                    {sellerPlatformRevenue > 0 && (
+                      <div className="flex justify-between items-center pt-2 border-t-2 border-red-300">
+                        <span className="text-red-700 text-sm font-bold">Platform Revenue:</span>
+                        <span className="font-bold text-emerald-600">+${(sellerPlatformRevenue / 100).toFixed(2)}</span>
+                      </div>
+                    )}
                   </>
                 )}
-                {revenueFromSeller === 0 && (
+                {sellerPlatformFee === 0 && (
                   <div className="text-center py-2 text-gray-500 text-sm">No platform fee from seller</div>
                 )}
               </div>
@@ -613,18 +611,18 @@ const HistoryDetails = () => {
               <div className="pt-4 border-t border-gray-700 space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400 text-sm">Revenue from Buyer:</span>
-                  <span className="font-bold text-blue-400">${(revenueFromBuyer / 100).toFixed(2)}</span>
+                  <span className="font-bold text-blue-400">${(buyerPlatformRevenue / 100).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400 text-sm">Revenue from Seller:</span>
-                  <span className="font-bold text-red-400">${(revenueFromSeller / 100).toFixed(2)}</span>
+                  <span className="font-bold text-red-400">${(sellerPlatformRevenue / 100).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center pt-2 border-t border-gray-700">
                   <span className="text-emerald-400 text-sm font-semibold">Total Revenue:</span>
                   <span className="text-emerald-400 text-lg font-bold">${(totalRevenue / 100).toFixed(2)}</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  {totalRevenuePercentage}% of gross amount (${(grossAmount / 100).toFixed(2)})
+                  {totalRevenuePercentage}% of service price (${(buyerServicePrice / 100).toFixed(2)})
                 </p>
               </div>
             </div>
