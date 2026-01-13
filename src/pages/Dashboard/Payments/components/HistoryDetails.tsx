@@ -441,7 +441,7 @@ const HistoryDetails = () => {
 
                   <div className="flex justify-between items-center pt-2 border-t border-blue-200">
                     <span className="text-gray-700 text-sm font-semibold">Service Price (After Stripe Fee):</span>
-                    <span className="font-bold text-blue-700">${((transaction.buyer.servicePriceMinus || 0) / 100).toFixed(2)}</span>
+                    <span className="font-bold text-red-700">-${((transaction.buyer.servicePriceMinus || 0) / 100).toFixed(2)}</span>
                   </div>
 
 
