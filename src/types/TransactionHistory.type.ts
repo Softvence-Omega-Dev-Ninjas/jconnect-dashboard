@@ -35,6 +35,10 @@ export interface TransactionSeller {
   phone: string;
   is_terms_agreed: boolean;
   withdrawn_amount: number;
+  servicePrice?: number;
+  platformFee?: number;
+  sellerAmount?: number;
+  platformRevenue?: number;
 }
 
 export interface TransactionBuyer {
@@ -45,6 +49,12 @@ export interface TransactionBuyer {
   phone: string;
   is_terms_agreed: boolean;
   withdrawn_amount: number;
+  servicePrice?: number;
+  platformFeePlus?: number;
+  buyerPays?: number;
+  stripeFee?: number;
+  servicePriceMinus?: number;
+  platformRevenue?: number;
 }
 
 
