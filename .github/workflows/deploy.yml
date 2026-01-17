@@ -45,7 +45,7 @@ jobs:
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.VPS_HOST }}
-          username: root
+          username: ubuntu
           key: ${{ secrets.VPS_PRIVATE_KEY }}  # Use SSH private key for authentication
           source: "dist/*"
           target: "/var/www/"
