@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { io, Socket } from "socket.io-client";
 import { AppDispatch } from "@/redux/store";
-import { setSocketConnected } from "@/redux/features/notification/notificationSlice";
-import { addNotification } from "@/store/notificationSlice";
+import {
+  addNotification,
+  setSocketConnected,
+} from "@/redux/features/notification/notificationSlice";
 import Cookies from "js-cookie";
 
 let socket: Socket | null = null;
@@ -27,7 +29,6 @@ export const connectNotificationSocket = (dispatch: AppDispatch) => {
       token: `Bearer ${token}`,
     },
   });
-  
 
   socket.on("connect", () => {
     // console.log("Connected to notification socket");
@@ -40,7 +41,12 @@ export const connectNotificationSocket = (dispatch: AppDispatch) => {
   });
 
   socket.on("connect_error", (error) => {
-    console.error("Socket connection error:", error);
+    // Type-safe error handling
+    const sanitizedError =
+      error && typeof error === "object" && "message" in error
+        ? String(error.message).replace(/[\r\n]/g, "")
+        : "Socket connection error occurred";
+    console.error("Socket connection error:", sanitizedError);
     dispatch(setSocketConnected(false));
   });
 
