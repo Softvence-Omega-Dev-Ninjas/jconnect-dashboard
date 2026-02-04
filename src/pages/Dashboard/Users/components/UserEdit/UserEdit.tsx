@@ -22,6 +22,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import NoDataFound from "@/components/Shared/NoDataFound/NoDataFound";
 import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 
 interface EditFormState {
   full_name: string;
@@ -110,12 +111,16 @@ const EditUser = () => {
       setIsUploading(true);
 
       const baseUrl = (import.meta as any).env.VITE_API_URL;
+      const token = Cookies.get("token");
       const response = await fetch(
         `${baseUrl}/aws-file-upload-additional-all/upload-image-single`,
-      {
-        method: "POST",
-        body: uploadFormData,
-      }
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: uploadFormData,
+        },
       );
       const result = await response.json();
       if (result.file) {
