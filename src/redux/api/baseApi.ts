@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_URL,
+  baseUrl: import.meta.env.VITE_API_URL || "https://api.theconnectapp.net",
   prepareHeaders: (headers) => {
     const token = Cookies.get("token");
     if (token) {
