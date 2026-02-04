@@ -46,8 +46,8 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ubuntu
-          key: ${{ secrets.VPS_PRIVATE_KEY }}  # Use SSH private key for authentication
-          source: "dist/*"
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          source: "dist/"
           target: "/var/www/"
           timeout: 600s   # Increase timeout to 10 minutes
           debug: true     # Enable debug for more detailed logs
