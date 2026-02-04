@@ -3,19 +3,19 @@ name: Deploy React App to VPS
 on:
   push:
     branches:
-      - main  # or the branch you want to deploy from
+      - main # or the branch you want to deploy from
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code 
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci
@@ -35,7 +35,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ubuntu
-          key: ${{ secrets.VPS_PRIVATE_KEY }}  # Use SSH private key for authentication
+          key: ${{ secrets.VPS_PRIVATE_KEY }} # Use SSH private key for authentication
           script: |
             cd /var/www/ || exit
             rm -rf dist # Remove old files
@@ -49,5 +49,15 @@ jobs:
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           source: "dist/"
           target: "/var/www/"
-          timeout: 600s   # Increase timeout to 10 minutes
-          debug: true     # Enable debug for more detailed logs
+          timeout: 600s # Increase timeout to 10 minutes
+          debug: true # Enable debug for more detailed logs
+
+      - name: Reload Nginx
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ubuntu
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          script: |
+            sudo nginx -t
+            sudo systemctl reload nginx
