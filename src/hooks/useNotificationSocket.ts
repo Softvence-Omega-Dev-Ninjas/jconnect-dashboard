@@ -1,31 +1,33 @@
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch } from "@/redux/hook";
 import { useGetUserNotificationsQuery } from "@/redux/features/notification/notificationApi";
 import {
   connectNotificationSocket,
   disconnectNotificationSocket,
 } from "@/socket/notificationSocket";
 import { setNotifications } from "@/redux/features/notification/notificationSlice";
+import Cookies from "js-cookie";
 
 export const useNotificationSocket = () => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.auth.user); // Add this line
+  // const user = useAppSelector((state) => state.auth.user);
+  const token = Cookies.get("token"); // Add token check
   
-  // Only call API if user is logged in
+  // Only call API if token exists (more reliable than user state)
   const { data, isLoading, refetch } = useGetUserNotificationsQuery(undefined, {
-    skip: !user, // Skip API call if no user
+    skip: !token, // Use token instead of user
   });
 
-  // Connect to socket only if user exists
+  // Connect to socket only if token exists
   useEffect(() => {
-    if (!user) return; // Add this check
+    if (!token) return; // Check token instead of user
     
     const socket = connectNotificationSocket(dispatch);
     console.log(socket);
     return () => {
       disconnectNotificationSocket();
     };
-  }, [dispatch, user]); // Add user dependency
+  }, [dispatch, token]); // Use token dependency
 
   // Load initial notifications
   useEffect(() => {
